@@ -1,0 +1,19 @@
+concept_id,concept,phase,explain,locate,trace,debug,modify,transfer,retain,last_evidence_id,status
+ENV-BUILD,PyTorch source build and incremental workflow,0,0,0,0,0,0,0,0,,unassessed
+PY-DATAMODEL,Python data model decorators descriptors and context managers,0,0,0,0,0,0,0,0,,unassessed
+CPP-CORE,C++ ownership RAII templates macros and linking,0,0,0,0,0,0,0,0,,unassessed
+TENSOR-MODEL,Tensor TensorImpl StorageImpl views dtype layout device,1,0,0,0,0,0,0,0,,unassessed
+PY-FRONTEND,Python frontend torch.nn modules and functional APIs,1,0,0,0,0,0,0,0,,unassessed
+BIND-CODEGEN,Python C++ binding schemas and code generation,2,0,0,0,0,0,0,0,,unassessed
+DISPATCH,Dispatcher keys registrations fallbacks and modes,2,0,0,0,0,0,0,0,,unassessed
+ATEN-KERNEL,ATen native functions TensorIterator and kernels,2,0,0,0,0,0,0,0,,unassessed
+AUTOGRAD,Autograd engine generated wrappers saved tensors and inference boundaries,3,0,0,0,0,0,0,0,,unassessed
+RUNTIME,Allocator device guard streams events RNG profiler and serialization,3,0,0,0,0,0,0,0,,unassessed
+DISTRIBUTED,c10d ProcessGroup collectives and inference communication boundaries,3,0,0,0,0,0,0,0,,unassessed
+FX-EXPORT,FX fake tensor symbolic shapes export and graph semantics,4,0,0,0,0,0,0,0,,unassessed
+DYNAMO,TorchDynamo frame evaluation guards graph breaks and cache,4,0,0,0,0,0,0,0,,unassessed
+INDUCTOR,AOTAutograd functionalization decompositions Inductor and codegen,4,0,0,0,0,0,0,0,,unassessed
+EXTENSION,C++ and CUDA operator extensions,5,0,0,0,0,0,0,0,,unassessed
+PRIVATEUSE1,PrivateUse1 eager device backend integration,5,0,0,0,0,0,0,0,,unassessed
+COMPILE-BACKEND,torch.compile custom backend lowering and fallback,5,0,0,0,0,0,0,0,,unassessed
+COMPAT,Model compatibility correctness performance and upgrade engineering,6,0,0,0,0,0,0,0,,unassessed

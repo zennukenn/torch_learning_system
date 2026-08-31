@@ -1,0 +1,4 @@
+interface:
+  display_name: "PyTorch Source Mentor"
+  short_description: "Evidence-driven PyTorch source and backend mentor"
+  default_prompt: "Use $pytorch-source-mentor to diagnose my current level and run the next evidence-based PyTorch source-learning session."
