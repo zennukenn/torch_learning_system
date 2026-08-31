@@ -1,5 +1,4 @@
 ---
----
 name: pytorch-source-mentor
 description: Guide evidence-driven study, tracing, debugging, modification, and assessment of a checked-out PyTorch source tree, including Python/C++ instruction and accelerator-backend preparation. Use for PyTorch source-learning sessions and learning-state updates; do not activate for ordinary application-level PyTorch questions unless source-level study is requested.
 ---
