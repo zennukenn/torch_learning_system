@@ -8,7 +8,19 @@ Label important conclusions as:
 - **Documented:** supported by an official source, with URL and access date.
 - **Inferred:** a reasoned interpretation that still needs verification.
 
-For changing internals, source paths must be repository-relative and tied to `git rev-parse HEAD`. Generated files must be identified as generated; find their generator or schema before treating them as authoritative design intent.
+For changing internals, source paths must be relative to the resolved PyTorch source root and tied to `git -C <source-root> rev-parse HEAD`. Never substitute the outer learning-system commit. Generated files must be identified as generated; find their generator or schema before treating them as authoritative design intent.
+
+## Checkout identity gate
+
+Before relying on local source, verify all of the following:
+
+- the configured source root exists and contains PyTorch's `torch/`, `aten/`, and `c10/` trees;
+- `git -C <source-root> status --short --branch` succeeds;
+- the exact commit is recorded, and an expected tag is verified rather than inferred;
+- recursive submodules are initialized; leading `-`, `+`, or `U` markers from `git submodule status --recursive` are unresolved evidence limitations;
+- local source changes are reported before tracing or testing against them.
+
+If the gate fails, diagnose it without mutating the checkout. Fetching, switching revisions, cleaning, resetting, or updating submodules requires explicit learner authorization.
 
 ## Call-chain artifact
 

@@ -3,11 +3,12 @@
 - Status: system initialized; baseline diagnosis not started
 - Current phase: Phase 0 — environment and source-reading foundations
 - Current week: 0
-- Target stable tag: `v2.13.0` as observed on 2026-09-01; verify again before checkout
-- Source checkout: not present
-- Commit: not recorded
+- Target stable tag: `v2.13.0`, verified against the official remote on 2026-09-01
+- Source root: `sources/pytorch` (independent Git repository; ignored by the learning-system repository)
+- Source checkout: complete full-history clone with 78 recursive submodule entries verified
+- Commit: `cf30153c4c131c8164ee7798e5022d810682e2cb` (`v2.13.0`, detached HEAD)
 - Last session: none
-- Next action: complete environment diagnosis and baseline knowledge assessment
+- Next action: complete the Phase 0 environment gate and baseline knowledge assessment; do not start a source build yet
 - Active blockers: WSL RAM 7.6 GiB; GPU access blocked; CMake/Ninja/GDB missing; `torch` not installed
 - Confidentiality: only public PyTorch facts and abstract `VENDOR_DEVICE` requirements may be stored
 

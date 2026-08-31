@@ -6,7 +6,7 @@
 
 ## 目录角色
 
-- `AGENTS.md`：放入 PyTorch 源码仓库后，对 Codex 持续生效的顶层约束。
+- `AGENTS.md`：在学习系统工作区中对 Codex 持续生效的顶层约束。
 - `.agents/skills/pytorch-source-mentor/`：Codex 的教学、源码取证、评估与 backend 实验工作流。
 - `prompts/CHATGPT_SYSTEM_PROMPT.md`：ChatGPT Project 或新对话的总提示词。
 - `prompts/QUICK_PROMPTS.md`：日常会话入口，不重复总提示词。
@@ -17,16 +17,23 @@
 - `scripts/validate_learning_state.py`：检查 CSV schema、ID、分数范围和必需状态文件。
 - `templates/`：调用链、语法卡、单次学习和周复盘模板。
 - `environment/REPORT.md`：2026-09-01 的本机体检和环境关卡。
+- `sources/pytorch/`：被外层 `.gitignore` 忽略的 PyTorch 官方源码；它始终是独立 Git 仓库。
 
 ## 在 Codex 中使用
 
-当 PyTorch 仓库尚未克隆时，先在本系统目录启动 Codex 并说：
+始终在 VS Code / WSL 中打开本目录 `/home/quanyx/pytorch-learning-system`，不要只打开 `sources/pytorch` 子目录。这样 Codex 能发现仓库级 Skill，同时可以读取和调试源码。
+
+开始会话时可以说：
 
 ```text
 使用 $pytorch-source-mentor，读取环境报告和学习状态。先执行 Phase 0 环境诊断，不安装或修改系统软件，给我第一个 90–120 分钟学习会话。
 ```
 
-克隆源码后，将本目录内容合并到源码仓库根目录，保留 PyTorch 原有文件和用户改动。之后从源码仓库启动 Codex。不要在未审阅差异时覆盖上游同名 `AGENTS.md`。
+PyTorch 源码固定放在 `sources/pytorch`。不要把学习系统文件合并到上游源码，也不要把源码提交到外层学习系统仓库。检查双仓库状态：
+
+```bash
+bash scripts/check_source_checkout.sh
+```
 
 ## 在 ChatGPT 中使用
 
@@ -39,7 +46,7 @@
 3. 完成 60–90 分钟基线诊断，更新 `learning/MASTERY.csv`。
 4. 运行第一条完整 vertical slice：一个 Python tensor 操作从 API 到 CPU kernel 的可验证调用链。
 
-此目录当前只创建学习系统，没有克隆 PyTorch、安装依赖或更改 WSL/Windows 设置。
+源码存在不代表构建环境已经就绪。构建、安装依赖或修改 WSL/Windows 设置必须经过单独的环境关卡。
 
 可随时运行完整性检查：
 

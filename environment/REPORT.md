@@ -17,6 +17,9 @@
 | Compiler | GCC/G++ 11.4 | 具备 C++20 基础能力；最终按目标 tag 构建检查 |
 | Missing | `cmake`, `ninja`, `gdb` 未找到 | Phase 0 需要补齐 |
 | Python torch | 未安装 | 尚不能运行基线 eager/dispatcher 实验 |
+| PyTorch source | `sources/pytorch`, full history, tag `v2.13.0`, commit `cf30153c4c131c8164ee7798e5022d810682e2cb` | 可进行源码搜索、历史分析和静态调用链追踪 |
+| Submodules | 78 个 recursive entries，2026-09-01 校验无缺失或 revision mismatch | 源码依赖树完整；尚未证明可构建 |
+| Source disk use | 约 7.9 GiB；检查时 `/home/quanyx` 仍有约 884 GiB 可用 | 源码空间充足，build tree 仍需单独规划 |
 
 ## 环境关卡
 
