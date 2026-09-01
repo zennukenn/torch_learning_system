@@ -7,6 +7,13 @@
 3. Update `REVIEW_QUEUE.md`, `ERROR_LOG.md`, `SESSION_LOG.md`, then `STATE.md`.
 4. Run `python3 scripts/validate_learning_state.py`.
 
+## Session artifacts
+
+- Store durable learner work in `learning/artifacts/YYYY-MM-DD-short-session-name/`.
+- Start from the relevant file in `templates/` and link the artifact from `SESSION_LOG.md`.
+- Keep commands and key outputs concise; do not commit build products, full logs, secrets, proprietary identifiers, or copied generated trees.
+- A source-only artifact must label runtime/build claims as unverified. It may support `explain` or `locate`, but not a runtime dispatch, debugging, or complete end-to-end `trace` score by itself.
+
 ## CSV rules
 
 - Use UTF-8 and keep the exact header/order.
@@ -15,6 +22,9 @@
 - `revision` is an exact commit SHA when source claims are assessed; use `binary:<torch-version>` only for binary-only evidence.
 - `hint_level` is `H0`, `H1`, `H2` or `H3`.
 - `verdict` is one of `pass`, `partial`, `fail`, `invalid`.
+- `status` is one of `unassessed`, `learning`, `review`, `mastered`.
+- `dimension` is one of `explain`, `locate`, `trace`, `debug`, `modify`, `transfer`, `retain`.
+- All dates use `YYYY-MM-DD`. Question rows reference an existing evidence row for the same concept; nonzero mastery scores reference an existing `last_evidence_id` for that concept.
 - Scores in `MASTERY.csv` are integers 0–4. Never lower or raise them silently; explain the evidence in the session log.
 - An aggregate may decrease when delayed evidence reveals regression; retention should reflect the newest delayed retrieval.
 

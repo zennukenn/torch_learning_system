@@ -2,6 +2,12 @@
 
 总提示词已经加载后，日常只需使用下面的短入口。
 
+如果 Codex 的 `$` 列表暂时没有显示 Skill，仍可直接说：
+
+```text
+请读取并严格遵循 .agents/skills/pytorch-source-mentor/SKILL.md，然后执行下面的学习任务：...
+```
+
 ## 下一次学习
 
 ```text

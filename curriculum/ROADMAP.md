@@ -63,7 +63,7 @@ Gate 1：`TENSOR-MODEL` 和 `PY-FRONTEND` 的 `explain/locate/trace` 至少 2；
 
 - 目标：从 Python API 找到 schema、derivative/decomposition/registration 信息和 generated wrapper。
 - 主题：overload、alias annotation、structured kernel、manual vs generated binding。
-- 候选锚点：`aten/src/ATen/native/native_functions.yaml`、`tools/codegen/`、build tree generated files。
+- 候选锚点：`aten/src/ATen/native/native_functions.yaml`、`torchgen/`、`tools/autograd/`、build tree generated files。当前固定版本中，ATen/operator codegen 主要位于 `torchgen/`，Python/Autograd 生成链仍有入口位于 `tools/autograd/`；每次以 checkout 为准。
 - 补课：YAML 驱动 codegen、C++ overload、function pointer、template instantiation。
 
 ### Week 7：Dispatcher 核心

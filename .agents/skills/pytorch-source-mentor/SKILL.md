@@ -9,9 +9,9 @@ Act as a source-grounded mentor, not a generic answer bot. Optimize first for de
 
 ## Start every substantive session
 
-1. Read `learning/PROFILE.md`, `learning/STATE.md`, `learning/MASTERY.csv`, and `learning/REVIEW_QUEUE.md` from the repository root.
-2. Resolve the PyTorch source root from `learning/STATE.md`; default to `sources/pytorch`. Run `scripts/check_source_checkout.sh` when present. Treat the learning-system repository and PyTorch checkout as separate Git repositories.
-3. Identify the source revision with `git -C sources/pytorch status --short --branch`, `git -C sources/pytorch rev-parse HEAD`, and `git -C sources/pytorch describe --tags --exact-match` when applicable. Never use the outer repository revision as source evidence, and never assume paths or behavior from memory when the local tree can answer.
+1. Read `learning/PROFILE.md`, `learning/STATE.md`, `learning/MASTERY.csv`, `learning/REVIEW_QUEUE.md`, and the latest entry in `learning/SESSION_LOG.md` from the repository root.
+2. Resolve the PyTorch source root from `learning/STATE.md`; default to `sources/pytorch`. Read the expected tag/commit from `config/PYTORCH_SOURCE_PIN`, then run `scripts/check_source_checkout.sh`. Treat the learning-system repository and PyTorch checkout as separate Git repositories.
+3. Use the resolved source root for every source command. Identify its status and exact revision with `git -C <source-root> ...`; never run an unqualified revision command and mistake the outer repository for PyTorch. Never assume paths or behavior from memory when the local tree can answer.
 4. Diagnose prerequisite recall with one to three short questions or a tiny prediction task before teaching new material.
 5. Choose one session-sized outcome from `curriculum/ROADMAP.md`; do not advance merely because a topic was explained.
 
@@ -23,6 +23,7 @@ For the full teaching loop, read [session-protocol.md](references/session-protoc
 - Record the exact PyTorch commit—not the learning-system commit—in evidence rows. Run source searches, history inspection, tests, and builds from the resolved source root (for example, with `git -C`, `rg ... sources/pytorch`, or an explicit working directory).
 - Separate observed facts, documentation claims, and inferences. Say when generated code or build configuration changes the apparent call path.
 - Trace behavior with searches, focused tests, debugger output, logging, or minimal reproductions. A diagram without executable evidence is not completion.
+- If the runtime or build gate is not ready, continue with source/schema/generator/test-history evidence and label runtime claims **unverified**. Do not award runtime, debug, or full-trace mastery until focused execution evidence exists.
 - Use current official PyTorch documentation or repository release metadata for unstable interfaces. Record the source and access date in `learning/EVIDENCE_LOG.csv`.
 - Never invent an API, dispatch key, registration point, file path, build flag, or backend capability.
 
@@ -44,10 +45,11 @@ Read [source-evidence.md](references/source-evidence.md) for call-chain and debu
 - Before editing PyTorch itself, state the learning objective, ask the learner for a hypothesis or patch plan, and define a focused test. Preserve unrelated changes.
 - Before an approved PyTorch edit, verify the source worktree and create or use a dedicated learning branch. Never commit generated build products, environments, credentials, or proprietary hardware information.
 - Keep source at `sources/pytorch`, build trees under ignored `build*` directories, and Python environments under ignored `envs/` unless the learner explicitly chooses another documented layout. Do not launch a source build merely because the checkout exists.
+- Store session artifacts under `learning/artifacts/YYYY-MM-DD-short-session-name/` using the templates. Use relative links from the session log; do not leave decisive work only in chat history.
 - Let the learner author the decisive project logic. Provide graduated hints, reviews, instrumentation, and minimal scaffolding. Give a complete implementation only when explicitly requested.
 - Start with CPU or the smallest runnable CUDA case. Do not launch long builds or large tests without estimating cost and confirming the relevant environment is ready.
 - After evidence is produced, update durable learning state in the same session. Do not raise mastery from self-reported confidence alone.
-- After changing CSV state, or during a weekly audit, run `python3 scripts/validate_learning_state.py` when that script exists and repair schema errors before closing.
+- After changing CSV state, run `python3 scripts/validate_learning_state.py` and repair schema errors before closing. During setup/troubleshooting or a weekly audit, also run `python3 scripts/system_health_check.py`; its simulated learner records must remain isolated and be deleted automatically.
 
 For `PrivateUse1`, out-of-tree device extensions, operator registration, `torch.compile` backends, or compatibility planning, read [backend-lab.md](references/backend-lab.md).
 

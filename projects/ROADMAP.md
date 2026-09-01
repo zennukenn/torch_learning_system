@@ -54,6 +54,7 @@
   - packaging、ABI/API versioning、cross-repository CI/upstream upgrade；
   - confidential information boundary；
   - 90 天实现里程碑与最高风险实验。
+- 源码产物：在公开 CPU/CUDA proxy 环境中完成一项 learner-authored compatibility harness、focused test 或小型源码/诊断修改，并说明它如何迁移到未来 `VENDOR_DEVICE`；不能只提交架构文档。
 - 最终考试：未预告 operator/model 的 source trace、debug challenge、C++ syntax reading 和 architecture defense。
 
 ## 通用质量门

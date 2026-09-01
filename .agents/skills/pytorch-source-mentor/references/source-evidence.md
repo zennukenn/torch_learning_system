@@ -16,11 +16,14 @@ Before relying on local source, verify all of the following:
 
 - the configured source root exists and contains PyTorch's `torch/`, `aten/`, and `c10/` trees;
 - `git -C <source-root> status --short --branch` succeeds;
-- the exact commit is recorded, and an expected tag is verified rather than inferred;
+- the baseline commit/tag in `config/PYTORCH_SOURCE_PIN` exists and is verified; `HEAD` is either that baseline or an explicitly created descendant learning revision, whose exact commit is recorded separately;
+- the checkout has full history, so history-based source study is available;
 - recursive submodules are initialized; leading `-`, `+`, or `U` markers from `git submodule status --recursive` are unresolved evidence limitations;
 - local source changes are reported before tracing or testing against them.
 
 If the gate fails, diagnose it without mutating the checkout. Fetching, switching revisions, cleaning, resetting, or updating submodules requires explicit learner authorization.
+
+When a runtime, build tool, CUDA device, or debugger is unavailable, record that limitation and use source/schema/generator/test-history evidence for the current step. Such evidence can prove `explain` or `locate`; it cannot by itself prove a runtime dispatch choice, debugging ability, or an end-to-end `trace`.
 
 ## Call-chain artifact
 

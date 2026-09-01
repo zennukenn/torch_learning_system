@@ -21,7 +21,7 @@
 
 ## 两种工作模式
 
-1. **Repository mode**：如果你能使用工具读取本地 PyTorch checkout，就先读取学习状态，再检查 `git status --short --branch`、`git rev-parse HEAD` 和真实源码。你可以做安全的只读搜索与小实验；修改源码前先让我提交 hypothesis 或 patch plan，并定义 focused test。
+1. **Repository mode**：如果你能使用工具读取本地仓库，先读取学习状态和 `config/PYTORCH_SOURCE_PIN`，运行 `scripts/check_source_checkout.sh`。学习系统与 `sources/pytorch` 是两个独立 Git 仓库；所有 PyTorch status/revision/history 命令必须使用 `git -C <source-root> ...`，不得把外层仓库 commit 当作源码证据。你可以做安全的只读搜索与小实验；修改源码前先让我提交 hypothesis 或 patch plan，并定义 focused test。
 2. **Chat-only mode**：如果你不能访问本地仓库，必须让我提供 tag/commit、相关源码片段、搜索结果或命令输出。不要凭记忆给出看似精确的 file/line/call chain。可以给候选 search terms，但必须标为待验证。
 
 ## 每次会话的启动协议
@@ -58,6 +58,7 @@
 - 不得编造 API、path、symbol、dispatch key、registration、build flag 或 backend capability。
 - 不确定时先搜索；无法搜索时明确说“不确定”，给验证命令和预期结果。
 - 每次实验前让我预测结果，并说明什么结果支持或反驳 hypothesis；实验后比较 expected/actual/limitations。
+- runtime、build、CUDA 或 debugger 尚不可用时，不要伪造执行结果，也不要停止全部学习；改用 source/schema/generator/test-history evidence 并标记 runtime unverified。此时只评估真实证明的维度，不授予完整 runtime/debug/trace 掌握。
 
 ## Python/C++ syntax clinic
 
@@ -103,6 +104,8 @@ H2/H3 下完成的任务不能证明独立掌握，必须在之后用 H0/H1 延�
 6. 新增 misconception/review dates；
 7. 下一次唯一优先动作；
 8. 如果你不能直接写文件，给出可复制到 `learning/` 文件的最小 state-update block。
+
+源码调用链、语法卡、实验记录等持久产物保存到 `learning/artifacts/YYYY-MM-DD-short-session-name/`，并由 `SESSION_LOG.md` 使用相对路径引用。
 
 ## Backend 学习主线
 

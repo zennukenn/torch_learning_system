@@ -6,6 +6,7 @@
 - Target concept/dimension:
 - Observable outcome:
 - Due review items:
+- Artifact directory: `learning/artifacts/YYYY-MM-DD-short-session-name/`
 
 ## Diagnostic answers
 

@@ -8,6 +8,7 @@ Accessed 2026-09-01. These links seed the work; the Agent must re-check changing
 - [Published version metadata](https://github.com/pytorch/pytorch.github.io/blob/site/published_versions.json): reported `latest_stable` as `2.13.0` when checked.
 - [PyTorch source repository and build instructions](https://github.com/pytorch/pytorch): clone, dependency and build entry points.
 - [PyTorch CONTRIBUTING.md](https://github.com/pytorch/pytorch/blob/main/CONTRIBUTING.md): editable development, generated files, focused tests, build/debug tips and C++ development constraints.
+- [PyTorch RELEASE.md](https://github.com/pytorch/pytorch/blob/main/RELEASE.md): release compatibility matrix; for 2.13 it records Python `>=3.10`, C++20, and the published CUDA/ROCm combinations.
 
 ## Backend and compiler integration
 

@@ -2,10 +2,10 @@
 
 Use the repo skill `pytorch-source-mentor` for every PyTorch source teaching, tracing, assessment, debugging-coaching, backend-learning, and progress request.
 
-- Read `learning/PROFILE.md`, `learning/STATE.md`, `learning/MASTERY.csv`, and `learning/REVIEW_QUEUE.md` before substantive teaching.
+- Read `learning/PROFILE.md`, `learning/STATE.md`, `learning/MASTERY.csv`, `learning/REVIEW_QUEUE.md`, and the latest `learning/SESSION_LOG.md` entry before substantive teaching.
 - Ground claims in the checked-out PyTorch revision; inspect files before citing paths or line numbers.
 - Treat `sources/pytorch` as the default PyTorch source root. It is an independent Git repository; never confuse its revision or worktree state with this learning-system repository.
-- Before source work, run `scripts/check_source_checkout.sh`. Use `git -C sources/pytorch ...` and source-relative paths for all PyTorch revision, status, history, search, build, test, and patch operations.
+- Before source work, read `config/PYTORCH_SOURCE_PIN` and run `scripts/check_source_checkout.sh`. Use `git -C sources/pytorch ...` and source-relative paths for all PyTorch revision, status, history, search, build, test, and patch operations.
 - Teach in Chinese while preserving English identifiers and terminology.
 - Diagnose before teaching. Require learner prediction, source evidence, and a focused verification before advancing.
 - Teach blocking Python/C++ syntax in the source context and give a small learner exercise.
@@ -14,5 +14,7 @@ Use the repo skill `pytorch-source-mentor` for every PyTorch source teaching, tr
 - Preserve confidentiality: do not request or store proprietary hardware details, source, logs, URLs, model names, data, or credentials.
 - The primary goal is full PyTorch source mastery. Future inference-backend adaptation is the integrating project, not a shortcut that omits Autograd, distributed, build, testing, or compiler architecture.
 - Prefer CPU/small cases until CUDA access and build resources are verified. Do not start expensive builds or broad test suites without estimating cost.
+- If runtime/build prerequisites are unavailable, continue with source/schema/generator/test-history evidence, explicitly mark runtime behavior unverified, and do not award full runtime/debug/trace mastery.
+- Save durable session artifacts under `learning/artifacts/YYYY-MM-DD-short-session-name/` and link them from `learning/SESSION_LOG.md`.
 - Before modifying PyTorch, ask for the learner's hypothesis or patch plan and define a focused test. Preserve unrelated worktree changes.
 - Do not fetch, pull, checkout, reset, clean, update submodules, or change the pinned PyTorch revision without explicit learner authorization. Use a dedicated learning branch for approved source modifications.

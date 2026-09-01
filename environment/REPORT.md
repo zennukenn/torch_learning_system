@@ -12,9 +12,9 @@
 | Swap | 2.0 GiB，检查时已使用约 1.1 GiB | 大型 C++ 编译可能发生 OOM/严重换页 |
 | Disk | `/home/quanyx` 可用约 892 GiB | 源码、build tree、ccache 空间充足 |
 | GPU | `nvidia-smi` 报 `GPU access blocked by the operating system` | 当前不能进行 CUDA runtime 实验 |
-| CUDA toolkit | `nvcc` 11.8 | 不能据此推断兼容当前 PyTorch；需按目标 tag 官方要求重配 |
-| Python | 3.10.12 | 可建立隔离学习环境 |
-| Compiler | GCC/G++ 11.4 | 具备 C++20 基础能力；最终按目标 tag 构建检查 |
+| CUDA toolkit | `nvcc` 11.8 | 不在 PyTorch 2.13 官方 release compatibility matrix 的 stable CUDA 12.6/13.0 组合中；源码构建能否使用仍需按 checkout 的 build checks 实测 |
+| Python | 3.10.12 | 满足 PyTorch 2.13 官方 Python `>=3.10` 下界；仍应建立隔离学习环境 |
+| Compiler | GCC/G++ 11.4 | 具备 C++20 基础能力；PyTorch 2.13 要求 C++20，最终兼容性由 focused configure/build 证明 |
 | Missing | `cmake`, `ninja`, `gdb` 未找到 | Phase 0 需要补齐 |
 | Python torch | 未安装 | 尚不能运行基线 eager/dispatcher 实验 |
 | PyTorch source | `sources/pytorch`, full history, tag `v2.13.0`, commit `cf30153c4c131c8164ee7798e5022d810682e2cb` | 可进行源码搜索、历史分析和静态调用链追踪 |
@@ -22,6 +22,8 @@
 | Source disk use | 约 7.9 GiB；检查时 `/home/quanyx` 仍有约 884 GiB 可用 | 源码空间充足，build tree 仍需单独规划 |
 
 ## 环境关卡
+
+PyTorch 2.13 的 release compatibility matrix 已于 2026-09-01 从官方仓库核验：[RELEASE.md](https://github.com/pytorch/pytorch/blob/main/RELEASE.md)。这是官方发布组合，不替代本 checkout 对自定义源码构建的实际 configure/build 结果。
 
 Agent 在获得明确授权后才安装或修改环境。先按以下顺序诊断：
 
@@ -36,7 +38,7 @@ Agent 在获得明确授权后才安装或修改环境。先按以下顺序诊�
 
 - Windows 版本、主机物理内存、GPU 型号和 driver 版本；
 - `.wslconfig` 的 memory/swap 设置；
-- 目标 tag 的构建依赖与 CUDA 支持矩阵；
+- 当前 checkout 对本机 GCC/CUDA 组合的 configure 结果与源码构建可行性；
 - VS Code C++ 扩展、Python 环境管理方式；
 - 是否能在另一台 Linux/CUDA 机器运行硬件或 GPU 实验。
 
