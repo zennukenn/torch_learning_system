@@ -8,6 +8,7 @@
 
 | Date | Status | Phase | Topic | Concepts | Evidence | Note |
 |---|---|---|---|---|---|---|
+| 2026-09-02 | complete | Phase 0 | First `torch.add` source trace | BIND-CODEGEN, DISPATCH, ATEN-KERNEL, CPP-CORE | E-20260902-01..04 | [session note](sessions/2026-09-02-first-add-source-trace.md) |
 
 ## 主题导航
 

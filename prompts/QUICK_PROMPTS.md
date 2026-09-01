@@ -11,13 +11,19 @@
 ## 下一次学习
 
 ```text
-读取学习状态，先处理到期复习并诊断最早薄弱前置。为我运行下一次 90–120 分钟 PyTorch 源码会话；结束前先要求我闭卷复述，查漏补缺并让我修正关键错误，然后写入 notebook 并更新全部学习证据与状态。
+读取学习状态和当前 gate。未通过 Foundation Gate 时，按 architecture-first 模式运行下一次 90–120 分钟会话：从全局图定位本节主题，约 60% 详细讲解、25% 练习、15% 浅层源码观察，只提问已经讲过的概念。通过 gate 后再使用 vertical source-trace 模式。结束前要求我闭卷复述，查漏补缺并更新 notebook、证据和状态。
+```
+
+## 基础架构课
+
+```text
+从 curriculum/ROADMAP.md 的当前 Foundation lesson 开始。先用一个具体 inference 故事和简单架构图讲清本节 5–7 个术语，再做分类/排序/复述练习，最后只观察一处与已学概念直接对应的源码。明确哪些深层细节推迟到以后，不让我猜未讲过的内部机制。
 ```
 
 ## 追踪调用链
 
 ```text
-在当前 exact revision 中追踪 `<API/OP>` 的 vertical call chain。先让我预测每一层，再用当前源码和一个最小 runtime experiment 验证；用 CALL_CHAIN 模板记录，不得凭记忆填路径。
+先确认我已通过这条 trace 所需的 foundation prerequisites；否则先补前置。然后在当前 exact revision 中追踪 `<API/OP>` 的 vertical call chain，让我用已学架构模型预测每一层，再用当前源码和最小 runtime experiment 验证；用 CALL_CHAIN 模板记录，不得凭记忆填路径。
 ```
 
 ## Python/C++ 语法门诊

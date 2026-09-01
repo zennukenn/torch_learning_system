@@ -1,1 +1,5 @@
 question_id,date,concept_id,question,conditions,learner_answer,hint_level,verdict,evidence_id,next_due
+Q-20260902-01,2026-09-02,BIND-CODEGEN,Read the add.Tensor schema parameters keyword-only marker variants and structured delegate,First exposure without notes,"Operands and return correct; alpha called a dimension; star said to receive multiple arguments; variants and delegate unknown",H2,partial,E-20260902-01,2026-09-03
+Q-20260902-02,2026-09-02,ATEN-KERNEL,Distinguish meta function responsibility from generated CPU kernel responsibility,Immediate retrieval after guided source inspection,Meta records computation information and CPU kernel performs computation,H2,partial,E-20260902-02,2026-09-03
+Q-20260902-03,2026-09-02,DISPATCH,Reconstruct the torch.add CPU chain and name two inspected source anchors,No-notes session close,Unknown for chain and anchors,H2,fail,E-20260902-03,2026-09-03
+Q-20260902-04,2026-09-02,CPP-CORE,Explain compile versus link and why const Tensor reference is used,Initial diagnostic and no-notes close,"Compile/link unknown; const reference avoids repeated space allocation",H2,fail,E-20260902-04,2026-09-03

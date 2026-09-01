@@ -1,5 +1,29 @@
 # Knowledge graph and architecture map
 
+## 初学者全景图
+
+先掌握这张职责图，再阅读下面的源码依赖图：
+
+```text
+用户数据
+   ↓
+Python program / model.forward
+   ↓
+Tensor + operators ───────────────┐
+   ↓                              │
+eager execution                  optional graph/compiler path
+   ↓                              │
+runtime + CPU/GPU kernels ←───────┘
+   ↓
+输出
+
+training 时 Autograd 记录并计算梯度
+distributed 在多进程/多机器之间协调 tensor computation
+backend 把框架请求落实到具体硬件和软件栈
+```
+
+第一轮只要求知道每层“做什么”和相邻层如何连接。`schema`、`Dispatcher`、`TensorIterator`、generated binding、Autograd Engine、Dynamo/Inductor 等都属于后续放大后的内部机制，不应在第一次全景课同时展开。
+
 ## 主依赖
 
 ```text
@@ -16,7 +40,7 @@ allocator/streams/events/profiler/serialization ──────────�
 distributed/process group ────────────────────────────────┘
 ```
 
-学习任何后层概念失败时，先回到图中最早的薄弱前置，而不是继续堆术语。
+学习任何后层概念失败时，先回到图中最早的薄弱前置，而不是继续堆术语。只有通过 Foundation Gate，下面的依赖图才成为主要授课地图。
 
 ## 子系统问题表
 

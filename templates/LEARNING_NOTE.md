@@ -2,6 +2,7 @@
 
 - Status: `complete`
 - Phase/week:
+- Teaching mode: `foundation` / `source-trace`
 - PyTorch revision/tag:
 - Concepts:
 - Evidence IDs:
@@ -22,8 +23,8 @@
 | 检查项 | 判断（correct/missing/incorrect/uncertain） | 证据或缺口 |
 |---|---|---|
 | 目标与结论 | | |
-| 调用链或核心机制 | | |
-| 源码锚点 | | |
+| 概念图、调用链或核心机制 | | |
+| 源码观察/锚点（按本节目标） | | |
 | Python/C++ 语法 | | |
 | 实验结果与限制 | | |
 

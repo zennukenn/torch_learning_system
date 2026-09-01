@@ -1,24 +1,33 @@
 # Assessment blueprint
 
-## Baseline diagnostic (60–90 min)
+## Progressive baseline
 
-Do this before Week 1 teaching. It is evidence collection, not a pass/fail exam.
+Do not compress the entire baseline into a 60–90 minute source exam. Collect it at the layer where the learner has prerequisites; it is evidence collection, not a pass/fail event.
 
-1. Python reading: decorator/context manager, attribute lookup and a tiny tensor-wrapper example.
-2. C++ reading: references/pointers, RAII, smart pointer, template/macro, compile/link question.
-3. Tensor/deep-learning: shape/stride/view, dtype/device, computation graph and inference/training boundary.
-4. Systems/debug: process/thread, virtual memory, dynamic library, stack trace and hypothesis formation.
-5. Source navigation: with no supplied path, find a public API, relevant test, schema/registration and implementation candidate.
-6. Transfer: predict how a new device or compiler backend might intercept the same operation, clearly marking uncertainty.
+### Entry diagnostic (20–30 min)
 
-Use small runnable tasks when possible. Self-ratings initialize no mastery scores.
+1. Vocabulary: Tensor, operator, model/forward, device, training/inference.
+2. Python familiarity: import, function/method, class/object, argument/return.
+3. C++ familiarity: source/header, pointer/reference, compile/link.
+4. Systems familiarity: process, CPU/GPU, library, stack trace.
+5. Learning preference, session duration, work-driven schedule variability, and desired first-stage outcome.
+
+Self-ratings initialize no mastery scores. “听说过” means teach from first principles; it is not permission to test internals.
+
+### Foundation diagnostic
+
+After the relevant lessons, assess the learner's global architecture explanation, a concrete inference ordering task, repository-layer mapping, a small Python reading task, and a reduced C++ compile/link exercise.
+
+### Source-readiness diagnostic
+
+Only after the Foundation Gate, ask the learner to locate a public API, test, schema/registration, and implementation candidate or to predict how a device/compiler backend intercepts an operation. This determines readiness for vertical traces; it is not part of the entry diagnostic.
 
 ## Weekly retrieval
 
 - One concept from the previous week.
 - One concept at least 3 weeks old.
-- One syntax-reading item taken from the current source, not a generic quiz.
-- One source-location or call-order prediction.
+- One syntax-reading item from a reduced example or current source at the learner's active layer.
+- In foundation mode, one architecture ordering/ownership item; after the gate, one source-location or call-order prediction.
 - Record original answers and hints before feedback; avoid repeating exact questions from `QUESTION_HISTORY.csv`.
 
 ## Phase gate

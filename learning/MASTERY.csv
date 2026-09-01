@@ -1,12 +1,14 @@
 concept_id,concept,phase,explain,locate,trace,debug,modify,transfer,retain,last_evidence_id,status
+PYTORCH-BASICS,Tensor operator Module forward device training and inference vocabulary,0,0,0,0,0,0,0,0,,unassessed
+ARCH-MAP,PyTorch global architecture and inference flow across major subsystems,0,0,0,0,0,0,0,0,,unassessed
 ENV-BUILD,PyTorch source build and incremental workflow,0,0,0,0,0,0,0,0,,unassessed
 PY-DATAMODEL,Python data model decorators descriptors and context managers,0,0,0,0,0,0,0,0,,unassessed
-CPP-CORE,C++ ownership RAII templates macros and linking,0,0,0,0,0,0,0,0,,unassessed
+CPP-CORE,C++ ownership RAII templates macros and linking,0,0,0,0,0,0,0,0,E-20260902-04,learning
 TENSOR-MODEL,Tensor TensorImpl StorageImpl views dtype layout device,1,0,0,0,0,0,0,0,,unassessed
 PY-FRONTEND,Python frontend torch.nn modules and functional APIs,1,0,0,0,0,0,0,0,,unassessed
-BIND-CODEGEN,Python C++ binding schemas and code generation,2,0,0,0,0,0,0,0,,unassessed
-DISPATCH,Dispatcher keys registrations fallbacks and modes,2,0,0,0,0,0,0,0,,unassessed
-ATEN-KERNEL,ATen native functions TensorIterator and kernels,2,0,0,0,0,0,0,0,,unassessed
+BIND-CODEGEN,Python C++ binding schemas and code generation,2,1,0,0,0,0,0,0,E-20260902-01,learning
+DISPATCH,Dispatcher keys registrations fallbacks and modes,2,0,0,0,0,0,0,0,E-20260902-03,learning
+ATEN-KERNEL,ATen native functions TensorIterator and kernels,2,1,0,0,0,0,0,0,E-20260902-02,learning
 AUTOGRAD,Autograd engine generated wrappers saved tensors and inference boundaries,3,0,0,0,0,0,0,0,,unassessed
 RUNTIME,Allocator device guard streams events RNG profiler and serialization,3,0,0,0,0,0,0,0,,unassessed
 DISTRIBUTED,c10d ProcessGroup collectives and inference communication boundaries,3,0,0,0,0,0,0,0,,unassessed

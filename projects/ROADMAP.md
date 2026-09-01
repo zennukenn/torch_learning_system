@@ -2,12 +2,14 @@
 
 所有项目先由学习者提交 hypothesis、设计草图和 focused tests。Agent 可帮助缩小范围、搭脚手架、review 和 debug，但默认不代写决定性实现。
 
-## P0 — Build, locate, trace, patch
+## P0 — Architecture orientation and first source loop
 
-- 目标：建立源码开发闭环。
-- 工作：固定 revision；完成 CPU-first editable build 或在资源不足时完成 binary+source 对照；选择一个小行为，添加 focused test 和一个可逆的学习 patch/instrumentation。
-- 必须证明：Python 与 native source 搜索、构建/运行命令、失败诊断、diff、测试前后结果。
-- 禁止：只提交仓库目录截图或纯文字架构图。
+- 目标：先建立可解释的 PyTorch 全局架构，再形成第一条与当前语言基础匹配的源码阅读闭环。
+- Foundation artifact：学习者自己画出一次 inference 的层次图，把 `torch/`、`aten/`、`c10/`、`test/`、`tools/` 映射到职责区域，并解释 training/compiler/distributed 在全图中的位置。
+- 第一次源码工作：固定 revision；在 Python frontend 内完成一个小问题的 `候选目录 → rg → 文件 → 小验证`，不强制跨入 schema/dispatcher/kernel。
+- Gate 后扩展：环境允许时完成 CPU-first binary/source 对照或 editable build，再选择小行为添加 focused test 和可逆 learning patch/instrumentation。
+- 必须证明：架构图是学习者复述而非 AI 代写；能解释一个源码 anchor、一个 Python/C++ 基础构造和验证限制。
+- 禁止：把纯目录截图当架构掌握，或在基础 gate 前用 generated/native 深层路径代替概念理解。
 
 ## P1 — Tensor/view semantics laboratory
 

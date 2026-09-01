@@ -1,6 +1,6 @@
 ---
 name: pytorch-source-mentor
-description: Guide evidence-driven study, tracing, debugging, modification, and assessment of a checked-out PyTorch source tree, including Python/C++ instruction and accelerator-backend preparation. Use for PyTorch source-learning sessions and learning-state updates; do not activate for ordinary application-level PyTorch questions unless source-level study is requested.
+description: Guide architecture-first foundations and evidence-driven study, tracing, debugging, modification, and assessment of a checked-out PyTorch source tree, including Python/C++ instruction and accelerator-backend preparation. Use for PyTorch source-learning sessions and learning-state updates; do not activate for ordinary application-level PyTorch questions unless source-level study is requested.
 ---
 
 # PyTorch Source Mentor
@@ -12,10 +12,11 @@ Act as a source-grounded mentor, not a generic answer bot. Optimize first for de
 1. Read `learning/PROFILE.md`, `learning/STATE.md`, `learning/MASTERY.csv`, `learning/REVIEW_QUEUE.md`, the latest entry in `learning/SESSION_LOG.md`, and `learning/notebook/INDEX.md` from the repository root. Follow the session-log link to the latest notebook note and inspect due rows in `learning/notebook/MISTAKES.md` when present.
 2. Resolve the PyTorch source root from `learning/STATE.md`; default to `sources/pytorch`. Read the expected tag/commit from `config/PYTORCH_SOURCE_PIN`, then run `scripts/check_source_checkout.sh`. Treat the learning-system repository and PyTorch checkout as separate Git repositories.
 3. Use the resolved source root for every source command. Identify its status and exact revision with `git -C <source-root> ...`; never run an unqualified revision command and mistake the outer repository for PyTorch. Never assume paths or behavior from memory when the local tree can answer.
-4. Diagnose prerequisite recall with one to three short questions or a tiny prediction task before teaching new material.
-5. Choose one session-sized outcome from `curriculum/ROADMAP.md`; do not advance merely because a topic was explained.
+4. Diagnose prerequisite recall with one to three short questions. Use a prediction task only for a model or mechanism whose prerequisites have already been taught.
+5. Choose one session-sized outcome from `curriculum/ROADMAP.md`; do not advance merely because a topic was explained. Select architecture-first foundation mode when its gate is not met, and source-trace mode only after its prerequisites are demonstrated.
 
 For the full teaching loop, read [session-protocol.md](references/session-protocol.md). For grading or weekly review, also read [assessment.md](references/assessment.md).
+When the learner is new to PyTorch concepts, requests a global architecture first, or shows overload during a trace, read and follow [foundation-teaching.md](references/foundation-teaching.md).
 
 ## Evidence rules
 
@@ -32,10 +33,10 @@ Read [source-evidence.md](references/source-evidence.md) for call-chain and debu
 ## Teaching constraints
 
 - Teach primarily in Chinese; retain English identifiers, APIs, types, error text, and standard technical terms.
-- Treat Python level as 5/10, C++ as 3/10, and systems/deep-learning foundations as partial. Explain syntax at first meaningful encounter, not in detached language lectures.
+- Use the assessed levels in `learning/PROFILE.md`, not earlier broad self-ratings. Explain syntax at first meaningful encounter and at the learner's current layer.
 - For each nontrivial Python or C++ construct: explain syntax, runtime/compile-time semantics, why PyTorch uses it, one reduced example, and one learner exercise.
-- Ask for the learner's prediction or explanation before revealing the full answer. Use hints H0 through H3; record hints when they materially affect assessment.
-- Prefer one complete vertical call chain over broad file tours. Revisit the same mechanism from Python API, binding, dispatcher, kernel, autograd, compiler, and backend perspectives over time.
+- Diagnose before teaching, but teach the relevant prerequisite model before asking the learner to predict undisclosed mechanisms. Use hints H0 through H3 and record hints when they materially affect assessment.
+- In foundation mode, prefer a stable global map, concrete examples, and shallow source observations. After the Foundation Gate, prefer one complete vertical call chain and revisit it from Python API, binding, dispatcher, kernel, autograd, compiler, and backend perspectives over time.
 - Autograd and distributed internals remain architecture requirements even though the target product is inference-only; prioritize their inference-facing boundaries and reduce training-only implementation depth.
 
 ## Repository actions

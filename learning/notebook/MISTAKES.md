@@ -4,3 +4,7 @@
 
 | Question ID | Date | Concept | Question | Original answer/error | Correction evidence | Evidence | Next review | Status | Session note |
 |---|---|---|---|---|---|---|---|---|---|
+| Q-20260902-01 | 2026-09-02 | BIND-CODEGEN | Read `add.Tensor` schema | Misread `alpha` and `*`; variants/delegate unknown | `native_functions.yaml:536` and mentor supplement | E-20260902-01 | 2026-09-03 | open | [note](sessions/2026-09-02-first-add-source-trace.md) |
+| Q-20260902-02 | 2026-09-02 | ATEN-KERNEL | Distinguish meta and kernel | Only vague information/execution distinction | `BinaryOps.cpp:151` and focused generated CPU sources | E-20260902-02 | 2026-09-03 | open | [note](sessions/2026-09-02-first-add-source-trace.md) |
+| Q-20260902-03 | 2026-09-02 | DISPATCH | Reconstruct CPU chain and anchors | Unknown | call-chain artifact | E-20260902-03 | 2026-09-03 | open | [note](sessions/2026-09-02-first-add-source-trace.md) |
+| Q-20260902-04 | 2026-09-02 | CPP-CORE | Compile/link and `const Tensor&` | Unknown; confused wrapper copy with storage allocation | `BinaryOps.cpp:151` and mentor supplement | E-20260902-04 | 2026-09-03 | open | [note](sessions/2026-09-02-first-add-source-trace.md) |

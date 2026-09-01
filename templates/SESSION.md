@@ -3,6 +3,8 @@
 - Revision/tag:
 - Phase/week:
 - Planned duration:
+- Teaching mode: `foundation` / `source-trace`
+- Planned balance: explanation / practice / source observation
 - Target concept/dimension:
 - Observable outcome:
 - Due review items:
@@ -12,13 +14,24 @@
 
 Record the learner's original answers before feedback.
 
-## Hypothesis and prediction
+## Concept map and vocabulary (foundation)
+
+- Current zoom level:
+- Known prerequisites:
+- New terms (roughly 5–7):
+- Concrete example/analogy:
+- Explicitly postponed details:
+
+## Hypothesis and prediction (source-trace)
 
 - Claim:
 - Evidence that would support it:
 - Evidence that would refute it:
 
-## Source trace and experiment
+## Practice and focused verification
+
+- Learner exercise:
+- Source observation or trace:
 
 - Source anchors:
 - Command/test:
@@ -36,6 +49,7 @@ Record the learner's original answers before feedback.
 ## Retrieval close
 
 - Learner teach-back without notes (preserve before feedback):
+- Concept map or call chain, according to mode:
 - Gap audit (`correct/missing/incorrect/uncertain`):
 - Follow-up questions and corrected learner answers:
 - Mentor supplement (not mastery evidence):

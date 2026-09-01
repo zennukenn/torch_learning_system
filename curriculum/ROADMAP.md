@@ -1,36 +1,80 @@
 # 20-week PyTorch source roadmap
 
-计划总量约 400 小时。20 周是节奏基线，不是强制日历；阶段是否通过只看证据和项目关卡。
+计划总量约 400 小时。20 周是节奏基线，不是强制日历；阶段是否通过只看证据和项目关卡。基础阶段可以重复或延长，未通过 gate 时不得用日历进度强行进入深层源码。
 
 ## 每周节奏
 
-- 5 × 90–120 分钟：概念诊断、vertical source trace、Python/C++ syntax clinic。
-- 2 × 2–3 小时：调试、实验或局部实现。
+- 5 × 90–120 分钟：按当前 gate 选择 architecture-first foundation session 或 vertical source session。
+- 2 × 2–3 小时：Foundation Gate 前做 guided practice、环境/小程序实验；Gate 后做调试、实验或局部实现。
 - 1 × 2 小时：闭卷检索、错题复盘、知识图更新。
 - 1 × 2–4 小时：阶段项目。若构建耗时很长，等待时间不计入有效学习时数。
 
-每周至少留下：一份调用链、一份实验记录、一张语法卡、一次延迟检索证据和一次项目提交或可审阅 diff。
+Foundation Gate 之前每周至少留下：一份学习者重画的架构/概念图、一份小练习、一处浅层源码观察和一次延迟检索。Gate 之后再要求调用链、实验、语法卡和项目 diff。
 
 源码锚点均为“候选入口”，Agent 必须在当前 checkout 中确认实际路径和 symbol，不能照表臆测。
 
-## Phase 0 — 工具、语言与源码阅读闭环（Week 1–2）
+## Phase 0 — 架构、词汇、语言与源码阅读基础（Week 1–2，可按 gate 延长）
 
-### Week 1：环境、仓库与基线诊断
+本阶段默认使用 architecture-first foundation mode：约 `60%` 详细讲解、`25%` 练习、`15%` 浅层源码观察。每节课从同一张全局图开始，只放大一个区域。下面是顺序而不是必须一天一节的日历。
 
-- 目标：固定 stable tag/commit，理解仓库顶层、submodule、build/test/codegen 基本流程。
-- 补课：Python import/package；C++ translation unit、header、编译、链接、动态库；CMake/Ninja/GDB 基础。
-- 实验：二进制安装版先跑最小 tensor；源码 checkout 后用 `rg` 找一个 public API、test 和实现候选。
-- 候选锚点：`README.md`、`CONTRIBUTING.md`、`setup.py`、`CMakeLists.txt`、`torch/`、`aten/`、`c10/`、`test/`、`tools/`。
-- 产物：环境审计、revision 记录、仓库地图、首次 baseline assessment。
+### Foundation 0.1：PyTorch 是什么
 
-### Week 2：Python/C++ 边界和调试方法
+- 目标：用日常语言区分 library、Tensor、operator、model/`Module`、`forward`、device、training 和 inference。
+- 例子：一个输入经过简单模型得到输出；先讲数据和职责，不讲 dispatcher、codegen 或 kernel specialization。
+- 练习：给概念配角色、按一次 inference 的先后排序、用自己的例子复述。
+- 源码观察：只看 `torch/` 顶层和一个可读的 Python API 所在文件，建立“概念有真实位置”的感觉。
 
-- 目标：能解释 Python 调用如何可能进入 extension module，并能读懂 native stack 的基本结构。
-- 补课：decorator/context manager/descriptor；pointer/reference、RAII、smart pointer、template、macro、symbol visibility。
-- 实验：Python stack、native stack、断点或可替代 instrumentation；区分 generated source 与 generator。
-- 产物：一个最小 API 的初版 vertical trace 和 Phase 0 项目。
+### Foundation 0.2：Tensor 与数据的最小模型
 
-Gate 0：`ENV-BUILD`、`PY-DATAMODEL`、`CPP-CORE` 的 `explain/locate` 至少 2；能独立复现一个查找—假设—验证循环。
+- 目标：理解 Tensor 是带有 shape、dtype、device 的多维数据容器，能区别 scalar/vector/matrix/tensor。
+- 例子：图片 batch 或两行三列数字；解释 shape 改变了什么、dtype/device 描述什么。
+- 暂不进入：`TensorImpl`、`StorageImpl`、stride/view ownership、allocator。
+
+### Foundation 0.3：一次 inference 的全景
+
+- 目标：解释 `input → model.forward → operators → CPU/GPU execution → output`。
+- 只在地图上标出 Autograd、compiler 和 distributed 的位置与“为什么存在”，不讲内部数据结构。
+- 练习：区分 user code、framework work 和 hardware work；比较 training 与 inference 的高层差异。
+
+### Foundation 0.4：PyTorch 全局分层架构
+
+- 目标：能在一张图上放置 Python frontend、Tensor/operator core、eager execution、Autograd、runtime、compiler、distributed 和 hardware/backend。
+- 方法：先按职责分层，再把一个 inference 例子放回图中；每层只保留一个核心问题。
+- 产物：学习者自己画或补全的第一版架构图。
+
+### Foundation 0.5：源码仓库地图
+
+- 目标：把已经理解的架构层映射到 `torch/`、`aten/`、`c10/`、`test/`、`tools/`，能说明它们不是一一对应的封闭模块。
+- 候选锚点：`README.md`、顶层目录、一个 Python frontend 文件和一个测试文件。
+- 暂不要求：从 Python API 追到 schema、dispatcher 或 concrete kernel。
+
+### Foundation 0.6：Python 最小执行模型
+
+- 目标：理解 module/import、class/object、method/function、argument/return 和 call stack 的基础意义。
+- 方法：先用十几行普通 Python reduced example，再观察 PyTorch Python source 中同一种构造。
+- 暂不进入：descriptor、metaclass、`__torch_function__` 或复杂 decorator。
+
+### Foundation 0.7：C++ 与构建的最小模型
+
+- 目标：解释 source/header、declaration/definition、compile、object file、link、library，以及 pointer/reference 的第一层含义。
+- 方法：先画出一个两文件小程序如何变为 executable/library，再看 PyTorch 为什么需要 Python/C++ 边界。
+- 暂不进入：template metaprogramming、宏生成、RAII/intrusive pointer 细节和 native stack 调试。
+
+### Foundation 0.8：第一次浅层源码定位闭环
+
+- 目标：在已理解的层内完成 `问题 → 候选目录 → rg → 打开文件 → 用小证据核对`。
+- 推荐路径：可读的 Python frontend 调用，例如 `nn.Linear.forward` 到其直接 Python-level callee；不继续钻入 dispatcher/codegen。
+- 环境并行项：固定 revision，审计 Python/torch/CMake/Ninja/GDB；安装或构建仍需单独确认成本和授权。
+- 产物：基础架构图、词汇表、仓库地图、最小 Python/C++ 程序图和一次浅层定位记录。
+
+Foundation Gate：
+
+- `PYTORCH-BASICS.explain >= 2`，能用自己的例子解释 Tensor、operator、Module/forward、device、training/inference；
+- `ARCH-MAP.explain >= 2` 且 `ARCH-MAP.locate >= 1`，能重画全局层次并把主要顶层目录放到合理区域；
+- `PY-DATAMODEL.explain >= 1`、`CPP-CORE.explain >= 1`、`ENV-BUILD.explain >= 1`；
+- 能完成一次仅跨已学层次的查找—解释—小验证循环。
+
+未通过此 gate 时，advanced source trace 只能作为 preview，不安排 schema/codegen/dispatcher 的闭卷复习。通过后才进入以 vertical call chain 为主的教学模式。
 
 ## Phase 1 — Tensor 与 Python frontend（Week 3–5）
 

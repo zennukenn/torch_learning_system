@@ -10,7 +10,7 @@
 - `.agents/skills/pytorch-source-mentor/`：Codex 的教学、源码取证、评估与 backend 实验工作流。
 - `prompts/CHATGPT_SYSTEM_PROMPT.md`：ChatGPT Project 或新对话的总提示词。
 - `prompts/QUICK_PROMPTS.md`：日常会话入口，不重复总提示词。
-- `curriculum/ROADMAP.md`：20 周课程和阶段验收。
+- `curriculum/ROADMAP.md`：20 周课程、architecture-first foundation sequence 和阶段验收。
 - `curriculum/KNOWLEDGE_GRAPH.md`：知识依赖与源码锚点。
 - `projects/ROADMAP.md`：每个大阶段的源码修改项目。
 - `learning/`：学习者档案、证据、掌握度、复习队列与会话记录。
@@ -19,7 +19,7 @@
 - `config/PYTORCH_SOURCE_PIN`：唯一的 PyTorch baseline tag/commit 固定点；学习分支可在它之上产生新 commit。
 - `scripts/validate_learning_state.py`：检查 CSV schema、跨表引用、枚举、日期、revision 和分数。
 - `scripts/system_health_check.py`：在临时目录模拟完整状态写入、错误拒绝与清理，不污染真实学习记录。
-- `templates/`：调用链、语法卡、单次学习和周复盘模板。
+- `templates/`：基础架构图、调用链、语法卡、单次学习和周复盘模板。
 - `environment/REPORT.md`：2026-09-01 的本机体检和环境关卡。
 - `sources/pytorch/`：被外层 `.gitignore` 忽略的 PyTorch 官方源码；它始终是独立 Git 仓库。
 
@@ -37,7 +37,7 @@ code .
 开始会话时可以说：
 
 ```text
-使用 $pytorch-source-mentor，读取环境报告和学习状态。先执行 Phase 0 环境诊断，不安装或修改系统软件，给我第一个 90–120 分钟学习会话。
+使用 $pytorch-source-mentor，读取环境报告和学习状态。按 Foundation 0.1 从 PyTorch 全局架构和 inference 全景开始，使用 60% 详细讲解、25% 练习、15% 浅层源码观察；不要在 foundation gate 前进入 dispatcher/codegen。
 ```
 
 每次课结束时，Agent 会先要求你合上笔记复述今日内容，再追问缺口。只有你完成复述和必要修正后，才会生成 `learning/notebook/sessions/` 笔记、记录错题并更新 mastery；AI 自动补充的文字不会被当成你的掌握证据。
@@ -72,8 +72,8 @@ bash scripts/checkout_pytorch_source.sh
 
 1. `config/PYTORCH_SOURCE_PIN` 与本地 checkout 基线完全匹配。当前基线是 `v2.13.0`；学习 patch 必须位于它的 descendant branch，并把实际 HEAD 写入证据。是否出现新 stable 只需在阶段边界定期检查，不在学习会话中自动切换。迁移版本必须单独评估并得到你的明确同意。
 2. 完成环境关卡，尤其是 WSL 内存、GPU 可访问性、构建工具和隔离 Python 环境。
-3. 完成 60–90 分钟基线诊断，更新 `learning/MASTERY.csv`。
-4. 完成第一条 source-level vertical slice；若 runtime gate 已就绪，再补齐一个 Python tensor 操作从 API 到 CPU kernel 的执行证据。没有 runtime 时必须标记 unverified，不能把静态定位计作完整 trace。
+3. 分阶段完成 entry baseline 和 Foundation Gate：先证明基本 PyTorch 词汇、全局 inference/architecture map、仓库职责与 Python/C++ 最小执行模型。
+4. 在已理解的 Python frontend 层完成一次浅层源码定位闭环。Foundation Gate 通过后再完成第一条 source-level vertical slice；若 runtime gate 已就绪，再补齐从 Python tensor 操作到 CPU kernel 的执行证据。没有 runtime 时必须标记 unverified。
 
 源码存在不代表构建环境已经就绪。构建、安装依赖或修改 WSL/Windows 设置必须经过单独的环境关卡。
 
