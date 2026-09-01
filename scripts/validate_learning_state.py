@@ -29,8 +29,8 @@ SPECS = {
     ],
     "EVIDENCE_LOG.csv": [
         "evidence_id", "date", "session", "revision", "concept_id", "dimension",
-        "task", "learner_result", "hint_level", "source_or_command", "verdict",
-        "next_review",
+        "task", "learner_result", "hint_level", "source_or_command", "notebook_path",
+        "verdict", "next_review",
     ],
     "QUESTION_HISTORY.csv": [
         "question_id", "date", "concept_id", "question", "conditions",
@@ -41,6 +41,7 @@ SPECS = {
 REQUIRED = [
     "PROFILE.md", "STATE.md", "MASTERY.csv", "EVIDENCE_LOG.csv",
     "QUESTION_HISTORY.csv", "REVIEW_QUEUE.md", "SESSION_LOG.md", "ERROR_LOG.md",
+    "notebook/INDEX.md", "notebook/MISTAKES.md",
 ]
 
 
@@ -114,6 +115,9 @@ def validate(learning: Path) -> list[str]:
     for name in REQUIRED:
         if not (learning / name).is_file():
             errors.append(f"missing required file: {learning / name}")
+    notebook_sessions = learning / "notebook" / "sessions"
+    if not notebook_sessions.is_dir():
+        errors.append(f"missing required directory: {notebook_sessions}")
 
     tables: dict[str, list[dict[str, str]]] = {}
     for name, header in SPECS.items():
@@ -161,7 +165,8 @@ def validate(learning: Path) -> list[str]:
         evidence,
         [
             "date", "session", "revision", "concept_id", "dimension", "task",
-            "learner_result", "hint_level", "source_or_command", "verdict",
+            "learner_result", "hint_level", "source_or_command", "notebook_path",
+            "verdict",
         ],
         "EVIDENCE_LOG.csv",
         errors,
@@ -177,6 +182,15 @@ def validate(learning: Path) -> list[str]:
     )
 
     evidence_rows: dict[str, dict[str, str]] = {}
+    session_notes: dict[str, Path] = {}
+    note_sessions: dict[Path, str] = {}
+    notebook_root = (learning / "notebook" / "sessions").resolve()
+    notebook_index_path = learning / "notebook" / "INDEX.md"
+    session_log_path = learning / "SESSION_LOG.md"
+    notebook_index = (
+        notebook_index_path.read_text(encoding="utf-8") if notebook_index_path.is_file() else ""
+    )
+    session_log = session_log_path.read_text(encoding="utf-8") if session_log_path.is_file() else ""
     for number, row in enumerate(evidence, start=2):
         evidence_id = row.get("evidence_id", "").strip()
         evidence_rows[evidence_id] = row
@@ -207,6 +221,64 @@ def validate(learning: Path) -> list[str]:
             errors.append(
                 f"EVIDENCE_LOG.csv:{number}: revision must be a 40-character commit or binary:<version>"
             )
+        notebook_value = row.get("notebook_path", "").strip()
+        notebook_relative = Path(notebook_value)
+        has_expected_prefix = notebook_relative.parts[:3] == (
+            "learning", "notebook", "sessions"
+        )
+        candidate = (
+            learning.joinpath(*notebook_relative.parts[1:]).resolve()
+            if has_expected_prefix
+            else learning.parent.joinpath(notebook_relative).resolve()
+        )
+        try:
+            candidate.relative_to(notebook_root)
+            inside_notebook = True
+        except ValueError:
+            inside_notebook = False
+        if (
+            notebook_relative.is_absolute()
+            or ".." in notebook_relative.parts
+            or not has_expected_prefix
+            or not inside_notebook
+            or candidate.suffix != ".md"
+        ):
+            errors.append(
+                f"EVIDENCE_LOG.csv:{number}: notebook_path must be under "
+                f"learning/notebook/sessions/: {notebook_value!r}"
+            )
+        elif not candidate.is_file():
+            errors.append(f"EVIDENCE_LOG.csv:{number}: notebook note does not exist: {notebook_value}")
+        else:
+            session = row.get("session", "").strip()
+            previous_note = session_notes.setdefault(session, candidate)
+            if previous_note != candidate:
+                errors.append(
+                    f"EVIDENCE_LOG.csv:{number}: one session references multiple notebook notes"
+                )
+            previous_session = note_sessions.setdefault(candidate, session)
+            if previous_session != session:
+                errors.append(
+                    f"EVIDENCE_LOG.csv:{number}: one notebook note is shared by multiple sessions"
+                )
+            note_text = candidate.read_text(encoding="utf-8")
+            if "- Status: `complete`" not in note_text:
+                errors.append(
+                    f"EVIDENCE_LOG.csv:{number}: notebook note is not marked complete"
+                )
+            if evidence_id not in note_text:
+                errors.append(
+                    f"EVIDENCE_LOG.csv:{number}: notebook note does not contain {evidence_id}"
+                )
+            index_reference = candidate.relative_to(learning / "notebook").as_posix()
+            if index_reference not in notebook_index:
+                errors.append(
+                    f"EVIDENCE_LOG.csv:{number}: notebook index does not link {index_reference}"
+                )
+            if notebook_value not in session_log:
+                errors.append(
+                    f"EVIDENCE_LOG.csv:{number}: SESSION_LOG.md does not link {notebook_value}"
+                )
 
     for number, row in enumerate(questions, start=2):
         question_id = row.get("question_id", "").strip()
@@ -233,6 +305,17 @@ def validate(learning: Path) -> list[str]:
             errors.append(f"QUESTION_HISTORY.csv:{number}: unknown evidence_id {evidence_id!r}")
         elif evidence_rows[evidence_id].get("concept_id", "").strip() != concept_id:
             errors.append(f"QUESTION_HISTORY.csv:{number}: concept_id does not match {evidence_id}")
+
+    mistakes_path = learning / "notebook" / "MISTAKES.md"
+    mistakes = mistakes_path.read_text(encoding="utf-8") if mistakes_path.is_file() else ""
+    for number, row in enumerate(questions, start=2):
+        if row.get("verdict", "").strip() not in {"partial", "fail"}:
+            continue
+        question_id = row.get("question_id", "").strip()
+        if question_id and question_id not in mistakes:
+            errors.append(
+                f"QUESTION_HISTORY.csv:{number}: {question_id} is missing from notebook/MISTAKES.md"
+            )
 
     for number, row in enumerate(mastery, start=2):
         concept_id = row.get("concept_id", "").strip()

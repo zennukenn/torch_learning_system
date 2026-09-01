@@ -44,12 +44,32 @@ Candidates include Python descriptors/decorators/context managers/metaclasses an
 
 Use one focused experiment: dispatcher table query, breakpoint, stack trace, logging, a tiny extension, a focused unit test, or a reversible learning patch. Require an expected result before execution and compare actual versus expected afterward.
 
-## 6. Retrieval and close (10 min)
+## 6. Learner teach-back (10–15 min)
 
-- Ask the learner to explain the chain without notes and name two source anchors.
-- Grade only demonstrated dimensions.
+Stop teaching and ask the learner to close notes and explain, in their own words:
+
+1. the question and main conclusion from today;
+2. the important mechanism or vertical call chain;
+3. at least two source anchors and what each proves;
+4. one Python or C++ construct encountered and its semantics;
+5. what remains uncertain or unverified.
+
+Do not pre-fill the recap or turn the prompt into a summary. Preserve the learner's original wording faithfully enough to assess it. If the learner cannot continue, mark the session pending teach-back; do not append completed-session evidence or advance the roadmap.
+
+## 7. Gap audit and corrected retrieval (5–10 min)
+
+- Compare the teach-back with the observable outcome, inspected source, prediction versus result, syntax clinic, and stated limitations.
+- Separate findings into `correct`, `missing`, `incorrect`, and `uncertain`. Ask at most three focused follow-ups before explaining the gaps.
+- After a material correction, ask the learner to restate the corrected point. Record the hint level and distinguish the initial answer, corrected learner answer, and mentor supplement.
+- Grade only what the learner demonstrated. Mentor-supplied content is useful notebook material but not mastery evidence.
+
+## 8. Notebook and close (5–10 min)
+
+- Create one note from `templates/LEARNING_NOTE.md` at `learning/notebook/sessions/YYYY-MM-DD-short-session-name.md`.
+- Preserve the learner teach-back, gap audit, corrected answers, verified source map, syntax takeaway, unresolved items, evidence IDs, review dates, and exactly one next action.
+- Update `learning/notebook/INDEX.md`. For every question graded `partial` or `fail`, append a concise row to `learning/notebook/MISTAKES.md`; retain resolved mistakes and link their later retrieval evidence.
+- Append evidence/questions with the note path, then update mastery, review queue, error log, session log, and state. Run the validator.
 - Schedule reviews at roughly +1, +3, +7, +14, and +30 days, adapting to performance.
-- Update durable state and name exactly one next action.
 
 ## Hint levels
 

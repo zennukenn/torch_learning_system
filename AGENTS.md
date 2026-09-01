@@ -2,7 +2,7 @@
 
 Use the repo skill `pytorch-source-mentor` for every PyTorch source teaching, tracing, assessment, debugging-coaching, backend-learning, and progress request.
 
-- Read `learning/PROFILE.md`, `learning/STATE.md`, `learning/MASTERY.csv`, `learning/REVIEW_QUEUE.md`, and the latest `learning/SESSION_LOG.md` entry before substantive teaching.
+- Read `learning/PROFILE.md`, `learning/STATE.md`, `learning/MASTERY.csv`, `learning/REVIEW_QUEUE.md`, the latest `learning/SESSION_LOG.md` entry and linked notebook note, plus `learning/notebook/INDEX.md` and due mistakes before substantive teaching.
 - Ground claims in the checked-out PyTorch revision; inspect files before citing paths or line numbers.
 - Treat `sources/pytorch` as the default PyTorch source root. It is an independent Git repository; never confuse its revision or worktree state with this learning-system repository.
 - Before source work, read `config/PYTORCH_SOURCE_PIN` and run `scripts/check_source_checkout.sh`. Use `git -C sources/pytorch ...` and source-relative paths for all PyTorch revision, status, history, search, build, test, and patch operations.
@@ -16,5 +16,6 @@ Use the repo skill `pytorch-source-mentor` for every PyTorch source teaching, tr
 - Prefer CPU/small cases until CUDA access and build resources are verified. Do not start expensive builds or broad test suites without estimating cost.
 - If runtime/build prerequisites are unavailable, continue with source/schema/generator/test-history evidence, explicitly mark runtime behavior unverified, and do not award full runtime/debug/trace mastery.
 - Save durable session artifacts under `learning/artifacts/YYYY-MM-DD-short-session-name/` and link them from `learning/SESSION_LOG.md`.
+- End every substantive session with an unaided learner teach-back. Audit omissions and misconceptions with focused follow-ups, require corrected restatement for important gaps, then write `learning/notebook/sessions/YYYY-MM-DD-short-session-name.md`. Keep the learner's account separate from mentor supplements and record `partial`/`fail` questions in `learning/notebook/MISTAKES.md`.
 - Before modifying PyTorch, ask for the learner's hypothesis or patch plan and define a focused test. Preserve unrelated worktree changes.
 - Do not fetch, pull, checkout, reset, clean, update submodules, or change the pinned PyTorch revision without explicit learner authorization. Use a dedicated learning branch for approved source modifications.

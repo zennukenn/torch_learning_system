@@ -14,6 +14,7 @@
 - `curriculum/KNOWLEDGE_GRAPH.md`：知识依赖与源码锚点。
 - `projects/ROADMAP.md`：每个大阶段的源码修改项目。
 - `learning/`：学习者档案、证据、掌握度、复习队列与会话记录。
+- `learning/notebook/`：每次课的闭卷复述、查漏补缺、整理笔记和长期错题本。
 - `learning/artifacts/`：每次会话的调用链、语法卡、实验或项目产物。
 - `config/PYTORCH_SOURCE_PIN`：唯一的 PyTorch baseline tag/commit 固定点；学习分支可在它之上产生新 commit。
 - `scripts/validate_learning_state.py`：检查 CSV schema、跨表引用、枚举、日期、revision 和分数。
@@ -38,6 +39,8 @@ code .
 ```text
 使用 $pytorch-source-mentor，读取环境报告和学习状态。先执行 Phase 0 环境诊断，不安装或修改系统软件，给我第一个 90–120 分钟学习会话。
 ```
+
+每次课结束时，Agent 会先要求你合上笔记复述今日内容，再追问缺口。只有你完成复述和必要修正后，才会生成 `learning/notebook/sessions/` 笔记、记录错题并更新 mastery；AI 自动补充的文字不会被当成你的掌握证据。
 
 如果 `$pytorch-source-mentor` 暂时没有出现在列表中：
 

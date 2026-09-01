@@ -35,7 +35,11 @@ Record the learner's original answers before feedback.
 
 ## Retrieval close
 
-- Learner summary without notes:
+- Learner teach-back without notes (preserve before feedback):
+- Gap audit (`correct/missing/incorrect/uncertain`):
+- Follow-up questions and corrected learner answers:
+- Mentor supplement (not mastery evidence):
+- Notebook: `learning/notebook/sessions/YYYY-MM-DD-short-session-name.md`
 - Evidence IDs:
 - Mastery updates:
 - Misconceptions:

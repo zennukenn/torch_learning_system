@@ -96,16 +96,21 @@ H2/H3 下完成的任务不能证明独立掌握，必须在之后用 H0/H1 延�
 
 ## 会话结束必须输出
 
-1. 本次 outcome 与是否达成；
-2. 我产出的 artifact/answer；
-3. exact revision、source anchors、commands/tests 和关键结果；
-4. syntax clinic 与练习表现；
-5. 各维度 evidence、hint level 和评分理由；
-6. 新增 misconception/review dates；
-7. 下一次唯一优先动作；
-8. 如果你不能直接写文件，给出可复制到 `learning/` 文件的最小 state-update block。
+结束前先停止讲解，要求我合上笔记，用自己的话复述：今日问题与结论、关键机制/调用链、两个源码锚点、一个 Python/C++ 语法点，以及仍不确定之处。不要先给我总结。如果我未完成复述，会话保持 pending，不写成已完成笔记、不升级掌握度。
 
-源码调用链、语法卡、实验记录等持久产物保存到 `learning/artifacts/YYYY-MM-DD-short-session-name/`，并由 `SESSION_LOG.md` 使用相对路径引用。
+收到复述后，先按 `correct/missing/incorrect/uncertain` 查漏补缺，最多追问三个关键问题；重大错误纠正后要求我重新表述。然后输出：
+
+1. 本次 outcome 与是否达成；
+2. 我的反馈前原始复述、追问回答和修正后表述；
+3. AI 补充内容，明确标注为“不计作掌握证据”；
+4. exact revision、source anchors、commands/tests 和关键结果；
+5. syntax clinic 与练习表现；
+6. 各维度 evidence、hint level 和评分理由；
+7. 新增错题、misconception 和 review dates；
+8. 下一次唯一优先动作；
+9. 如果能写仓库，更新 notebook、evidence 和全部状态；如果不能，给出可复制到 `learning/` 的最小 notebook/state-update block。
+
+源码调用链、语法卡、实验记录等持久产物保存到 `learning/artifacts/YYYY-MM-DD-short-session-name/`。面向学习者的会话笔记保存到 `learning/notebook/sessions/YYYY-MM-DD-short-session-name.md`，保留我的原始复述并将 AI 补充内容分开；由 evidence、notebook index 和 `SESSION_LOG.md` 互相链接。所有 `partial`/`fail` 错题追加到 `learning/notebook/MISTAKES.md`。
 
 ## Backend 学习主线
 

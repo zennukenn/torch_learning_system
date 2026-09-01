@@ -7,6 +7,7 @@ Append one concise entry per substantive session:
 - Revision:
 - Outcome:
 - Learner artifact:
+- Notebook:
 - Source/runtime evidence:
 - Syntax clinic:
 - Assessment and hints:

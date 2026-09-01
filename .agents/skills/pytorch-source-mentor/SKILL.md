@@ -9,7 +9,7 @@ Act as a source-grounded mentor, not a generic answer bot. Optimize first for de
 
 ## Start every substantive session
 
-1. Read `learning/PROFILE.md`, `learning/STATE.md`, `learning/MASTERY.csv`, `learning/REVIEW_QUEUE.md`, and the latest entry in `learning/SESSION_LOG.md` from the repository root.
+1. Read `learning/PROFILE.md`, `learning/STATE.md`, `learning/MASTERY.csv`, `learning/REVIEW_QUEUE.md`, the latest entry in `learning/SESSION_LOG.md`, and `learning/notebook/INDEX.md` from the repository root. Follow the session-log link to the latest notebook note and inspect due rows in `learning/notebook/MISTAKES.md` when present.
 2. Resolve the PyTorch source root from `learning/STATE.md`; default to `sources/pytorch`. Read the expected tag/commit from `config/PYTORCH_SOURCE_PIN`, then run `scripts/check_source_checkout.sh`. Treat the learning-system repository and PyTorch checkout as separate Git repositories.
 3. Use the resolved source root for every source command. Identify its status and exact revision with `git -C <source-root> ...`; never run an unqualified revision command and mistake the outer repository for PyTorch. Never assume paths or behavior from memory when the local tree can answer.
 4. Diagnose prerequisite recall with one to three short questions or a tiny prediction task before teaching new material.
@@ -48,7 +48,9 @@ Read [source-evidence.md](references/source-evidence.md) for call-chain and debu
 - Store session artifacts under `learning/artifacts/YYYY-MM-DD-short-session-name/` using the templates. Use relative links from the session log; do not leave decisive work only in chat history.
 - Let the learner author the decisive project logic. Provide graduated hints, reviews, instrumentation, and minimal scaffolding. Give a complete implementation only when explicitly requested.
 - Start with CPU or the smallest runnable CUDA case. Do not launch long builds or large tests without estimating cost and confirming the relevant environment is ready.
-- After evidence is produced, update durable learning state in the same session. Do not raise mastery from self-reported confidence alone.
+- After the learner completes teach-back and gap correction, update durable evidence and learning state in the same session. Do not raise mastery from self-reported confidence alone.
+- Before closing, require an unaided learner teach-back of the session. Audit it against the outcome, source evidence, syntax, experiment, and limitations; ask focused follow-ups before supplying missing material. Preserve the learner's original account and label mentor-added material separately.
+- Write the completed teach-back and gap audit to `learning/notebook/sessions/YYYY-MM-DD-short-session-name.md`, update `learning/notebook/INDEX.md`, and add every `partial` or `fail` question to `learning/notebook/MISTAKES.md`. Do not create a completed note or append session evidence before the learner responds. If the learner stops early, leave the session pending and make teach-back the next action.
 - After changing CSV state, run `python3 scripts/validate_learning_state.py` and repair schema errors before closing. During setup/troubleshooting or a weekly audit, also run `python3 scripts/system_health_check.py`; its simulated learner records must remain isolated and be deleted automatically.
 
 For `PrivateUse1`, out-of-tree device extensions, operator registration, `torch.compile` backends, or compatibility planning, read [backend-lab.md](references/backend-lab.md).
@@ -58,7 +60,9 @@ For `PrivateUse1`, out-of-tree device extensions, operator registration, `torch.
 A session is complete only when it leaves:
 
 - a learner-produced artifact or answer;
+- an unaided learner teach-back followed by a gap audit and any critical corrected restatement;
 - at least one inspected source location and one verification result;
 - assessed evidence for the targeted mastery dimension;
 - the next review date or next prerequisite;
-- updated `learning/STATE.md`, relevant CSV logs, and `learning/SESSION_LOG.md`.
+- a completed session note linked from the evidence, notebook index, and session log;
+- updated `learning/STATE.md`, relevant CSV logs, `learning/notebook/MISTAKES.md` when needed, and `learning/SESSION_LOG.md`.

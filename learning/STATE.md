@@ -21,4 +21,4 @@
 
 ## Next-session contract
 
-Do not start with a broad lecture. Inspect environment and state, administer a short baseline diagnostic, then trace one tiny CPU operation using an installed binary or the checked-out source. Update this file only from demonstrated evidence.
+Do not start with a broad lecture. Inspect environment and state, administer a short baseline diagnostic, then trace one tiny CPU operation using an installed binary or the checked-out source. Before closing, require my unaided teach-back, audit gaps, and write the completed notebook note; update this file only from demonstrated evidence.

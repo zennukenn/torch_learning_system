@@ -38,8 +38,12 @@ REQUIRED_PATHS = [
     "templates/SYNTAX_NOTE.md",
     "templates/WEEKLY_REVIEW.md",
     "templates/BACKEND_COMPATIBILITY.md",
+    "templates/LEARNING_NOTE.md",
     "scripts/checkout_pytorch_source.sh",
     "learning/artifacts/.gitkeep",
+    "learning/notebook/INDEX.md",
+    "learning/notebook/MISTAKES.md",
+    "learning/notebook/sessions/.gitkeep",
 ]
 
 TRACE_ANCHORS = {
@@ -114,6 +118,7 @@ def simulate_new_user_session(temp_learning: Path, revision: str) -> None:
             "learner_result": "Synthetic learner needed H2 to replace a stale hand-written-kernel prediction",
             "hint_level": "H2",
             "source_or_command": "native_functions.yaml; torchgen/api/ufunc.py; rg ufunc_inner_loop",
+            "notebook_path": "learning/notebook/sessions/2099-01-01-synthetic-health-check.md",
             "verdict": "partial",
             "next_review": "2099-01-02",
         },
@@ -135,6 +140,32 @@ def simulate_new_user_session(temp_learning: Path, revision: str) -> None:
     )
     update_synthetic_mastery(temp_learning / "MASTERY.csv")
 
+    note_relative = "learning/notebook/sessions/2099-01-01-synthetic-health-check.md"
+    note = temp_learning / "notebook" / "sessions" / "2099-01-01-synthetic-health-check.md"
+    note.write_text(
+        "# Synthetic learning note\n\n"
+        "- Status: `complete`\n"
+        "- Evidence IDs: E-20990101-01\n\n"
+        "## Learner teach-back before feedback\n\n"
+        "The synthetic learner predicted a hand-written CPU kernel.\n\n"
+        "## Gap audit\n\n"
+        "The ufunc code-generation layer was missing and corrected after H2.\n\n"
+        "## Mentor supplement (not mastery evidence)\n\n"
+        "Runtime dispatch remains unverified.\n",
+        encoding="utf-8",
+    )
+    with (temp_learning / "notebook" / "INDEX.md").open("a", encoding="utf-8") as handle:
+        handle.write(
+            "\n| 2099-01-01 | complete | Phase 0 | synthetic add trace | BIND-CODEGEN | "
+            "E-20990101-01 | [note](sessions/2099-01-01-synthetic-health-check.md) |\n"
+        )
+    with (temp_learning / "notebook" / "MISTAKES.md").open("a", encoding="utf-8") as handle:
+        handle.write(
+            "| Q-20990101-01 | 2099-01-01 | BIND-CODEGEN | Where is add generated? | hand-written kernel | "
+            "ufunc schema/generator | E-20990101-01 | 2099-01-02 | open | "
+            "[note](sessions/2099-01-01-synthetic-health-check.md) |\n"
+        )
+
     artifacts = temp_learning / "artifacts" / "2099-01-01-synthetic-health-check"
     artifacts.mkdir(parents=True, exist_ok=True)
     (artifacts / "CALL_CHAIN.md").write_text(
@@ -146,6 +177,7 @@ def simulate_new_user_session(temp_learning: Path, revision: str) -> None:
             "\n## 2099-01-01 — synthetic health check\n\n"
             "- Revision: temporary simulation\n"
             "- Outcome: state write path exercised\n"
+            f"- Notebook: {note_relative}\n"
             "- Next action: temporary data must be deleted\n"
         )
     with (temp_learning / "REVIEW_QUEUE.md").open("a", encoding="utf-8") as handle:
@@ -248,16 +280,41 @@ def main() -> int:
                     "learner_result": "Synthetic invalid row",
                     "hint_level": "H0",
                     "source_or_command": "validator negative test",
+                    "notebook_path": "learning/notebook/sessions/2099-01-01-synthetic-health-check.md",
                     "verdict": "fail",
                     "next_review": "2099-01-02",
+                },
+            )
+            append_csv(
+                temp_learning / "QUESTION_HISTORY.csv",
+                {
+                    "question_id": "Q-20990101-02",
+                    "date": "2099-01-01",
+                    "concept_id": "NOT-A-CONCEPT",
+                    "question": "Ensure missing mistake-note coverage is rejected",
+                    "conditions": "Synthetic negative test",
+                    "learner_answer": "Synthetic invalid answer",
+                    "hint_level": "H0",
+                    "verdict": "fail",
+                    "evidence_id": "E-20990101-02",
+                    "next_due": "2099-01-02",
                 },
             )
             rejected = run(
                 [sys.executable, str(VALIDATOR), "--learning-dir", str(temp_learning)],
                 capture=True,
             )
-            if rejected.returncode == 0 or "unknown concept_id" not in rejected.stderr:
-                errors.append("validator did not reject a synthetic unknown concept reference")
+            expected_rejections = [
+                "unknown concept_id",
+                "notebook note does not contain E-20990101-02",
+                "Q-20990101-02 is missing from notebook/MISTAKES.md",
+            ]
+            if rejected.returncode == 0 or any(
+                marker not in rejected.stderr for marker in expected_rejections
+            ):
+                errors.append(
+                    "validator did not reject synthetic concept, note, and mistake-link errors"
+                )
 
         if temp_path is None or temp_path.exists():
             errors.append("temporary simulated learning records were not removed")
@@ -271,7 +328,10 @@ def main() -> int:
             print(f"- {error}", file=sys.stderr)
         return 1
 
-    print("PASS: structure, source pin, source trace, state lifecycle, rejection, and cleanup all passed.")
+    print(
+        "PASS: structure, source pin, source trace, teach-back note lifecycle, "
+        "mistake linkage, rejection, and cleanup all passed."
+    )
     return 0
 
 
