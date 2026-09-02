@@ -1,10 +1,10 @@
 concept_id,concept,phase,explain,locate,trace,debug,modify,transfer,retain,last_evidence_id,status
-PYTORCH-BASICS,Tensor operator Module forward device training and inference vocabulary,0,0,0,0,0,0,0,0,,unassessed
-ARCH-MAP,PyTorch global architecture and inference flow across major subsystems,0,0,0,0,0,0,0,0,,unassessed
+PYTORCH-BASICS,Tensor operator Module forward device training and inference vocabulary,0,3,0,0,0,0,0,0,E-20260902-05,learning
+ARCH-MAP,PyTorch global architecture and inference flow across major subsystems,0,2,1,0,0,0,0,0,E-20260902-07,learning
 ENV-BUILD,PyTorch source build and incremental workflow,0,0,0,0,0,0,0,0,,unassessed
-PY-DATAMODEL,Python data model decorators descriptors and context managers,0,0,0,0,0,0,0,0,,unassessed
+PY-DATAMODEL,Python data model decorators descriptors and context managers,0,1,0,0,0,0,0,0,E-20260902-12,learning
 CPP-CORE,C++ ownership RAII templates macros and linking,0,0,0,0,0,0,0,0,E-20260902-04,learning
-TENSOR-MODEL,Tensor TensorImpl StorageImpl views dtype layout device,1,0,0,0,0,0,0,0,,unassessed
+TENSOR-MODEL,Tensor TensorImpl StorageImpl views dtype layout device,1,2,1,0,0,0,0,0,E-20260902-11,learning
 PY-FRONTEND,Python frontend torch.nn modules and functional APIs,1,0,0,0,0,0,0,0,,unassessed
 BIND-CODEGEN,Python C++ binding schemas and code generation,2,1,0,0,0,0,0,0,E-20260902-01,learning
 DISPATCH,Dispatcher keys registrations fallbacks and modes,2,0,0,0,0,0,0,0,E-20260902-03,learning
