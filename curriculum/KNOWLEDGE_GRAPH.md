@@ -1,5 +1,24 @@
 # Knowledge graph and architecture map
 
+## MiniTorch project map
+
+The course revisits the same architecture through learner implementation:
+
+```text
+M0 build/package/binding
+  → M1 c10 foundations + Storage/Tensor
+    → M2 schema/codegen/Dispatcher/CPU kernels
+      → M3 CUDA memory/streams + kernels + precision
+      → M4 Python frontend + CNN/Transformer/KV cache + inference state
+        → M5 minimal Autograd/training boundary
+        → M6 runtime/profiler + inference DP/TP
+          → M7 graph IR/capture/compiler/dynamic shapes
+            → M8 simulated device/backend integration
+              → M9 wheel/CI/inference capstone
+```
+
+The major directory mapping is `PyTorch torch/ → MiniTorch minitorch/` and `torch/csrc/ → minitorch/csrc/`, with `aten/`, `c10/`, `torchgen/`, `tools/`, `test/`, `cmake/` and root build files retaining their architectural roles at reduced scale. The compiled binding is exposed as `minitorch._C`. Empty directory coverage has no learning value; each node becomes complete only through a runnable vertical slice, tests, debugging and learner defense.
+
 ## 初学者全景图
 
 先掌握这张职责图，再阅读下面的源码依赖图：
@@ -57,6 +76,16 @@ distributed/process group ──────────────────
 | Compiler | frame/graph/guards/decomposition/lowering/codegen 如何连接？ | graph/log/generated code/equivalence test |
 | Accelerator | eager device backend 与 graph compiler backend 各负责什么？ | ownership diagram、prototype、negative tests |
 | Compatibility | “模型可用”如何被正确性、动态 shape、fallback、内存、并发、性能、升级共同证明？ | versioned matrix、model tests、benchmark protocol |
+| Build/package | `pyproject.toml`、setuptools、CMake targets、compile/link、extension module 与 wheel 如何连接？ | clean configure/build、editable/wheel install、target graph |
+| pybind11 | Python object 如何跨到 C++ type，谁持有 lifetime，异常和 conversion 如何传播？ | native import path、lifetime/error tests、binding source |
+| Test engineering | unit/integration/parity/negative/performance/package test 各证明什么、不能证明什么？ | acceptance matrix、seeded failure、isolated install |
+| CUDA | host/device、kernel launch、allocation、stream/event 和 synchronization 如何影响正确性与测量？ | CUDA tests、dispatch trace、synchronized benchmark |
+| CUDA memory | allocated/reserved、cache reuse、fragmentation/OOM、pinned transfer 与跨 stream lifetime 如何连接？ | allocator counters/snapshot、OOM reproduction、`record_stream` failure/repair |
+| Inference modes | `eval`、`no_grad`、inference mode 和 autocast 分别改变什么状态与 dispatch？ | mode matrix、TLS/source trace、version/precision tests |
+| Transformer inference | attention mask、prefill/decode、KV cache shape/lifetime 和 dynamic sequence 怎样保持正确？ | decoder block parity、cache update/memory tests |
+| Inference DP | model replica、input partition、weight broadcast、output reconstruction 各由谁负责？ | two-rank shard/gather trace、throughput/correctness comparison |
+| Tensor parallel | DeviceMesh/placement 如何导出 row/column Linear 的 shard shape 与 collective？ | two-rank TP Linear/Transformer parity、collective trace |
+| Inference performance | latency、throughput、memory、transfer、communication、compile/startup cost 怎样分别测量？ | synchronized benchmark、profiler timeline、memory statistics |
 
 ## 跨层 vertical slices
 
@@ -67,6 +96,8 @@ distributed/process group ──────────────────
 3. view/in-place op：storage alias、version counter、functionalization、Autograd、backend view semantics。
 4. reduction：dtype policy、parallelism、shape/meta、dynamic shapes、lowering。
 5. 一个小 inference model：eager execution、export/compile、memory/profiler、distributed boundary、custom backend。
+6. 一个 decoder-style Transformer block：Embedding/Linear/LayerNorm/attention、KV cache、mixed precision、dynamic sequence、compile 与 TP。
+7. CUDA buffer lifetime：allocator cache、non-default stream、event/`record_stream`、OOM/fragmentation 与 CUDA Graph constraints。
 
 ## 掌握层次
 

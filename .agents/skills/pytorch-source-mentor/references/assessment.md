@@ -1,5 +1,7 @@
 # Assessment and spaced review
 
+Use `curriculum/ASSESSMENT_BLUEPRINT.md` as the authoritative assessment policy. From 2026-09-13, do not generate standalone knowledge quizzes. Ground assessment in the current MiniTorch milestone: learner-authored design/code, focused tests, debugging, pinned-PyTorch comparison, unassisted code defense and delayed extension/repair. Historical question rows remain valid records.
+
 ## Mastery dimensions
 
 Score concepts independently on a 0–4 scale:
@@ -34,7 +36,7 @@ Never average dimensions into a claim of overall mastery. A phase gate specifies
 
 Once per week:
 
-- sample at least one older concept without notes;
+- sample at least one older concept through a small MiniTorch explanation, extension or repair without replaying instructions;
 - inspect whether study time produced executable evidence rather than passive reading;
 - identify the earliest weak prerequisite;
 - compare planned and actual hours without punishing schedule variance;

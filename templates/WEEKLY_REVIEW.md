@@ -9,12 +9,14 @@
 - Call chains:
 - Tests/debug traces:
 - Source modifications:
+- MiniTorch commits/diffs and learner-authored decisive code:
+- Acceptance matrices passed:
 - Syntax cards:
 - Delayed retrieval:
 
-## Old-concept sample
+## Delayed project retrieval
 
-- Prompt and conditions:
+- MiniTorch extension/repair or code-explanation prompt and conditions:
 - Original answer:
 - Hint level/result:
 
@@ -31,3 +33,4 @@
 - Phase gate status and evidence:
 - Top three review items:
 - Exactly one project milestone:
+- Exactly one next MiniTorch increment:

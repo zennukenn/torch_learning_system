@@ -47,6 +47,14 @@ Keep the active list to roughly five to seven new terms.
 - Focused command/check:
 - Limitation:
 
+## MiniTorch M0 application
+
+- Current M0 increment:
+- Learner-authored directory/config/code artifact:
+- PyTorch → MiniTorch correspondence:
+- Focused build/test result:
+- Deliberately postponed implementation:
+
 ## Learner's no-notes map
 
 Preserve the learner's own wording or drawing before mentor correction.

@@ -7,6 +7,8 @@ __pycache__/
 
 # Independent upstream PyTorch checkout and local build/runtime artifacts.
 /sources/pytorch/
+# Learner-owned MiniTorch project. It is an independent Git repository.
+/mini-torch/
 /build/
 /build-*/
 /envs/

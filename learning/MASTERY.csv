@@ -2,6 +2,9 @@ concept_id,concept,phase,explain,locate,trace,debug,modify,transfer,retain,last_
 PYTORCH-BASICS,Tensor operator Module forward device training and inference vocabulary,0,3,0,0,0,0,0,0,E-20260902-05,learning
 ARCH-MAP,PyTorch global architecture and inference flow across major subsystems,0,2,1,0,0,0,0,0,E-20260902-07,learning
 ENV-BUILD,PyTorch source build and incremental workflow,0,0,0,0,0,0,0,0,,unassessed
+BUILD-PACKAGING,CMake targets pyproject build isolation editable install wheel and CI,0,0,0,0,0,0,0,0,,unassessed
+PYBIND,pybind11 module type lifetime conversion exception and ownership boundary,0,0,0,0,0,0,0,0,,unassessed
+TEST-ENGINEERING,Native Python integration parity negative performance and packaging tests,0,0,0,0,0,0,0,0,,unassessed
 PY-DATAMODEL,Python data model decorators descriptors and context managers,0,1,0,0,0,0,0,0,E-20260902-12,learning
 CPP-CORE,C++ ownership RAII templates macros and linking,0,0,0,0,0,0,0,0,E-20260902-04,learning
 TENSOR-MODEL,Tensor TensorImpl StorageImpl views dtype layout device,1,2,1,0,0,0,0,0,E-20260902-11,learning
@@ -9,9 +12,16 @@ PY-FRONTEND,Python frontend torch.nn modules and functional APIs,1,0,0,0,0,0,0,0
 BIND-CODEGEN,Python C++ binding schemas and code generation,2,1,0,0,0,0,0,0,E-20260902-01,learning
 DISPATCH,Dispatcher keys registrations fallbacks and modes,2,0,0,0,0,0,0,0,E-20260902-03,learning
 ATEN-KERNEL,ATen native functions TensorIterator and kernels,2,1,0,0,0,0,0,0,E-20260902-02,learning
+CUDA,CUDA host device kernels launch memory streams events synchronization and libraries,2,0,0,0,0,0,0,0,,unassessed
+CUDA-MEMORY,CUDA caching allocator reserved versus allocated fragmentation OOM pinned memory and stream lifetime,3,0,0,0,0,0,0,0,,unassessed
 AUTOGRAD,Autograd engine generated wrappers saved tensors and inference boundaries,3,0,0,0,0,0,0,0,,unassessed
+INFERENCE-MODES,Module eval no_grad inference mode thread local state and version behavior,3,0,0,0,0,0,0,0,,unassessed
+MIXED-PRECISION,Inference autocast FP32 FP16 BF16 policy accuracy and dispatch,3,0,0,0,0,0,0,0,,unassessed
+ATTENTION-KVCACHE,Transformer attention masking prefill decode KV cache shapes lifetime and memory,3,0,0,0,0,0,0,0,,unassessed
 RUNTIME,Allocator device guard streams events RNG profiler and serialization,3,0,0,0,0,0,0,0,,unassessed
 DISTRIBUTED,c10d ProcessGroup collectives and inference communication boundaries,3,0,0,0,0,0,0,0,,unassessed
+DISTRIBUTED-DP,Inference data parallel replicas input partition output reconstruction and minimal DDP contrast,3,0,0,0,0,0,0,0,,unassessed
+DISTRIBUTED-TP,DeviceMesh DTensor placements row column parallel Linear TP attention and collectives,3,0,0,0,0,0,0,0,,unassessed
 FX-EXPORT,FX fake tensor symbolic shapes export and graph semantics,4,0,0,0,0,0,0,0,,unassessed
 DYNAMO,TorchDynamo frame evaluation guards graph breaks and cache,4,0,0,0,0,0,0,0,,unassessed
 INDUCTOR,AOTAutograd functionalization decompositions Inductor and codegen,4,0,0,0,0,0,0,0,,unassessed
@@ -19,3 +29,4 @@ EXTENSION,C++ and CUDA operator extensions,5,0,0,0,0,0,0,0,,unassessed
 PRIVATEUSE1,PrivateUse1 eager device backend integration,5,0,0,0,0,0,0,0,,unassessed
 COMPILE-BACKEND,torch.compile custom backend lowering and fallback,5,0,0,0,0,0,0,0,,unassessed
 COMPAT,Model compatibility correctness performance and upgrade engineering,6,0,0,0,0,0,0,0,,unassessed
+INFERENCE-PERF,Inference latency throughput memory transfer communication compile cost profiling and benchmarking,6,0,0,0,0,0,0,0,,unassessed

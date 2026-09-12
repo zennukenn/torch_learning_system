@@ -1,6 +1,6 @@
 # PyTorch 学习笔记本
 
-这里保存面向学习者阅读的长期笔记。每次完整学习会话必须先由学习者闭卷复述，再由 Agent 查漏补缺并生成一篇 session note；AI 补充内容与学习者已证明掌握的内容必须分开。
+这里保存面向学习者阅读的长期笔记。历史 session 保留原来的闭卷复述。2026-09-13 MiniTorch assessment transition 后，每次完整项目会话必须先检查 learner-authored diff、tests/debug evidence，并由学习者无笔记解释自己的 contract、实现路径、PyTorch 对照和限制，再由 Agent 查漏补缺并生成 session note；AI 补充内容与学习者已证明掌握的内容必须分开。
 
 机器可校验的原始证据仍以 `EVIDENCE_LOG.csv`、`QUESTION_HISTORY.csv` 和 `MASTERY.csv` 为准。本笔记本负责把它们组织成可复习的知识记录。
 

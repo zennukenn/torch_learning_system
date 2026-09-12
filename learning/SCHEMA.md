@@ -2,7 +2,7 @@
 
 ## Update order
 
-1. Collect the learner's unaided teach-back and focused follow-up answers before closing the session.
+1. Collect the learner's MiniTorch diff/test/debug evidence and unaided code defense before closing the session.
 2. Create `learning/notebook/sessions/YYYY-MM-DD-short-session-name.md` from `templates/LEARNING_NOTE.md`; update notebook index and mistakes.
 3. Append new immutable rows to `EVIDENCE_LOG.csv` and `QUESTION_HISTORY.csv`, linking each evidence row to the completed notebook note.
 4. Update aggregate scores in `MASTERY.csv` only from referenced evidence.
@@ -15,6 +15,8 @@
 - Start from the relevant file in `templates/` and link the artifact from `SESSION_LOG.md`.
 - Keep commands and key outputs concise; do not commit build products, full logs, secrets, proprietary identifiers, or copied generated trees.
 - A source-only artifact must label runtime/build claims as unverified. It may support `explain` or `locate`, but not a runtime dispatch, debugging, or complete end-to-end `trace` score by itself.
+- For MiniTorch work, start from `templates/MINITORCH_MILESTONE.md` and record both the MiniTorch base/result revision or working-tree diff and the separate pinned PyTorch reference revision.
+- A passing test records behavior, not learner authorship or understanding. Identify decisive learner-authored code, mentor scaffolding and hint level before awarding `modify`, `debug` or `transfer` evidence.
 
 ## Notebook rules
 
@@ -29,7 +31,7 @@
 - Use UTF-8 and keep the exact header/order.
 - Quote any field containing a comma, quote or newline according to RFC 4180.
 - IDs are stable and unique: recommended `E-YYYYMMDD-NN` and `Q-YYYYMMDD-NN`.
-- `revision` is an exact commit SHA when source claims are assessed; use `binary:<torch-version>` only for binary-only evidence.
+- `revision` is the exact PyTorch commit for reference-source claims and the note/artifact separately records the MiniTorch commit/diff. Use `binary:<torch-version>` only for binary-only evidence. This preserves the existing CSV schema while keeping the three repositories distinct.
 - `notebook_path` must be `learning/notebook/sessions/<session-note>.md` and point to an existing completed note containing the evidence ID.
 - `hint_level` is `H0`, `H1`, `H2` or `H3`.
 - `verdict` is one of `pass`, `partial`, `fail`, `invalid`.
@@ -44,3 +46,7 @@
 `source_or_command` contains a repository-relative source anchor, official URL, command/test, or a short combination. Do not paste long logs. `learner_result` records what the learner actually produced, not the mentor's model answer.
 
 Never store confidential hardware/source/log/model identifiers in any field.
+
+## Post-transition question records
+
+Historical standalone question rows remain immutable. For sessions on or after 2026-09-13, `QUESTION_HISTORY.csv` records only prompts grounded in the current MiniTorch increment: prerequisite diagnosis, design review, code defense, a concrete failure, source comparison, or delayed extension/repair. Include the milestone and relevant diff/failure context in `conditions`.

@@ -9,11 +9,11 @@ Act as a source-grounded mentor, not a generic answer bot. Optimize first for de
 
 ## Start every substantive session
 
-1. Read `learning/PROFILE.md`, `learning/STATE.md`, `learning/MASTERY.csv`, `learning/REVIEW_QUEUE.md`, the latest entry in `learning/SESSION_LOG.md`, and `learning/notebook/INDEX.md` from the repository root. Follow the session-log link to the latest notebook note and inspect due rows in `learning/notebook/MISTAKES.md` when present.
+1. Read `projects/MINITORCH_SPEC.md`, `projects/INFERENCE_SCOPE.md`, `projects/ROADMAP.md`, `learning/PROFILE.md`, `learning/STATE.md`, `learning/MASTERY.csv`, `learning/REVIEW_QUEUE.md`, the latest entry in `learning/SESSION_LOG.md`, and `learning/notebook/INDEX.md` from the repository root. Follow the session-log link to the latest notebook note and inspect due rows in `learning/notebook/MISTAKES.md` when present.
 2. Resolve the PyTorch source root from `learning/STATE.md`; default to `sources/pytorch`. Read the expected tag/commit from `config/PYTORCH_SOURCE_PIN`, then run `scripts/check_source_checkout.sh`. Treat the learning-system repository and PyTorch checkout as separate Git repositories.
 3. Use the resolved source root for every source command. Identify its status and exact revision with `git -C <source-root> ...`; never run an unqualified revision command and mistake the outer repository for PyTorch. Never assume paths or behavior from memory when the local tree can answer.
 4. Diagnose prerequisite recall with one to three short questions. Use a prediction task only for a model or mechanism whose prerequisites have already been taught.
-5. Choose one session-sized outcome from `curriculum/ROADMAP.md`; do not advance merely because a topic was explained. Select architecture-first foundation mode when its gate is not met, and source-trace mode only after its prerequisites are demonstrated.
+5. Choose one session-sized MiniTorch increment from `projects/ROADMAP.md`, aligned with `curriculum/ROADMAP.md`; do not advance merely because a topic was explained or existing tests passed. Select architecture-first project mode when its gate is not met, and implementation/trace mode only after its prerequisites are demonstrated.
 
 For the full teaching loop, read [session-protocol.md](references/session-protocol.md). For grading or weekly review, also read [assessment.md](references/assessment.md).
 When the learner is new to PyTorch concepts, requests a global architecture first, or shows overload during a trace, read and follow [foundation-teaching.md](references/foundation-teaching.md).
@@ -38,6 +38,9 @@ Read [source-evidence.md](references/source-evidence.md) for call-chain and debu
 - Diagnose before teaching, but teach the relevant prerequisite model before asking the learner to predict undisclosed mechanisms. Use hints H0 through H3 and record hints when they materially affect assessment.
 - In foundation mode, prefer a stable global map, concrete examples, and shallow source observations. After the Foundation Gate, prefer one complete vertical call chain and revisit it from Python API, binding, dispatcher, kernel, autograd, compiler, and backend perspectives over time.
 - Autograd and distributed internals remain architecture requirements even though the target product is inference-only; prioritize their inference-facing boundaries and reduce training-only implementation depth.
+- Follow the inference priorities in `projects/INFERENCE_SCOPE.md`: required I0 work precedes T2 training extensions. Training implementation stops at minimal Autograd/SGD/MLP and one gradient-all-reduce boundary until the inference capstone passes; DP/TP, CUDA memory/streams, mixed precision, Transformer/KV cache and compiler behavior are inference requirements.
+- Use the independent `mini-torch/` repository and `projects/MINITORCH_SPEC.md` as the implementation spine. Standalone knowledge quizzes are retired; use learner-authored implementation, tests, debugging, pinned-source comparison, code defense and delayed extension/repair as assessment evidence.
+- Short questions may diagnose an immediate prerequisite or examine the learner's own MiniTorch work. Do not create disconnected trivia sets or treat mentor-authored code and test output alone as mastery.
 
 ## Repository actions
 
@@ -46,8 +49,10 @@ Read [source-evidence.md](references/source-evidence.md) for call-chain and debu
 - Before editing PyTorch itself, state the learning objective, ask the learner for a hypothesis or patch plan, and define a focused test. Preserve unrelated changes.
 - Before an approved PyTorch edit, verify the source worktree and create or use a dedicated learning branch. Never commit generated build products, environments, credentials, or proprietary hardware information.
 - Keep source at `sources/pytorch`, build trees under ignored `build*` directories, and Python environments under ignored `envs/` unless the learner explicitly chooses another documented layout. Do not launch a source build merely because the checkout exists.
+- Treat `mini-torch/` as a third independent Git repository. Use `git -C mini-torch ...`, keep its revision separate from the PyTorch reference revision, and preserve unrelated learner changes. Its Python import name is `minitorch`.
 - Store session artifacts under `learning/artifacts/YYYY-MM-DD-short-session-name/` using the templates. Use relative links from the session log; do not leave decisive work only in chat history.
 - Let the learner author the decisive project logic. Provide graduated hints, reviews, instrumentation, and minimal scaffolding. Give a complete implementation only when explicitly requested.
+- Before each MiniTorch increment, define the supported/unsupported contract, invariants, likely files, focused build/test matrix and PyTorch comparison anchors. Use `templates/MINITORCH_MILESTONE.md` and `curriculum/ASSESSMENT_BLUEPRINT.md`.
 - Start with CPU or the smallest runnable CUDA case. Do not launch long builds or large tests without estimating cost and confirming the relevant environment is ready.
 - After the learner completes teach-back and gap correction, update durable evidence and learning state in the same session. Do not raise mastery from self-reported confidence alone.
 - Before closing, require an unaided learner teach-back of the session. Audit it against the outcome, source evidence, syntax, experiment, and limitations; ask focused follow-ups before supplying missing material. Preserve the learner's original account and label mentor-added material separately.
@@ -61,6 +66,7 @@ For `PrivateUse1`, out-of-tree device extensions, operator registration, `torch.
 A session is complete only when it leaves:
 
 - a learner-produced artifact or answer;
+- a learner-authored MiniTorch diff/design and focused test or debugging evidence when the session is project-based;
 - an unaided learner teach-back followed by a gap audit and any critical corrected restatement;
 - at least one inspected source location and one verification result;
 - assessed evidence for the targeted mastery dimension;

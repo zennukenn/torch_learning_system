@@ -5,6 +5,8 @@ Append one concise entry per substantive session:
 ## YYYY-MM-DD — session title
 
 - Revision:
+- MiniTorch revision/diff:
+- Milestone/increment:
 - Outcome:
 - Learner artifact:
 - Notebook:
@@ -46,3 +48,16 @@ Append one concise entry per substantive session:
 - Assessment and hints: `TENSOR-MODEL.explain=2`, `locate=1`; `PY-DATAMODEL.explain` remains 1 with new evidence. Core Tensor reasoning passed H0; direct callee was corrected H1; evidence boundary was supplied H2 and requires delayed retrieval.
 - Review dates: 2026-09-03, 2026-09-05, 2026-09-09, 2026-09-16, 2026-10-02, adapted after each retrieval.
 - Next action: On 2026-09-03, complete due H0 reviews, then begin Foundation 0.3 on the inference panorama.
+
+## 2026-09-13 — MiniTorch assessment policy transition
+
+- Revision: PyTorch reference remains `cf30153c4c131c8164ee7798e5022d810682e2cb` (`v2.13.0`).
+- MiniTorch revision/diff: repository not initialized; learner will author the M0 architecture/build plan first.
+- Milestone/increment: M0.1 next — PyTorch→MiniTorch architecture and directory mapping.
+- Outcome: Learner accepted an independent C++/CUDA MiniTorch with `minitorch` Python package, PyTorch-like engineering structure, runnable minimal coverage across major subsystems, project-driven assessment, expanded inference scope, and reduced training priority. Inference requirements now explicitly include CNN/Transformer/KV cache, CUDA memory/streams, mixed precision, compiler, inference DP and row/column TP.
+- Learner artifact: accepted requirements recorded in `projects/MINITORCH_SPEC.md` and `projects/INFERENCE_SCOPE.md`; no mastery evidence awarded for requirements decisions.
+- Source/runtime evidence: source checkout pin revalidated; inference ownership anchors for CUDA allocator/stream/event/graphs, modes/autocast, ProcessGroup/DDP and DeviceMesh/DTensor/tensor parallel observed at the pinned checkout; no MiniTorch build/runtime work performed.
+- Syntax clinic: none.
+- Assessment and hints: standalone knowledge quizzes retired prospectively; existing evidence and mistakes preserved and mapped to future project increments.
+- Review dates: historical dates preserved; reviews activate inside their mapped milestones.
+- Next action: learner authors the M0.1 architecture/directory mapping before repository initialization.

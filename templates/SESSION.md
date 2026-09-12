@@ -3,12 +3,15 @@
 - Revision/tag:
 - Phase/week:
 - Planned duration:
-- Teaching mode: `foundation` / `source-trace`
+- Teaching mode: `foundation-project` / `implementation-trace`
 - Planned balance: explanation / practice / source observation
 - Target concept/dimension:
 - Observable outcome:
 - Due review items:
 - Artifact directory: `learning/artifacts/YYYY-MM-DD-short-session-name/`
+- MiniTorch milestone/increment:
+- MiniTorch base revision/diff:
+- PyTorch reference revision:
 
 ## Diagnostic answers
 
@@ -28,9 +31,17 @@ Record the learner's original answers before feedback.
 - Evidence that would support it:
 - Evidence that would refute it:
 
-## Practice and focused verification
+## Learner design and implementation
 
-- Learner exercise:
+- Contract and supported/unsupported subset:
+- Learner design/hypothesis before code:
+- Learner-authored decisive change:
+- Mentor scaffolding/hints:
+- MiniTorch files changed:
+- PyTorch comparison anchors:
+
+## Focused verification
+
 - Source observation or trace:
 
 - Source anchors:
@@ -39,6 +50,8 @@ Record the learner's original answers before feedback.
 - Actual:
 - Interpretation:
 - Limitations:
+- Boundary/error and oracle cases:
+- Debugging hypothesis/evidence/repair:
 
 ## Syntax clinic
 
@@ -48,7 +61,7 @@ Record the learner's original answers before feedback.
 
 ## Retrieval close
 
-- Learner teach-back without notes (preserve before feedback):
+- Learner code defense without notes (preserve before feedback):
 - Concept map or call chain, according to mode:
 - Gap audit (`correct/missing/incorrect/uncertain`):
 - Follow-up questions and corrected learner answers:
@@ -58,4 +71,5 @@ Record the learner's original answers before feedback.
 - Mastery updates:
 - Misconceptions:
 - Review dates:
+- Delayed extension or repair:
 - Exactly one next action:

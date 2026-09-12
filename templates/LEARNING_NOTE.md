@@ -2,19 +2,21 @@
 
 - Status: `complete`
 - Phase/week:
-- Teaching mode: `foundation` / `source-trace`
+- Teaching mode: `foundation-project` / `implementation-trace`
 - PyTorch revision/tag:
+- MiniTorch base/result revision or diff:
+- MiniTorch milestone/increment:
 - Concepts:
 - Evidence IDs:
 - Session artifact:
 
 ## 今日目标与结论
 
-- Observable question:
+- Implementation contract:
 - Outcome:
 - Runtime/build limitations:
 
-## 我的闭卷复述（反馈前）
+## 我的无笔记 code defense（反馈前）
 
 保留学习者自己的表述，不用导师答案改写。
 
@@ -25,6 +27,7 @@
 | 目标与结论 | | |
 | 概念图、调用链或核心机制 | | |
 | 源码观察/锚点（按本节目标） | | |
+| MiniTorch learner-authored diff/config | | |
 | Python/C++ 语法 | | |
 | 实验结果与限制 | | |
 
@@ -44,6 +47,19 @@
 | 层/主题 | Symbol/path/command | 它证明什么 | Observed/Documented/Inferred |
 |---|---|---|---|
 
+## MiniTorch acceptance matrix
+
+| Layer/case | Command | Expected | Actual | What it proves / does not prove |
+|---|---|---|---|---|
+
+## Debugging and authorship
+
+- Decisive code authored by learner:
+- Mentor scaffolding/hints:
+- Failure and initial hypothesis:
+- Evidence, root cause and repair:
+- PyTorch correspondence and MiniTorch simplification:
+
 ## Python/C++ 语法卡
 
 - Construct:
@@ -60,5 +76,5 @@
 ## 复习安排
 
 - Review dates:
-- Retrieval prompt:
+- Delayed extension/repair prompt:
 - Exactly one next action:
