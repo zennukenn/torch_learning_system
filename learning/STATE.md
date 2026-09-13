@@ -14,9 +14,11 @@
 - Last session: 2026-09-02 — Foundation 0.2; independently explained the Tensor minimal model and Flatten invariants, with H1/H2 correction for direct callee and evidence boundary
 - Assessment policy: preserve all earlier question/evidence history; from 2026-09-13, use MiniTorch implementation, tests, debugging, source comparison, code defense and delayed extension as the default evidence
 - Priority policy: inference I0 requirements lead the roadmap; training is limited to the T1 Autograd/MLP/minimal-DDP boundary until the inference capstone passes
-- Inference scope: CNN plus decoder-style Transformer/KV cache; CUDA caching memory/streams/events; mixed precision; compiler/dynamic shapes; two-process inference DP and row/column TP; see `projects/INFERENCE_SCOPE.md`
+- Inference scope: CNN plus decoder-style Transformer/KV cache and representative quantized Linear; CUDA kernels/libraries/caching memory/streams/events; mixed precision; compiler/dynamic shapes; two-process inference DP and row/column TP; see `projects/INFERENCE_SCOPE.md`
+- Coverage audit: 41 mastery concepts mapped through `curriculum/COVERAGE_MATRIX.csv`; CPU/numerics/debug/custom-op/quantization/AOT gaps and dual PrivateUse routes added on 2026-09-13
+- Hardware plan: Route A MiniTorch PrivateUse C-ABI plugin plus Route B native PyTorch PrivateUse1 OOT package; public CPU mock and private learner-supplied real adapter share a conformance suite
 - Next action: start MiniTorch M0 by having the learner author the architecture/directory mapping and build plan before initializing the independent repository
-- Active blockers: the official wheel is not built from local checkout changes; WSL RAM is 7.6 GiB and CMake/Ninja/GDB are missing, so no local source-build or native-debug claim is available
+- Active blockers: the official wheel is not built from local checkout changes; WSL RAM is 7.6 GiB; CMake/Ninja/GDB and Python `pybind11` package are unavailable; real third-party adapter/hardware tests must run privately, so no real-hardware claim exists yet
 - Confidentiality: only public PyTorch facts and abstract `VENDOR_DEVICE` requirements may be stored
 
 ## Earliest unverified prerequisites

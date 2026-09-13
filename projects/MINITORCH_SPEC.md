@@ -1,6 +1,6 @@
 # MiniTorch accepted project specification
 
-本文件记录 2026-09-13 与学习者确认的稳定边界。Inference 的详细必修范围、训练降级策略和 pinned-PyTorch 对照见 [INFERENCE_SCOPE.md](INFERENCE_SCOPE.md)。后续课程可按证据调整顺序和时间，但改变这些边界前必须再次与学习者确认。
+本文件记录 2026-09-13 与学习者确认的稳定边界。Inference 的详细必修范围、训练降级策略和 pinned-PyTorch 对照见 [INFERENCE_SCOPE.md](INFERENCE_SCOPE.md)；双 PrivateUse 路线和真实硬件验证边界见 [PRIVATEUSE_BACKEND_SPEC.md](PRIVATEUSE_BACKEND_SPEC.md)；全面知识审计见 `curriculum/COVERAGE_AUDIT.md`。后续课程可按证据调整顺序和时间，但改变这些边界前必须再次与学习者确认。
 
 ## Purpose
 
@@ -44,6 +44,8 @@ mini-torch/
 ├── tools/                   # build/package helpers
 ├── torchgen/                # reduced schema-driven code generation
 ├── benchmarks/
+├── backends/
+│   └── privateuse/           # public ABI loader and CPU mock plugin
 ├── CMakeLists.txt
 ├── pyproject.toml
 └── setup.py                 # retained when a PyTorch-like build bridge is taught
@@ -71,7 +73,8 @@ Do not imitate incidental file count or copy production machinery whose responsi
 - Implement Tensor, Storage, views, operators, dispatcher, Autograd and core runtime in C++.
 - Bind the native core into Python with pybind11 and expose a Pythonic `minitorch` frontend.
 - Implement foundational CPU kernels directly. Add small real CUDA kernels and minimal allocator/stream/event behavior after the CPU and dispatch contracts are stable.
-- Implement a separate simulated device backend for backend registration, unsupported behavior and fallback experiments.
+- Use the PrivateUse CPU mock for backend registration, unsupported behavior, fallback and fault-injection experiments before private hardware runs.
+- Implement two hardware-integration routes: a MiniTorch `PrivateUse` plugin using a versioned public C ABI and a separate native PyTorch `PrivateUse1` out-of-tree package modeled on the pinned `OpenReg` reference. The learner supplies any real vendor adapter privately.
 - Use CMake for native targets; use `pyproject.toml` plus setuptools for build isolation, editable installs and wheels. Study why `setup.py` remains as a bridge where applicable.
 - Use pytest for Python/integration tests and CTest plus a suitable C++ test harness for native units.
 - NumPy and official PyTorch may be used only as test oracles. The installed MiniTorch package must import and execute its supported subset without importing either one at runtime.
@@ -85,12 +88,13 @@ The supported surface may be small, but the main course must include executable 
 2. Tensor/Storage metadata, ownership, strides, views, dtype and device;
 3. operator schema, reduced codegen, dispatcher, registration, redispatch/fallback and CPU kernels;
 4. CUDA kernel launch, caching allocator, pinned memory, stream/event, allocator-stream lifetime, synchronization and CUDA Graph evidence;
-5. Python `nn.Module`, Parameter/buffer state, CNN and decoder-style Transformer inference operators, serialization and model loading;
+5. Python `nn.Module`, Parameter/buffer state, CNN and decoder-style Transformer inference operators, one representative quantized Linear, serialization and model loading;
 6. reverse-mode Autograd, saved values, version/in-place checks, `no_grad` and inference boundary;
 7. allocator/threading/profiling, process groups/collectives, DeviceMesh/DTensor-like placements, inference DP and row/column TP;
 8. a small graph IR, capture/tracing contract, shape/meta reasoning, decomposition, lowering, fusion, cache/guards and compiler backend;
 9. simulated device registration, supported/unsupported matrix, fallback and error policy;
-10. packaging, CI, compatibility matrix and final inference demonstrations.
+10. native PyTorch `PrivateUse1` hooks/registration/runtime/compiler package and shared conformance tests;
+11. packaging, CI, AOT/deployment, compatibility matrix and final inference demonstrations.
 
 Autograd and a tiny optimizer remain required architecture lessons. Training is limited to one small MLP smoke case and one two-rank gradient all-reduce boundary. Inference receives the main implementation, CUDA memory/stream, mixed-precision, CNN/Transformer, DP/TP, compiler, compatibility and performance effort. An unfinished inference requirement always takes priority over a training extension.
 
@@ -101,6 +105,7 @@ Completion requires these learner-defended demonstrations:
 - train a small MLP to show the Autograd/optimizer boundary;
 - run a small CNN inference on CPU and CUDA and compare against an oracle;
 - run a decoder-style Transformer block with naive attention and KV-cache prefill/decode cases;
+- run one weight-only or int8 Linear path with explicit quantization parameters, packing and float-oracle error evidence;
 - lower a supported inference model to the MiniTorch IR and execute it through the custom compiler backend;
 - run inference DP across two local processes and reconstruct the reference outputs;
 - run row/column tensor-parallel Linear and a small TP Transformer/MLP slice across two ranks;
@@ -114,6 +119,31 @@ Completion requires these learner-defended demonstrations:
 The mentor explains prerequisites, points to verified reference-source anchors, defines interfaces and acceptance behavior, creates minimal non-decisive scaffolding when needed, reviews changes, helps instrument failures and supplies H0-H3 hints. The learner authors the decisive architecture choices and core implementation.
 
 A full implementation may be supplied by the mentor only when the learner explicitly requests it. Code written by the mentor cannot by itself raise the learner's mastery score.
+
+## Size budget
+
+MiniTorch remains mechanism-complete and surface-small:
+
+- approximately 20–30 operator schemas and 10–15 backend-native kernels;
+- one recurring pointwise, reduction, view/mutation, matrix, convolution and attention slice;
+- one small CNN and one small decoder Transformer block;
+- composite implementations for higher APIs when their children preserve required semantics;
+- CPU mock plugins and two-process tests before hardware or scale-specific work;
+- no operator is added unless it enables a target model or teaches a new mechanism.
+
+Additional quantization modes, specialized mobile, sparse, nested, ONNX, TorchScript, FSDP, RPC, PP/CP/EP and platform backend breadth remain I1/I2 source/experiment tracks unless promoted by a capstone requirement.
+
+## Final runnable definition
+
+The project is complete only when:
+
+- `minitorch` builds from a clean checkout and installs as a wheel in a clean environment;
+- required CPU tests and supported eager/compiled CNN and Transformer inference pass;
+- CUDA-required tests pass on a verified CUDA environment and CPU-only builds remain supported;
+- Route A MiniTorch PrivateUse and Route B native PyTorch PrivateUse1 pass the mock/proxy conformance suite;
+- the private vendor adapter can be built outside the repository from the public ABI and the learner has a sanitized real-device test command bundle;
+- real third-party hardware is described as working only after that private run passes device-smoke and representative-model verification;
+- unsupported behavior is deterministic and never silently executes on CPU while reporting a vendor device.
 
 ## Definition of learned
 

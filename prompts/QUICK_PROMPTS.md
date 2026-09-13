@@ -20,6 +20,18 @@
 从 projects/INFERENCE_SCOPE.md 选择当前最早未完成的 I0 increment。围绕 CNN/Transformer、KV cache、mixed precision、CUDA allocator/stream、DP/TP、compiler 或 inference performance 建立 contract；先核对 pinned PyTorch ownership，再让我实现 MiniTorch 代表性闭环并用 correctness、memory、latency/throughput 或 communication evidence 验收。不要用训练扩展挤占未完成的 I0 工作。
 ```
 
+## PrivateUse 双路线
+
+```text
+读取 projects/PRIVATEUSE_BACKEND_SPEC.md。明确本节属于 Route A MiniTorch PrivateUse plugin 还是 Route B native PyTorch PrivateUse1 OOT package，只选择一个 session-sized contract。先在 pinned OpenReg/backend source 中核对 ownership，再让我实现决定性逻辑。用 CPU mock/fault injection 验证；除非我提供私有环境的 sanitized device/model test result，否则只能记录 contract-ready，不能声称真实硬件可用。
+```
+
+## 全面覆盖审计
+
+```text
+运行 scripts/validate_curriculum_coverage.py，审计 curriculum/COVERAGE_AUDIT.md、COVERAGE_MATRIX.csv、MASTERY 和 M0-M9 是否一致。区分重要机制遗漏、代表性 API 缺口和仅增加规模的细节；只把前两类加入主线。
+```
+
 ## 基础架构课
 
 ```text

@@ -12,16 +12,19 @@
 - `prompts/QUICK_PROMPTS.md`：日常会话入口，不重复总提示词。
 - `curriculum/ROADMAP.md`：PyTorch 源码课程、architecture-first sequence 与 MiniTorch phase 对齐。
 - `curriculum/ASSESSMENT_BLUEPRINT.md`：以实现、测试、调试、code defense 和延迟扩展为核心的考核规则。
+- `curriculum/COVERAGE_AUDIT.md` 与 `COVERAGE_MATRIX.csv`：全面知识/路径审计和每个 mastery concept 的 milestone、source anchor、evidence 映射。
 - `curriculum/KNOWLEDGE_GRAPH.md`：知识依赖与源码锚点。
 - `projects/MINITORCH_SPEC.md`：已确认的 MiniTorch 范围、依赖、目录、最终案例和作者边界。
 - `projects/INFERENCE_SCOPE.md`：inference-first 必修矩阵，覆盖 CNN/Transformer、显存/stream、mixed precision、DP/TP、compiler 与性能证据；同时定义训练降级边界。
+- `projects/PRIVATEUSE_BACKEND_SPEC.md`：MiniTorch PrivateUse C-ABI plugin 与原生 PyTorch PrivateUse1 OOT package 的双路线、mock 和真实硬件验收门。
 - `projects/ROADMAP.md`：M0–M9 MiniTorch 实现里程碑与质量门。
 - `learning/`：学习者档案、证据、掌握度、复习队列与会话记录。
 - `learning/notebook/`：每次课的闭卷复述、查漏补缺、整理笔记和长期错题本。
 - `learning/artifacts/`：每次会话的调用链、语法卡、实验或项目产物。
 - `config/PYTORCH_SOURCE_PIN`：唯一的 PyTorch baseline tag/commit 固定点；学习分支可在它之上产生新 commit。
 - `scripts/validate_learning_state.py`：检查 CSV schema、跨表引用、枚举、日期、revision 和分数。
-- `scripts/system_health_check.py`：在临时目录模拟完整状态写入、错误拒绝与清理，不污染真实学习记录。
+- `scripts/system_health_check.py`：在临时独立 Git 仓库编译并导入一个真实 pybind11 native module，再模拟 M0 项目证据、code defense、错误拒绝与清理，不污染真实学习记录。
+- `scripts/validate_curriculum_coverage.py`：检查每个 mastery concept 都有有效 priority、milestone、真实 PyTorch anchor 和 learner evidence。
 - `templates/`：基础架构图、调用链、语法卡、单次学习和周复盘模板。
 - `environment/REPORT.md`：2026-09-01 的本机体检和环境关卡。
 - `sources/pytorch/`：被外层 `.gitignore` 忽略的 PyTorch 官方源码；它始终是独立 Git 仓库。
@@ -88,6 +91,12 @@ bash scripts/checkout_pytorch_source.sh
 
 ```bash
 python3 scripts/system_health_check.py
+```
+
+单独检查知识与路径覆盖：
+
+```bash
+python3 scripts/validate_curriculum_coverage.py
 ```
 
 只检查正式学习记录时运行 `python3 scripts/validate_learning_state.py`。系统自检生成的模拟 learner/evidence/question/artifact 全部位于 OS 临时目录，测试完成后自动删除。

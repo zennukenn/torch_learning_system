@@ -10,6 +10,8 @@ The learner's immediate environment is CPU/CUDA, the confidential target device 
 4. **`torch.compile` backend:** accept an FX `GraphModule` plus example inputs, lower supported graphs, define fallback/partitioning, and validate semantic equivalence.
 5. **Inference compatibility:** models, dynamic shapes, dtype/layout/view semantics, serialization/export, memory, concurrency, profiling, and upgrade policy.
 
+For this repository, implement both deliverables in `projects/PRIVATEUSE_BACKEND_SPEC.md`: a MiniTorch PrivateUse plugin behind a versioned public C ABI and a native PyTorch `PrivateUse1` out-of-tree package. Use `test/cpp_extensions/open_registration_extension/torch_openreg/` in the pinned checkout as the main native reference. Do not treat the MiniTorch dispatcher key as proof that native PyTorch hooks are implemented, or vice versa.
+
 Do not conflate a compiler backend with an eager device backend. Document which layer owns graph capture, lowering, kernel selection, allocation, execution, synchronization, and error reporting.
 
 ## Confidentiality boundary
@@ -35,3 +37,4 @@ A backend stage passes only with:
 - explicit unsupported behavior and fallback policy;
 - measured results with synchronization and warmup handled correctly;
 - a compatibility/upgrade plan tied to a pinned PyTorch revision.
+- explicit evidence level: contract-ready mock/proxy, real device-smoke, or real representative-model verification.

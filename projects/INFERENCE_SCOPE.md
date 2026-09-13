@@ -4,6 +4,8 @@ This document refines the accepted MiniTorch specification. Inference is the dom
 
 All PyTorch paths below were observed in the pinned checkout `cf30153c4c131c8164ee7798e5022d810682e2cb` (`v2.13.0`) on 2026-09-13. They are starting anchors, not claims that one file owns an entire subsystem.
 
+The full cross-domain audit is in `curriculum/COVERAGE_AUDIT.md`. Hardware integration is defined separately in [PRIVATEUSE_BACKEND_SPEC.md](PRIVATEUSE_BACKEND_SPEC.md).
+
 ## Priority model
 
 - **I0 — required runnable inference mechanism:** implement a reduced but executable MiniTorch path, test it and defend it.
@@ -13,6 +15,10 @@ All PyTorch paths below were observed in the pinned checkout `cf30153c4c131c8164
 - **T2 — training extension:** postponed until the inference capstone is complete.
 
 The priority says how deeply MiniTorch implements a topic. It does not remove the obligation to understand where the topic sits in native PyTorch.
+
+## Foundational inference dependencies
+
+Inference correctness depends on more than model operators. I0 also includes dtype promotion and accumulation, broadcasting, numerical tolerances, NaN/Inf/overflow behavior, RNG/determinism, CPU thread control, parallel/vector kernels, one external math-library boundary, CPython/GIL/ABI behavior, safe model loading and layered test/debug tooling. These are implemented in M0–M4 before they are reused by the capstone.
 
 ## Execution and model state
 
@@ -47,6 +53,8 @@ Required model demonstrations are a small CNN and a small decoder-style Transfor
 
 | Topic | Priority | MiniTorch deliverable | PyTorch anchors |
 |---|---|---|---|
+| Kernel execution | I0 | real pointwise and reduction/matrix kernels; reason about grid/block, coalescing, shared memory, atomics, occupancy and launch errors | `aten/src/ATen/native/cuda/`, `c10/cuda/CUDAException.*` |
+| CUDA libraries | I0 | one cuBLAS and one cuDNN-style integration path with handle, workspace, algorithm, determinism and dtype policy | `aten/src/ATen/cuda/CUDABlas.*`, `aten/src/ATen/native/cudnn/` |
 | Device allocation | I0 | allocator interface, allocated/reserved counters, OOM and cleanup behavior | `c10/cuda/CUDACachingAllocator.*`, `torch/cuda/memory.py` |
 | Caching and fragmentation | I0 | reduced block cache, reuse/split policy, fragmentation metric and deterministic scenario | `c10/cuda/CUDACachingAllocator.cpp` |
 | Pinned host memory and transfer | I0 | pinned allocation boundary and blocking/non-blocking H2D/D2H tests | `aten/src/ATen/cuda/CachingHostAllocator.cpp` |
@@ -89,10 +97,11 @@ DP and TP must be tested as distinct algorithms. “Two processes ran” is not 
 | Cache/recompile behavior | I0 | guard-keyed cache and observable recompilation | Dynamo/Inductor cache paths selected during the session |
 | CUDA Graph integration | I1 | static compiled inference replay and constraint comparison | `torch/_inductor/cudagraph_trees.py`, `cudagraph_utils.py` |
 | Dynamic shapes and fallback | I0 | dynamic batch and sequence-length tests; explicit unsupported policy | symbolic-shape, Dynamo and backend paths |
+| Quantized lowering | I1 | lower the representative quantized Linear with explicit packing/capability/fallback behavior | `torch/_inductor/quantized_lowerings.py`, `torch/ao/quantization/` |
 
 ## Inference engineering and observability
 
-I0 coverage includes deterministic seeds where applicable, correctness tolerances by dtype, warmup/synchronization, profiler events, allocator statistics, model loading, versioned serialization, batching and failure behavior. The capstone compares eager versus compiled, CPU versus CUDA, full versus mixed precision, unsharded versus TP, and first-run versus steady-state execution.
+I0 coverage includes deterministic seeds where applicable, correctness tolerances by dtype, warmup/synchronization, profiler events, allocator statistics, safe model loading, versioned/sharded serialization, batching and failure behavior. I1 adds a reduced export/AOT artifact and runner. The capstone compares eager versus compiled, CPU versus CUDA, full versus mixed precision, unsharded versus DP/TP, and first-run versus steady-state execution.
 
 The performance report separates latency, throughput, peak allocated/reserved memory, transfer time, communication time and compile/startup cost. It must explain measurement limitations rather than presenting one timing number.
 

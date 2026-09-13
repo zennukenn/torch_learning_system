@@ -13,11 +13,14 @@
 - 产品只要求 inference，但学习必须理解 Autograd、训练边界和 distributed 全局位置。
 - 2026-09-13 起，以独立 `mini-torch/` Git 仓库作为贯穿课程的实现项目；尽可能镜像 PyTorch 的主要目录、工程边界和命名，只缩小功能与规模。
 - MiniTorch 核心不依赖官方 `torch`：C++ 实现 Tensor/Storage/operator/dispatcher/Autograd/runtime，pybind11 暴露 Python API，包名为 `minitorch`。官方 PyTorch 与 NumPy只作源码和数值 oracle。
-- MiniTorch 先完成 CPU，再实现少量真实 CUDA kernel/runtime，最后实现 simulated device backend。主要子系统必须形成可运行的最小闭环，不接受只有空接口的覆盖。
+- MiniTorch 先完成 CPU，再实现少量真实 CUDA kernel/runtime，最后以 CPU mock 驱动 MiniTorch PrivateUse 和原生 PyTorch PrivateUse1 双路线。主要子系统必须形成可运行的最小闭环，不接受只有空接口的覆盖。
 - 项目以 inference 为重；只保留足以理解 Autograd 和训练边界的小型 MLP training smoke case，不把训练功能作为主要投入。
 - Inference 必修范围扩展到 CNN 与 decoder-style Transformer/KV cache、`eval`/`no_grad`/inference mode、autocast/mixed precision、显存缓存与碎片/OOM、pinned transfer、stream/event/跨 stream lifetime、CUDA Graph、dynamic shapes、quantized representative path、profiling 与性能方法。
 - Distributed inference 必须区分并实现两进程 inference DP、minimal DDP gradient-sync boundary 和 row/column TP；学习 DeviceMesh/DTensor placement、collectives、sharded checkpoint 与 communication/computation overlap。sequence/context/pipeline/expert parallel 先做到架构与源码层，按 capstone 模型需要再实现。
 - 训练降级为 supporting track：保留最小 Autograd、SGD、MLP 和一次 gradient all-reduce；optimizer zoo、GradScaler、full DDP reducer/FSDP 与训练性能放到 inference capstone 之后。
+- 第三方硬件路线同时要求：MiniTorch 自有的 PrivateUse 可插拔 backend，以及原生 PyTorch `PrivateUse1` out-of-tree adapter/prototype。
+- 假定真实硬件侧最终由学习者在私有环境提供 C/C++ adapter shared library；公开仓库只保存 versioned C ABI、CPU mock、capability manifest 和 conformance tests，不保存专有接口或日志。
+- MiniTorch 采用“机制完整、API 小”的规模控制：通常约 20–30 schemas、10–15 个 backend-native kernels，以 CNN、decoder Transformer 和硬件接入所需 vertical slices 为准。
 
 ## 2026-09-02 重新校准的起点（不是掌握分数）
 

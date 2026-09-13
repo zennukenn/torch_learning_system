@@ -5,28 +5,38 @@ ENV-BUILD,PyTorch source build and incremental workflow,0,0,0,0,0,0,0,0,,unasses
 BUILD-PACKAGING,CMake targets pyproject build isolation editable install wheel and CI,0,0,0,0,0,0,0,0,,unassessed
 PYBIND,pybind11 module type lifetime conversion exception and ownership boundary,0,0,0,0,0,0,0,0,,unassessed
 TEST-ENGINEERING,Native Python integration parity negative performance and packaging tests,0,0,0,0,0,0,0,0,,unassessed
+DEBUG-TOOLING,Debugger symbols stack traces logging sanitizers linters and failure isolation,0,0,0,0,0,0,0,0,,unassessed
 PY-DATAMODEL,Python data model decorators descriptors and context managers,0,1,0,0,0,0,0,0,E-20260902-12,learning
 CPP-CORE,C++ ownership RAII templates macros and linking,0,0,0,0,0,0,0,0,E-20260902-04,learning
 TENSOR-MODEL,Tensor TensorImpl StorageImpl views dtype layout device,1,2,1,0,0,0,0,0,E-20260902-11,learning
+NUMERICS,Dtype promotion broadcasting accumulation tolerance NaN Inf overflow RNG and determinism,1,0,0,0,0,0,0,0,,unassessed
 PY-FRONTEND,Python frontend torch.nn modules and functional APIs,1,0,0,0,0,0,0,0,,unassessed
 BIND-CODEGEN,Python C++ binding schemas and code generation,2,1,0,0,0,0,0,0,E-20260902-01,learning
 DISPATCH,Dispatcher keys registrations fallbacks and modes,2,0,0,0,0,0,0,0,E-20260902-03,learning
 ATEN-KERNEL,ATen native functions TensorIterator and kernels,2,1,0,0,0,0,0,0,E-20260902-02,learning
+CPU-RUNTIME,CPU allocator threading parallel loops vectorization and external math libraries,2,0,0,0,0,0,0,0,,unassessed
+CUSTOM-OPS,Custom operator schema registration fake meta alias mutation and conformance testing,2,0,0,0,0,0,0,0,,unassessed
 CUDA,CUDA host device kernels launch memory streams events synchronization and libraries,2,0,0,0,0,0,0,0,,unassessed
 CUDA-MEMORY,CUDA caching allocator reserved versus allocated fragmentation OOM pinned memory and stream lifetime,3,0,0,0,0,0,0,0,,unassessed
 AUTOGRAD,Autograd engine generated wrappers saved tensors and inference boundaries,3,0,0,0,0,0,0,0,,unassessed
 INFERENCE-MODES,Module eval no_grad inference mode thread local state and version behavior,3,0,0,0,0,0,0,0,,unassessed
 MIXED-PRECISION,Inference autocast FP32 FP16 BF16 policy accuracy and dispatch,3,0,0,0,0,0,0,0,,unassessed
 ATTENTION-KVCACHE,Transformer attention masking prefill decode KV cache shapes lifetime and memory,3,0,0,0,0,0,0,0,,unassessed
+QUANTIZATION,Inference quantization observers scales zero points packing calibration and graph lowering boundary,3,0,0,0,0,0,0,0,,unassessed
 RUNTIME,Allocator device guard streams events RNG profiler and serialization,3,0,0,0,0,0,0,0,,unassessed
+SERIALIZATION,State dict archive device mapping safe loading sharded loading and versioning,3,0,0,0,0,0,0,0,,unassessed
 DISTRIBUTED,c10d ProcessGroup collectives and inference communication boundaries,3,0,0,0,0,0,0,0,,unassessed
 DISTRIBUTED-DP,Inference data parallel replicas input partition output reconstruction and minimal DDP contrast,3,0,0,0,0,0,0,0,,unassessed
 DISTRIBUTED-TP,DeviceMesh DTensor placements row column parallel Linear TP attention and collectives,3,0,0,0,0,0,0,0,,unassessed
 FX-EXPORT,FX fake tensor symbolic shapes export and graph semantics,4,0,0,0,0,0,0,0,,unassessed
 DYNAMO,TorchDynamo frame evaluation guards graph breaks and cache,4,0,0,0,0,0,0,0,,unassessed
 INDUCTOR,AOTAutograd functionalization decompositions Inductor and codegen,4,0,0,0,0,0,0,0,,unassessed
+AOT-DEPLOY,Exported graph ahead of time artifact native runner packaging and compatibility,4,0,0,0,0,0,0,0,,unassessed
 EXTENSION,C++ and CUDA operator extensions,5,0,0,0,0,0,0,0,,unassessed
 PRIVATEUSE1,PrivateUse1 eager device backend integration,5,0,0,0,0,0,0,0,,unassessed
+PRIVATEUSE-ABI,Versioned C adapter ABI capability negotiation plugin loading and error boundary,5,0,0,0,0,0,0,0,,unassessed
+PRIVATEUSE-RUNTIME,PrivateUse allocator guard copy stream event RNG profiler serialization and distributed hooks,5,0,0,0,0,0,0,0,,unassessed
+PRIVATEUSE-OPS,PrivateUse factory copy operator fallback autocast meta fake and model coverage,5,0,0,0,0,0,0,0,,unassessed
 COMPILE-BACKEND,torch.compile custom backend lowering and fallback,5,0,0,0,0,0,0,0,,unassessed
 COMPAT,Model compatibility correctness performance and upgrade engineering,6,0,0,0,0,0,0,0,,unassessed
 INFERENCE-PERF,Inference latency throughput memory transfer communication compile cost profiling and benchmarking,6,0,0,0,0,0,0,0,,unassessed

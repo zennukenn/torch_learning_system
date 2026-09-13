@@ -1,0 +1,42 @@
+concept_id,priority,milestones,pytorch_anchors,learner_evidence
+PYTORCH-BASICS,F0,M0,README.md,Architecture map and inference story
+ARCH-MAP,F0,M0,README.md;torch;aten;c10,Directory responsibility map and repeated vertical slices
+ENV-BUILD,F0,M0,setup.py;CMakeLists.txt;tools/setup_helpers,Environment audit and clean native build plan
+BUILD-PACKAGING,F0,M0;M9,pyproject.toml;setup.py;cmake,Editable install wheel install and target graph defense
+PYBIND,F0,M0;M1,torch/csrc/Module.cpp;torch/csrc/utils/pybind.h,Native import lifetime GIL conversion and error tests
+TEST-ENGINEERING,I0,M0;M9,test;torch/testing/_internal,Layered acceptance matrix and failure diagnostics
+DEBUG-TOOLING,F0,M0;M9,.gdbinit;.lldbinit;.lintrunner.toml,Symbol stack sanitizer and lint debugging lab
+PY-DATAMODEL,F0,M0;M4,torch/nn/modules/module.py,Python object import call and state exercises
+CPP-CORE,F0,M0;M1,c10/core/TensorImpl.h,RAII ownership compile link and concurrency implementation
+TENSOR-MODEL,I0,M1,c10/core/TensorImpl.h;c10/core/StorageImpl.h;c10/core/Allocator.h,Tensor Storage view lifetime and mutation tests
+NUMERICS,I0,M1;M2,c10/core/ScalarType.h;aten/src/ATen/native,Dtype broadcasting tolerance edge and determinism matrix
+PY-FRONTEND,I0,M4,torch/nn/modules/module.py;torch/nn/functional.py,CNN and Transformer frontend trace
+BIND-CODEGEN,I0,M2,aten/src/ATen/native/native_functions.yaml;torchgen,Reproducible schema generated declarations and binding comparison
+DISPATCH,I0,M2,aten/src/ATen/core/dispatch/Dispatcher.h;c10/core/DispatchKey.h,Registration lookup fallback and redispatch trace
+ATEN-KERNEL,I0,M2,aten/src/ATen/native;aten/src/ATen/TensorIterator.cpp,Pointwise reduction matrix and view kernel slices
+CPU-RUNTIME,I0,M2,aten/src/ATen/Parallel.h;aten/src/ATen/native/cpu,Scalar parallel vector and external library benchmark
+CUSTOM-OPS,I1,M2;M8,torch/library.py;torch/_library,External custom op with schema fake alias and error tests
+CUDA,I0,M3,c10/cuda;aten/src/ATen/native/cuda,CUDA build launch dispatch and synchronized kernel tests
+CUDA-MEMORY,I0,M3,c10/cuda/CUDACachingAllocator.cpp;c10/cuda/CUDAStream.cpp;c10/cuda/CUDAEvent.h,Fragmentation OOM pinned copy and stream lifetime dossier
+AUTOGRAD,T1,M5,torch/csrc/autograd/engine.cpp;torch/autograd/grad_mode.py,Minimal backward MLP and version failure
+INFERENCE-MODES,I0,M4,torch/autograd/grad_mode.py;c10/core/InferenceMode.h,Eval no-grad inference-mode behavior matrix
+MIXED-PRECISION,I0,M3;M4,torch/amp/autocast_mode.py;aten/src/ATen/autocast_mode.cpp,Selected FP32 FP16 BF16 autocast parity
+ATTENTION-KVCACHE,I0,M4,aten/src/ATen/native/transformers/attention.cpp;torch/nn/attention,Decoder prefill decode and cache lifetime tests
+QUANTIZATION,I1,M4;M7;M9,torch/ao/quantization;aten/src/ATen/quantized;torch/_inductor/quantized_lowerings.py,One weight-only or int8 Linear path with scale packing error and eager-compiled parity tests
+RUNTIME,I0,M3;M6,c10/core/Allocator.h;aten/src/ATen/ThreadLocalState.h;torch/profiler,Allocator TLS thread RNG profiler timeline
+SERIALIZATION,I0,M4;M6;M9,torch/serialization.py;torch/distributed/checkpoint,Safe versioned and sharded load round trips
+DISTRIBUTED,I0,M6,torch/distributed/distributed_c10d.py;torch/csrc/distributed/c10d,ProcessGroup Work collective timeout and failure tests
+DISTRIBUTED-DP,I0,M6,torch/nn/parallel/distributed.py;torch/distributed/distributed_c10d.py,Two-rank inference DP and minimal DDP contrast
+DISTRIBUTED-TP,I0,M6,torch/distributed/device_mesh.py;torch/distributed/_tensor;torch/distributed/tensor/parallel,Row and column parallel model parity
+FX-EXPORT,I0,M7,torch/fx;torch/export,Graph IR capture metadata and export contract
+DYNAMO,I0,M7,torch/_dynamo,Guard graph-break cache and recompile diagnostics
+INDUCTOR,I0,M7,torch/_inductor;torch/_decomp;torch/_functorch,Decomposition lowering fusion and generated execution
+AOT-DEPLOY,I1,M7;M9,torch/_inductor/aoti_eager.py;torch/export,Ahead-of-time artifact clean runner and version test
+EXTENSION,I1,M2;M8,torch/utils/cpp_extension.py;test/cpp_extensions,Out-of-tree native and CUDA custom op package
+PRIVATEUSE1,I0,M8,torch/utils/backend_registration.py;test/cpp_extensions/open_registration_extension/torch_openreg,Native PyTorch PrivateUse1 package and contract suite
+PRIVATEUSE-ABI,I0,M8,test/cpp_extensions/open_registration_extension/torch_openreg/README.md;test/cpp_extensions/open_registration_extension/torch_openreg/third_party,Versioned C ABI loader CPU mock and rejection tests
+PRIVATEUSE-RUNTIME,I0,M8,aten/src/ATen/detail/PrivateUse1HooksInterface.h;test/cpp_extensions/open_registration_extension/torch_openreg/csrc/runtime,Allocator guard copy stream event RNG profiler runtime tests
+PRIVATEUSE-OPS,I0,M8,test/cpp_extensions/open_registration_extension/torch_openreg/csrc/aten;test/cpp_extensions/open_registration_extension/torch_openreg/tests,Factory operator fallback autocast fake and model tests
+COMPILE-BACKEND,I0,M7;M8,torch/_dynamo/backends/registry.py;test/cpp_extensions/open_registration_extension/torch_openreg/torch_openreg/compiler.py,Supported graph partition lowering fallback and device execution
+COMPAT,I0,M9,RELEASE.md;test,Versioned model capability ABI and upgrade matrix
+INFERENCE-PERF,I0,M3;M6;M9,torch/profiler;benchmarks,Latency throughput memory transfer communication and startup report

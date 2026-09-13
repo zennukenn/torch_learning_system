@@ -8,12 +8,12 @@ The course revisits the same architecture through learner implementation:
 M0 build/package/binding
   → M1 c10 foundations + Storage/Tensor
     → M2 schema/codegen/Dispatcher/CPU kernels
-      → M3 CUDA memory/streams + kernels + precision
-      → M4 Python frontend + CNN/Transformer/KV cache + inference state
+      → M3 CUDA memory/streams + kernels/libraries + precision
+      → M4 Python frontend + CNN/Transformer/KV cache + quantized inference state
         → M5 minimal Autograd/training boundary
         → M6 runtime/profiler + inference DP/TP
           → M7 graph IR/capture/compiler/dynamic shapes
-            → M8 simulated device/backend integration
+            → M8 MiniTorch PrivateUse + native PyTorch PrivateUse1
               → M9 wheel/CI/inference capstone
 ```
 
@@ -83,9 +83,15 @@ distributed/process group ──────────────────
 | CUDA memory | allocated/reserved、cache reuse、fragmentation/OOM、pinned transfer 与跨 stream lifetime 如何连接？ | allocator counters/snapshot、OOM reproduction、`record_stream` failure/repair |
 | Inference modes | `eval`、`no_grad`、inference mode 和 autocast 分别改变什么状态与 dispatch？ | mode matrix、TLS/source trace、version/precision tests |
 | Transformer inference | attention mask、prefill/decode、KV cache shape/lifetime 和 dynamic sequence 怎样保持正确？ | decoder block parity、cache update/memory tests |
+| Quantized inference | scale/zero-point、observer/calibration boundary、weight packing、accumulation 和 backend lowering 怎样保持精度与 device ownership？ | representative quantized Linear eager/compiled parity and error tests |
 | Inference DP | model replica、input partition、weight broadcast、output reconstruction 各由谁负责？ | two-rank shard/gather trace、throughput/correctness comparison |
 | Tensor parallel | DeviceMesh/placement 如何导出 row/column Linear 的 shard shape 与 collective？ | two-rank TP Linear/Transformer parity、collective trace |
 | Inference performance | latency、throughput、memory、transfer、communication、compile/startup cost 怎样分别测量？ | synchronized benchmark、profiler timeline、memory statistics |
+| Numerical semantics | promotion、broadcasting、accumulation、NaN/Inf/overflow、tolerance 和 determinism 怎样跨 backend 保持？ | adversarial parity matrix、seed/state tests |
+| CPU runtime | allocator、thread pool、parallel loop、vectorization 与 math library 如何选择？ | scalar/parallel/vector/library trace and benchmark |
+| Native boundary | pybind conversion/lifetime、GIL、exception、ABI/RPATH 如何影响 Python 调 C++？ | import/error/GIL test、symbolized stack、wheel inspection |
+| PrivateUse plugin ABI | 如何让 MiniTorch 调用不公开的 vendor runtime 而不泄露 C++ ABI 或专有信息？ | version negotiation、CPU mock、fault injection、private command bundle |
+| Native PrivateUse1 | rename/module、guard/hooks、allocator、factory/copy、kernels/fallback、AMP/profiler/compiler 如何闭环？ | OpenReg source comparison、OOT package contract tests |
 
 ## 跨层 vertical slices
 
@@ -98,6 +104,7 @@ distributed/process group ──────────────────
 5. 一个小 inference model：eager execution、export/compile、memory/profiler、distributed boundary、custom backend。
 6. 一个 decoder-style Transformer block：Embedding/Linear/LayerNorm/attention、KV cache、mixed precision、dynamic sequence、compile 与 TP。
 7. CUDA buffer lifetime：allocator cache、non-default stream、event/`record_stream`、OOM/fragmentation 与 CUDA Graph constraints。
+8. quantized Linear：quantization parameters、packed weight、dispatcher/backend kernel、compiler lowering、float oracle 与 PrivateUse capability。
 
 ## 掌握层次
 

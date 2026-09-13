@@ -90,11 +90,13 @@ Mentor-written code, copied solutions, self-confidence and test output without l
 A milestone passes only when:
 
 - all required increments in `projects/ROADMAP.md` have learner-authored evidence;
+- `scripts/validate_curriculum_coverage.py` confirms every mastery concept is mapped to a real source anchor and milestone;
 - all I0 items assigned to the milestone by `projects/INFERENCE_SCOPE.md` are complete before any T2 training extension is credited;
 - the milestone's positive, boundary, negative and relevant parity/integration tests pass;
 - at least one real or seeded debugging task is completed;
 - the learner can trace a representative vertical slice in MiniTorch and compare it with inspected PyTorch source;
 - simplifications and unverified behavior are explicit;
+- PrivateUse evidence is labeled contract-ready mock/proxy, real device-smoke or real representative-model; only the latter two may support hardware claims;
 - a delayed transfer or repair has passed at H0/H1.
 
 If a gate fails, identify the earliest missing language, architecture, implementation or debugging prerequisite and schedule one repair increment.
@@ -121,6 +123,6 @@ The final assessment is a capstone maintenance exercise rather than a written ex
 - implement one bounded extension from contract to tests;
 - diagnose and repair one seeded cross-layer failure without a supplied source location;
 - build and install a wheel in a clean environment;
-- run only the minimal MLP training/gradient-sync boundary, then CPU/CUDA CNN and Transformer/KV-cache inference, mixed precision, compiler, inference DP/TP, memory/stream and simulated-device demonstrations;
+- run only the minimal MLP training/gradient-sync boundary, then CPU/CUDA CNN and Transformer/KV-cache inference, mixed precision, one representative quantized path, compiler/AOT, inference DP/TP, memory/stream and both PrivateUse route demonstrations;
 - defend correctness, latency, throughput, allocated/reserved memory, transfer/communication, compile/startup, fallback, packaging and version-upgrade limitations;
 - repeat a related maintenance task after at least 14 days.

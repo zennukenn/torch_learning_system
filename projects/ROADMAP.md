@@ -1,6 +1,6 @@
 # MiniTorch implementation roadmap
 
-MiniTorch is the assessment spine for every phase. The stable scope and dependency policy live in [MINITORCH_SPEC.md](MINITORCH_SPEC.md); the inference-first feature matrix and pinned-PyTorch anchors live in [INFERENCE_SCOPE.md](INFERENCE_SCOPE.md). Calendar estimates are planning aids; a milestone advances only after its quality gate passes.
+MiniTorch is the assessment spine for every phase. The stable scope and dependency policy live in [MINITORCH_SPEC.md](MINITORCH_SPEC.md); the inference-first matrix lives in [INFERENCE_SCOPE.md](INFERENCE_SCOPE.md); dual hardware integration lives in [PRIVATEUSE_BACKEND_SPEC.md](PRIVATEUSE_BACKEND_SPEC.md); the full knowledge audit lives in `curriculum/COVERAGE_AUDIT.md`. Calendar estimates are planning aids; a milestone advances only after its quality gate passes.
 
 Each milestone is split into session-sized increments. Before an increment, the learner writes the design or patch plan and expected tests. The mentor may create only the minimum scaffolding needed to expose the learning task. After implementation, assessment uses the diff, focused tests, debugging evidence, PyTorch comparison and an unassisted code defense.
 
@@ -15,9 +15,11 @@ Increments:
 3. `pyproject.toml`, setuptools bridge and isolated development environment;
 4. root/subdirectory CMake targets and one C++ library;
 5. pybind11 module exposed as `minitorch._C` and imported by `minitorch`;
-6. pytest, CTest and build/install/import smoke commands.
+6. Python↔C++ conversion, ownership, exception translation and one GIL-release concurrency case;
+7. debug symbols, stack trace, logging, `compile_commands.json`, sanitizer/linter entry points;
+8. pytest, CTest and build/install/import smoke commands.
 
-Gate: from a clean build directory, an editable install and wheel install can call one native function. The learner explains Python import, compile, object/library, link, extension-module loading, CMake target flow, build isolation and why the MiniTorch layout differs at `torch/ → minitorch/`. No Tensor implementation is required yet.
+Gate: from a clean build directory, an editable install and wheel install can call one native function. A translated native exception and GIL-release case pass; a symbolized native failure can be located. The learner explains Python import, compile, object/library, link, ABI/RPATH, extension-module loading, CMake target flow, build isolation and why the MiniTorch layout differs at `torch/ → minitorch/`. No Tensor implementation is required yet.
 
 ## M1 — C10 foundations, Storage and CPU Tensor
 
@@ -31,8 +33,10 @@ Increments:
 4. `TensorImpl` sizes, strides, storage offset, dtype and device;
 5. lightweight Tensor handle and pybind11 ownership/lifetime policy;
 6. construction, indexing, contiguous copy, reshape/view/clone and representation.
+7. scalar types, promotion, broadcasting, accumulation dtype and conversion policy;
+8. NaN/Inf/overflow/tolerance, RNG seed/state and deterministic-behavior tests for the supported subset.
 
-Gate: positive, alias/mutation, lifetime, shape/stride, overflow and error tests pass. NumPy/PyTorch oracle tests confirm the supported behavior. The learner diagnoses one ownership or stride bug and explains the corresponding PyTorch source anchors and intentional omissions.
+Gate: positive, alias/mutation, lifetime, shape/stride, promotion/broadcasting, numerical edge, determinism and error tests pass. NumPy/PyTorch oracle tests confirm the supported behavior with dtype-appropriate tolerances. The learner diagnoses one ownership/stride and one numerical-contract bug and explains corresponding PyTorch source anchors and intentional omissions.
 
 ## M2 — Schema, code generation, dispatcher and CPU kernels
 
@@ -47,10 +51,13 @@ Increments:
 5. CPU elementwise kernels, then reduction and matrix operation;
 6. dtype/device/layout checks and a minimal TensorIterator-like loop abstraction;
 7. Python API generated/manual binding comparison.
+8. CPU thread control, parallel loop and one vectorized kernel after the scalar reference;
+9. BLAS/oneDNN-style external-library boundary for one matrix or convolution path;
+10. one out-of-tree custom operator with schema, fake/meta, alias/mutation and conformance tests.
 
 Required representative slices: an elementwise op, a view-like op, a reduction and a matrix/linear op.
 
-Gate: generated files are reproducible; manual and generated paths have tests; registration lifetime and duplicate/missing kernel errors are covered; runtime evidence identifies the chosen CPU kernel. The learner transfers the pattern to one small unpracticed operator.
+Gate: generated files are reproducible; manual and generated paths have tests; registration lifetime and duplicate/missing kernel errors are covered; runtime evidence identifies the chosen scalar/parallel/vector/library CPU path. Thread-count and benchmark evidence are reproducible. The learner transfers the pattern to one small unpracticed operator and can distinguish built-in from out-of-tree custom registration.
 
 ## M3 — CUDA backend and runtime boundary
 
@@ -66,9 +73,10 @@ Increments:
 6. dispatcher registration for CUDA;
 7. current/default streams, events, asynchronous launch and explicit synchronization tests;
 8. allocator/stream lifetime and a `record_stream`-like contract;
-9. naive versus cuBLAS backend and FP32/FP16/BF16 policy for supported ops;
-10. static CUDA Graph capture/replay as an I1 optimization;
-11. benchmark protocol with warmup, synchronization, memory metrics and CPU/oracle comparison.
+9. CUDA execution clinic: grid/block mapping, coalescing, shared memory, reductions, atomics, occupancy and launch-resource reasoning on representative kernels;
+10. naive versus cuBLAS/cuDNN-style library path, handle/workspace/algorithm selection and FP32/FP16/BF16 policy for supported ops;
+11. static CUDA Graph capture/replay as an I1 optimization;
+12. benchmark protocol with warmup, synchronization, memory metrics and CPU/oracle comparison.
 
 Gate: CPU-only builds remain valid; CUDA positive and error cases pass when the environment is available; focused failures demonstrate fragmentation/OOM, cross-stream premature reuse and misleading unsynchronized timing. The learner explains host/device code, allocation versus reservation, pinned transfer, kernel launch, stream/event dependency, memory lifetime, dispatch and precision selection. CUDA Graph work may remain I1, but allocator/stream correctness is required. CUDA claims stay unverified if prerequisites are unavailable.
 
@@ -83,12 +91,14 @@ Increments:
 3. `Linear`, activations, `Sequential`, Flatten, Conv2d, pooling and inference BatchNorm for the target CNN;
 4. Embedding, LayerNorm, GELU, Softmax, masking and naive scaled dot-product attention for a decoder-style Transformer block;
 5. KV-cache prefill/decode shape, update and lifetime behavior;
-6. `state_dict`, versioned serialization, load validation and device/dtype restoration;
+6. `state_dict`, versioned serialization, safe load validation, device/dtype restoration and one rank-local sharded-load case;
 7. `eval`, `no_grad`, inference-mode-like state and an autocast/mixed-precision policy;
 8. hooks or override mechanism as a small explicit subset;
-9. channels-first versus one channels-last path, batching and dynamic batch/sequence cases.
+9. channels-first versus one channels-last path, batching and dynamic batch/sequence cases;
+10. one weight-only or int8 Linear path covering scale/zero-point, packing, unsupported cases and float-oracle tolerance;
+11. input/preprocessing boundary with pinned transfer and repeated-request state isolation.
 
-Gate: a small CNN and decoder-style Transformer block run in eager inference on supported CPU/CUDA dtypes with oracle parity, save/load round trips, KV-cache prefill/decode, mode/precision distinctions and negative tests. The learner traces one CNN op and one attention/Linear path from Python `Module` through dispatcher to selected kernels.
+Gate: a small CNN and decoder-style Transformer block run in eager inference on supported CPU/CUDA dtypes with oracle parity, save/load round trips, KV-cache prefill/decode, mode/precision distinctions, one representative quantized Linear and negative tests. The learner traces one CNN op and one attention/Linear path from Python `Module` through dispatcher to selected kernels.
 
 ## M5 — Autograd with an inference-first boundary
 
@@ -142,25 +152,33 @@ Increments:
 5. decompositions, mutation/view normalization and simple optimization such as constant folding or fusion;
 6. lowering to an executable plan and cache/guard/recompile contract;
 7. eager-versus-compiled equivalence with dynamic batch and sequence-length tests;
-8. mixed-precision and TP graph behavior for the supported inference subset;
+8. mixed-precision, representative quantized Linear lowering and TP graph behavior for the supported inference subset;
 9. optional static CUDA Graph replay after compiled shapes and allocation addresses are stable.
+10. reduced export/AOT artifact plus a clean native or Python runner with explicit version contract;
+11. one Triton or generated-kernel source inspection/experiment without making it a runtime dependency of MiniTorch core.
 
-Gate: the target MLP/CNN inference subset executes through the compiler backend; logs show capture, guards, lowering and kernel selection; unsupported graphs fail or fall back according to the documented policy. The learner debugs one incorrect graph transformation.
+Gate: the target CNN and decoder-Transformer inference subset executes through the compiler backend; logs show capture, guards, lowering and kernel selection; dynamic batch/sequence and reduced AOT artifact cases pass; unsupported graphs fail or fall back according to the documented policy. The learner debugs one incorrect graph transformation.
 
-## M8 — Simulated device and backend integration
+## M8 — Dual PrivateUse backend and hardware conformance
 
-Goal: integrate a new device-like backend and separate eager and compiler responsibilities.
+Goal: make MiniTorch pluggable on a private third-party runtime and separately build a native PyTorch `PrivateUse1` out-of-tree reference adapter. Follow `PRIVATEUSE_BACKEND_SPEC.md`; do not claim real hardware success from mock tests.
 
 Increments:
 
-1. device registration, allocator and device guard contract;
-2. supported kernel registration and explicit unsupported matrix;
-3. fallback/redispatch and error reporting policy;
-4. serialization, RNG and stream/event capability decisions;
-5. compiler partition/lowering for the supported simulated device subset;
-6. versioned compatibility tests.
+1. learner-authored versioned C adapter ABI with opaque handles, feature flags, status/error boundary and capability query;
+2. MiniTorch plugin loader, ABI negotiation and CPU mock/fault-injection adapter;
+3. MiniTorch `PrivateUse` device registration, allocator/pinned allocator, guard, copy, stream/event and lifetime contract;
+4. MiniTorch kernel registry, factory/copy ops, selected kernels, decomposition/fallback and explicit unsupported matrix;
+5. MiniTorch autocast, RNG, serialization, profiler and optional distributed capabilities;
+6. MiniTorch compiler partition/lowering/execute path for the supported private device subset;
+7. native PyTorch OOT package: autoload/rename/device module, `C10_REGISTER_GUARD_IMPL`, hooks, allocators and Storage/Tensor factories;
+8. native `TORCH_LIBRARY_IMPL` operators/fallback, `AutogradPrivateUse1`, `AutocastPrivateUse1`, Meta/Fake, RNG, serialization, profiler and stream/event;
+9. native custom `torch.compile` backend and optional process group for the supported model slice;
+10. shared capability manifest and contract suite against both mock routes;
+11. sanitized command bundle for the learner's private real-adapter device-smoke and model verification;
+12. versioned ABI/PyTorch compatibility and upgrade tests.
 
-Gate: positive, unsupported, fallback and mixed-graph cases pass; no test claims real proprietary hardware validation. The learner defends ownership of allocation, selection, lowering, execution, synchronization and errors.
+Gate: Route A MiniTorch PrivateUse and Route B native PyTorch `PrivateUse1` both pass mock/proxy contract-ready tests. ABI mismatch, missing capability, allocation/copy, stream/event lifetime, operator/fallback, autocast, serialization/profiler and compiled-graph cases are covered. The learner defends ownership of allocation, selection, lowering, execution, synchronization and errors. Real-device success is awarded only after the private adapter passes sanitized device-smoke and representative-model gates.
 
 ## M9 — Packaging, CI and inference capstone
 
@@ -171,13 +189,15 @@ Increments:
 1. clean wheel build and isolated installation;
 2. CPU-required and CUDA-conditional CI matrices;
 3. reproducible generated-source checks, formatting/static checks and focused test layers;
-4. ABI/API/versioning and upgrade notes;
-5. final minimal MLP training/gradient-sync boundary;
-6. CPU/CUDA CNN and Transformer/KV-cache inference in eager and compiled modes;
-7. full/mixed-precision and unsharded/inference-DP/TP comparisons;
-8. allocator fragmentation/OOM, stream/event lifetime and optional CUDA Graph demonstrations;
-9. simulated-device and clean-wheel-install demonstrations;
-10. correctness, latency, throughput, peak allocated/reserved memory, transfer, communication and compile/startup report.
+4. curriculum coverage validator proving every mastery concept maps to a milestone and inspected source anchor;
+5. ABI/API/versioning and upgrade notes;
+6. final minimal MLP training/gradient-sync boundary;
+7. CPU/CUDA CNN, Transformer/KV-cache and representative quantized Linear inference in eager and compiled modes;
+8. full/mixed-precision and unsharded/inference-DP/TP comparisons;
+9. allocator fragmentation/OOM, stream/event lifetime and optional CUDA Graph demonstrations;
+10. MiniTorch PrivateUse and native PyTorch PrivateUse1 mock/proxy demonstrations plus private hardware command bundle;
+11. clean-wheel-install and reduced AOT artifact demonstrations;
+12. correctness, latency, throughput, peak allocated/reserved memory, transfer, communication and compile/startup report.
 
 Gate: the learner rebuilds the architecture map from their implementation, traces one unpracticed eager op and one model path, repairs a seeded defect without a supplied location, and completes a delayed transfer task. The wheel works in a clean environment and all conclusions distinguish observed reference behavior, MiniTorch behavior and unverified scope.
 

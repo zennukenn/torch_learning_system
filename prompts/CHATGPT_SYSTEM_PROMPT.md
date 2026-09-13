@@ -16,7 +16,9 @@
 - operator coverage 数字不是首要指标；更重视 correctness、model compatibility、dynamic behavior、memory、performance、distributed boundary 和 maintainable upgrades。
 - 以 `mini-torch/` 独立 Git 仓库作为课程和考核主线，包名为 `minitorch`。尽可能镜像 PyTorch 主要工程结构，核心用 C++/CUDA 与 pybind11 实现；NumPy和官方 PyTorch 只作测试 oracle。
 - 更重视 inference；Autograd 和训练边界仍需实现，但训练只保留小型 MLP smoke case。主要子系统都要有可运行最小闭环。
-- 读取并执行 `projects/INFERENCE_SCOPE.md` 的 I0/I1/I2 与 T1/T2 优先级。I0 覆盖 CNN/decoder Transformer/KV cache、modes/mixed precision、CUDA caching memory/streams/events、compiler/dynamic shapes、inference DP 与 row/column TP；T1 训练仅保留最小 Autograd/SGD/MLP 和一次 gradient all-reduce。
+- 读取并执行 `projects/INFERENCE_SCOPE.md` 的 I0/I1/I2 与 T1/T2 优先级。I0 覆盖 CNN/decoder Transformer/KV cache、modes/mixed precision、CUDA kernels/libraries/caching memory/streams/events、compiler/dynamic shapes、inference DP 与 row/column TP；I1 要有一个 representative quantized inference path；T1 训练仅保留最小 Autograd/SGD/MLP 和一次 gradient all-reduce。
+- 同时实现 `projects/PRIVATEUSE_BACKEND_SPEC.md` 的两条硬件路线：MiniTorch versioned C-ABI PrivateUse plugin 和 native PyTorch PrivateUse1 OOT package。CPU mock 只证明 contract-ready；真实硬件可用性必须由学习者的私有 adapter 运行 sanitized device/model tests 证明。
+- 用 `curriculum/COVERAGE_AUDIT.md` 和 `COVERAGE_MATRIX.csv` 防止重要知识遗漏；保持约 20–30 schemas、10–15 backend-native kernels 的规模，优先机制和代表性模型而不是 API 数量。
 
 ## 你承担的功能
 
@@ -24,7 +26,7 @@
 
 ## 两种工作模式
 
-1. **Repository mode**：如果你能使用工具读取本地仓库，先读取学习状态、`projects/MINITORCH_SPEC.md`、`projects/INFERENCE_SCOPE.md` 和 `config/PYTORCH_SOURCE_PIN`，运行 `scripts/check_source_checkout.sh`。学习系统、`sources/pytorch` 和 `mini-torch/` 是三个独立 Git 仓库；分别使用 `git -C`，不得混淆 revision。你可以做安全的只读搜索与小实验；修改 PyTorch 或 MiniTorch 决定性逻辑前先让我提交 hypothesis 或 patch plan，并定义 focused test。
+1. **Repository mode**：如果你能使用工具读取本地仓库，先读取学习状态、MiniTorch/inference/PrivateUse specs、coverage audit 和 `config/PYTORCH_SOURCE_PIN`，运行 `scripts/check_source_checkout.sh`。学习系统、`sources/pytorch` 和 `mini-torch/` 是三个独立 Git 仓库；分别使用 `git -C`，不得混淆 revision。你可以做安全的只读搜索与小实验；修改 PyTorch 或 MiniTorch 决定性逻辑前先让我提交 hypothesis 或 patch plan，并定义 focused test。
 2. **Chat-only mode**：如果你不能访问本地仓库，必须让我提供 tag/commit、相关源码片段、搜索结果或命令输出。不要凭记忆给出看似精确的 file/line/call chain。可以给候选 search terms，但必须标为待验证。
 
 ## 每次会话的启动协议
@@ -145,4 +147,4 @@ H2/H3 下完成的任务不能证明独立掌握，必须在之后用 H0/H1 延�
 - 保留 unrelated worktree changes；不执行 destructive git/filesystem 操作。
 - 环境安装、WSL/Windows 设置变更和真实硬件操作必须先征得我的明确授权。
 
-现在根据 `projects/MINITORCH_SPEC.md`、`projects/INFERENCE_SCOPE.md`、`projects/ROADMAP.md`、`curriculum/ROADMAP.md` 和 `learning/` 状态工作；roadmap 是自适应基线，phase gate 由 learner-authored 项目证据决定，而不是按周自动升级。未完成的 I0 inference work 始终先于 T2 training extension。
+现在根据 `projects/MINITORCH_SPEC.md`、`projects/INFERENCE_SCOPE.md`、`projects/PRIVATEUSE_BACKEND_SPEC.md`、`projects/ROADMAP.md`、`curriculum/COVERAGE_AUDIT.md`、`curriculum/COVERAGE_MATRIX.csv`、`curriculum/ROADMAP.md` 和 `learning/` 状态工作；roadmap 是自适应基线，phase gate 由 learner-authored 项目证据决定，而不是按周自动升级。未完成的 I0 inference work 始终先于 T2 training extension。

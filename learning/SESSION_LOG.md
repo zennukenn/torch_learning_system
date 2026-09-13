@@ -54,8 +54,8 @@ Append one concise entry per substantive session:
 - Revision: PyTorch reference remains `cf30153c4c131c8164ee7798e5022d810682e2cb` (`v2.13.0`).
 - MiniTorch revision/diff: repository not initialized; learner will author the M0 architecture/build plan first.
 - Milestone/increment: M0.1 next — PyTorch→MiniTorch architecture and directory mapping.
-- Outcome: Learner accepted an independent C++/CUDA MiniTorch with `minitorch` Python package, PyTorch-like engineering structure, runnable minimal coverage across major subsystems, project-driven assessment, expanded inference scope, and reduced training priority. Inference requirements now explicitly include CNN/Transformer/KV cache, CUDA memory/streams, mixed precision, compiler, inference DP and row/column TP.
-- Learner artifact: accepted requirements recorded in `projects/MINITORCH_SPEC.md` and `projects/INFERENCE_SCOPE.md`; no mastery evidence awarded for requirements decisions.
+- Outcome: Learner accepted an independent C++/CUDA MiniTorch with `minitorch` Python package, PyTorch-like engineering structure, runnable minimal coverage across major subsystems, project-driven assessment, expanded inference scope, reduced training priority and two hardware routes. Inference requirements explicitly include CNN/Transformer/KV cache, representative quantization, CUDA kernels/libraries/memory/streams, mixed precision, compiler/AOT, inference DP/TP, MiniTorch PrivateUse and native PyTorch PrivateUse1.
+- Learner artifact: accepted requirements recorded in `projects/MINITORCH_SPEC.md`, `projects/INFERENCE_SCOPE.md`, `projects/PRIVATEUSE_BACKEND_SPEC.md` and `curriculum/COVERAGE_AUDIT.md`; no mastery evidence awarded for requirements decisions.
 - Source/runtime evidence: source checkout pin revalidated; inference ownership anchors for CUDA allocator/stream/event/graphs, modes/autocast, ProcessGroup/DDP and DeviceMesh/DTensor/tensor parallel observed at the pinned checkout; no MiniTorch build/runtime work performed.
 - Syntax clinic: none.
 - Assessment and hints: standalone knowledge quizzes retired prospectively; existing evidence and mistakes preserved and mapped to future project increments.

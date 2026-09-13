@@ -2,7 +2,7 @@
 
 原 20 周/约 400 小时只保留为节奏基线。2026-09-13 起，学习者接受延长周期，以全面性和深度优先；阶段是否通过只看证据和 MiniTorch 项目关卡。基础阶段可以重复或延长，未通过 gate 时不得用日历进度强行进入深层源码。
 
-MiniTorch 是课程的连续实现主线，稳定范围见 `projects/MINITORCH_SPEC.md`，inference-first feature matrix 见 `projects/INFERENCE_SCOPE.md`，增量和 gate 见 `projects/ROADMAP.md`。真实 PyTorch 源码仍是每个设计的权威对照。课程不再把阶段项目放在知识讲授之后：每个主题都以 `讲清 prerequisite → 查看 PyTorch anchor → 学习者实现 MiniTorch increment → tests/debug → code defense → delayed extension` 完成闭环。
+MiniTorch 是课程的连续实现主线，稳定范围见 `projects/MINITORCH_SPEC.md`，inference-first feature matrix 见 `projects/INFERENCE_SCOPE.md`，双 PrivateUse 路线见 `projects/PRIVATEUSE_BACKEND_SPEC.md`，全面覆盖审计见 `curriculum/COVERAGE_AUDIT.md`，增量和 gate 见 `projects/ROADMAP.md`。真实 PyTorch 源码仍是每个设计的权威对照。课程不再把阶段项目放在知识讲授之后：每个主题都以 `讲清 prerequisite → 查看 PyTorch anchor → 学习者实现 MiniTorch increment → tests/debug → code defense → delayed extension` 完成闭环。
 
 ## 每周节奏
 
@@ -64,6 +64,11 @@ Foundation Gate 之前每周至少留下：一份学习者画的架构/目录图
 - 方法：先画出一个两文件小程序如何变为 executable/library，再看 PyTorch 为什么需要 Python/C++ 边界。
 - 暂不进入：template metaprogramming、宏生成、RAII/intrusive pointer 细节和 native stack 调试。
 
+### Foundation 0.7b：native extension 与工程调试闭环
+
+- 目标：理解 CPython extension/pybind11、Python↔C++ conversion、ownership、exception translation、GIL、shared-library ABI/RPATH、debug symbol 和 stack trace。
+- 方法：先建立一个 native function import/error/GIL-release 小闭环，再加入 debugger、sanitizer、linter 和 `compile_commands.json`；复杂 Tensor binding 留到 M1。
+
 ### Foundation 0.8：第一次浅层源码定位闭环
 
 - 目标：在已理解的层内完成 `问题 → 候选目录 → rg → 打开文件 → 用小证据核对`。
@@ -89,7 +94,7 @@ Foundation Gate：
 ### Week 3：Tensor 对象模型
 
 - 目标：区分 Python `Tensor`、C++ `at::Tensor`、`TensorImpl`、`StorageImpl`、`DataPtr` 的角色和 ownership。
-- 主题：sizes/strides/storage_offset、dtype/device/layout、contiguous、alias/view、version counter。
+- 主题：sizes/strides/storage_offset、dtype/device/layout、contiguous、alias/view、version counter；补齐 type promotion、broadcasting、accumulation dtype、NaN/Inf/overflow、tolerance、RNG 与 determinism。
 - 候选锚点：`c10/core/TensorImpl.h`、`c10/core/StorageImpl.h`、`aten/src/ATen/core/Tensor.h`。
 - 实验：view/clone/detach/reshape 的 storage alias、stride 和 mutation 行为。
 
@@ -98,7 +103,7 @@ Foundation Gate：
 - 目标：掌握 module/parameter/buffer 注册、attribute 机制、hooks、`state_dict`、serialization 基本路径。
 - 补课：`__getattr__`/`__setattr__`、descriptor、iterator/generator、context manager、typing。
 - 候选锚点：`torch/nn/modules/module.py`、`torch/nn/parameter.py`、`torch/serialization.py`。
-- 实验：先追踪 `nn.Linear` 初始化、参数注册、forward、保存与加载；随后用 CNN 与 decoder-style Transformer block 扩展到 Conv2d、inference BatchNorm、Embedding、LayerNorm、attention、KV cache、`eval`、inference mode 和 autocast。
+- 实验：先追踪 `nn.Linear` 初始化、参数注册、forward、保存与加载；随后用 CNN 与 decoder-style Transformer block 扩展到 Conv2d、inference BatchNorm、Embedding、LayerNorm、attention、KV cache、`eval`、inference mode 和 autocast；在算子层完成后加入一个 weight-only 或 int8 quantized Linear。
 
 ### Week 5：overrides、modes 与 tensor subclass
 
@@ -130,12 +135,15 @@ Gate 1：通过 M1 gate；`TENSOR-MODEL` 和 `PY-FRONTEND` 的 `explain/locate/t
 
 - 目标：沿一个 pointwise op 和一个 reduction/matmul op 到 concrete kernel；理解 device/dtype/layout specialization。
 - 候选锚点：`aten/src/ATen/native/`、`aten/src/ATen/native/cpu/`、`aten/src/ATen/native/cuda/`、`aten/src/ATen/TensorIterator*`。
-- 补课：lambda、type dispatch macro、vectorization、parallel loop、CUDA launch/synchronization。
+- 补课：lambda、type dispatch macro、vectorization、parallel loop、CUDA grid/block、coalescing、shared memory、atomics、occupancy 与 launch/synchronization。
+- CPU inference 补课：thread control、parallel loop、vectorization、false sharing/oversubscription、BLAS/oneDNN-style library boundary 和正确 benchmark。
+- CUDA library 补课：用一个代表算子比较 naive kernel 与 cuBLAS/cuDNN-style path，解释 handle、workspace、algorithm selection、determinism 和 dtype policy。
+- 工程补课：用一个 out-of-tree custom op 学 schema/kernel/fake/meta/alias contract 和 conformance testing。
 
 ### Week 9：端到端 operator 生命周期
 
 - 目标：完成 `Python → binding/codegen → schema → dispatcher → CPU/CUDA kernel → result`，并解释各层不变量。
-- 实验：比较 eager CPU、Meta/Fake 或 CUDA（环境可用时）的选择差异；构造错误 dtype/layout/device 用例。
+- 实验：比较 eager CPU、Meta/Fake 或 CUDA（环境可用时）的选择差异；构造错误 dtype/layout/device 用例；完成 representative quantized Linear 的 scale/zero-point、packing、error/tolerance tests。
 - 产物：两条可复现 full traces、Phase 2 operator/registration 项目。
 
 Gate 2：通过 M2 gate，并在可用环境下通过 M3 gate；`BIND-CODEGEN`、`DISPATCH`、`ATEN-KERNEL`、`CUDA` 的 `trace` 至少 3，`modify` 至少 2；能解释一次 redispatch 并用 runtime evidence 证明 CPU/CUDA kernel 选择。
@@ -168,7 +176,7 @@ Gate 3：通过 M5/M6 gate；`AUTOGRAD` 只需达到 inference boundary 所要�
 
 ## Phase 4 — PyTorch 2 compiler stack（Week 13–16）
 
-项目主线：完成 `MiniTorch M7`，用小 IR 和明确支持子集亲自实现 capture/meta/decomposition/lowering/fusion/cache/execution，再回看 Dynamo/FX/export/AOT/Inductor 的生产复杂度。重点验证 dynamic batch/sequence、mixed precision、TP graph 与可选 CUDA Graph replay。
+项目主线：完成 `MiniTorch M7`，用小 IR 和明确支持子集亲自实现 capture/meta/decomposition/lowering/fusion/cache/execution，再回看 Dynamo/FX/export/AOT/Inductor 的生产复杂度。重点验证 dynamic batch/sequence、mixed precision、representative quantized lowering、TP graph 与可选 CUDA Graph replay。
 
 ### Week 13：FX、Proxy、FakeTensor 与 symbolic shapes
 
@@ -209,9 +217,11 @@ Gate 4：通过 M7 gate；`FX-EXPORT`、`DYNAMO`、`INDUCTOR` 的 `explain/trace
 
 ### Week 18：`PrivateUse1` eager backend prototype
 
-- 目标：理解 device rename/module、tensor allocation、device guard、registration、fallback、serialization/RNG/stream/event 等接口的选择条件。
-- 实验：在无真实硬件下建立 `VENDOR_DEVICE` abstraction，能跑的部分用 prototype，不能跑的部分用 contract test 与 architecture decision record。
-- 产物：最小 prototype、unsupported matrix、negative tests。
+- 目标：完成两条独立路线：MiniTorch `PrivateUse` versioned C-ABI plugin，以及原生 PyTorch `PrivateUse1` OpenReg-style out-of-tree package。
+- MiniTorch 路线：plugin loader/capability negotiation、allocator/copy/guard/stream/event、kernel registry/fallback、autocast/RNG/serialization/profiler、compiler interface 和 CPU mock。
+- 原生 PyTorch 路线：rename/device module、guard/hooks/allocator/Storage factory、`TORCH_LIBRARY_IMPL`、Autograd/AutocastPrivateUse1、Meta/Fake、stream/event、profiler、compile 和 optional ProcessGroup。
+- 真实硬件：学习者私下提供 C/C++ adapter shared library；仓库提供 sanitized device-smoke/model command bundle。无真实运行结果时只声明 contract-ready。
+- 产物：双 prototype、public ABI、CPU mock、capability/unsupported matrix、positive/negative/fault tests 和 private hardware conformance plan。
 
 ### Week 19：`torch.compile` backend 与 OOT compatibility
 
@@ -219,7 +229,7 @@ Gate 4：通过 M7 gate；`FX-EXPORT`、`DYNAMO`、`INDUCTOR` 的 `explain/trace
 - 实验：代表性模型片段在 eager/reference/custom backend 上语义对比；动态 shape 与错误路径测试。
 - 产物：compile backend、compatibility matrix、Phase 5 集成项目。
 
-Gate 5：`EXTENSION`、`PRIVATEUSE1`、`COMPILE-BACKEND` 的 `modify` 至少 3，`transfer` 至少 2；明确哪些结果只是 CUDA/CPU proxy evidence，不能宣称已验证真实硬件。
+Gate 5：`EXTENSION`、`PRIVATEUSE1`、`PRIVATEUSE-ABI`、`PRIVATEUSE-RUNTIME`、`PRIVATEUSE-OPS`、`COMPILE-BACKEND` 的 `modify` 至少 3，`transfer` 至少 2；双路线 mock/proxy gate 都通过。只有私有 adapter 的 device-smoke 和 representative-model tests 通过后才可声明真实硬件验证。
 
 ## Phase 6 — 综合架构与迁移设计（Week 20）
 
@@ -228,11 +238,11 @@ Gate 5：`EXTENSION`、`PRIVATEUSE1`、`COMPILE-BACKEND` 的 `modify` 至少 3�
 - 重建 PyTorch 全局架构图，覆盖 Python frontend、Tensor/storage、dispatcher、ATen、Autograd、runtime、distributed、compiler、backend/testing/build。
 - 对一个未预先练习的模型片段完成 eager 与 compile 双路径追踪，并覆盖 mode/precision/device/shape 选择。
 - 完成 `VENDOR_DEVICE` inference adaptation blueprint：模块边界、风险、fallback、测试矩阵、性能方法、版本升级与 CI。
-- 完成 CNN 与 decoder-style Transformer/KV-cache 的 CPU/CUDA、eager/compiled、full/mixed precision、unsharded/DP/TP 对照；报告 latency、throughput、peak allocated/reserved memory、transfer/communication 与 compile/startup cost。
+- 完成 CNN、decoder-style Transformer/KV-cache 与 representative quantized Linear 的 CPU/CUDA、eager/compiled、full/mixed precision、unsharded/DP/TP 对照；报告 latency、throughput、peak allocated/reserved memory、transfer/communication 与 compile/startup cost。
 - 进行 learner-authored extension、未提示源码定位、seeded debug challenge 和 capstone code defense。
 
 Final gate：关键概念 `explain/locate/trace` 至少 3；`DISPATCH`、`RUNTIME`、`COMPAT` 的 `debug/modify/transfer` 至少 3；至少一次 +14 天延迟复习通过。没有真实硬件时，结论必须标注为设计或 proxy validation。
 
 ## 范围控制
 
-“全方位”表示理解所有主要子系统的职责、边界、关键数据结构，并在 MiniTorch 中拥有可运行最小实现和至少一条可执行调用链；不表示逐行读完数百万行代码或达到生产性能。mobile/edge、quantization、sparse、MPS/XPU/ROCm、distributed algorithms、ONNX 等专题在主干完成后加入 extension track，由模型需求和目标 backend 决定深度。
+“全方位”表示理解所有主要子系统的职责、边界、关键数据结构，并在 MiniTorch 中拥有可运行最小实现和至少一条可执行调用链；不表示逐行读完数百万行代码或达到生产性能。主线实现一个 quantized Linear；额外 quantization modes、mobile/edge、sparse/nested、MPS/XPU/ROCm、distributed algorithms、TorchScript、ONNX 等专题进入 extension track，由模型需求和目标 backend 决定深度。
