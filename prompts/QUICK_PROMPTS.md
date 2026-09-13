@@ -11,7 +11,7 @@
 ## 下一次学习
 
 ```text
-读取学习状态、projects/MINITORCH_SPEC.md、projects/INFERENCE_SCOPE.md 和当前 milestone。选择唯一的 session-sized MiniTorch increment，I0 inference 优先于 T2 training extension：先讲 prerequisites 并检查固定 PyTorch revision 的对应源码，再让我提交设计和决定性实现；按 acceptance matrix 运行 focused tests、调试一个实际失败，并让我无笔记解释自己的 diff、调用路径和限制。更新 notebook、证据和状态。
+读取学习状态、projects/MINITORCH_SPEC.md、projects/INFERENCE_SCOPE.md 和当前 milestone。按 roadmap 的 Core/Representative/Survey depth 与 timebox 选择唯一 increment，I0 inference 优先于 T2 training extension：先讲 prerequisites 并检查固定 PyTorch revision 的对应源码，再让我提交设计和决定性实现；按 acceptance matrix 运行 focused tests、调试一个实际失败，并让我无笔记解释自己的 diff、调用路径和限制。用 reviewed session manifest 更新 notebook、证据和状态。
 ```
 
 ## Inference 专题
@@ -23,7 +23,7 @@
 ## PrivateUse 双路线
 
 ```text
-读取 projects/PRIVATEUSE_BACKEND_SPEC.md。明确本节属于 Route A MiniTorch PrivateUse plugin 还是 Route B native PyTorch PrivateUse1 OOT package，只选择一个 session-sized contract。先在 pinned OpenReg/backend source 中核对 ownership，再让我实现决定性逻辑。用 CPU mock/fault injection 验证；除非我提供私有环境的 sanitized device/model test result，否则只能记录 contract-ready，不能声称真实硬件可用。
+读取 projects/PRIVATEUSE_BACKEND_SPEC.md。明确当前 P0–P5 gate 与 Route A MiniTorch PrivateUse plugin / Route B native PyTorch PrivateUse1 OOT package，只选择一个 session-sized contract，并确保两条 CPU-backed 路线在扩大下一 gate 前到达同一级。先在 pinned OpenReg/backend source 中核对 ownership，再让我实现决定性逻辑。用 CPU mock/fault injection 验证；除非我提供私有环境的 sanitized device/model test result，否则只能记录 contract-ready，不能声称真实硬件可用。
 ```
 
 ## 全面覆盖审计
@@ -35,7 +35,7 @@
 ## 基础架构课
 
 ```text
-从 curriculum/ROADMAP.md 的当前 Foundation lesson 和 MiniTorch M0 increment 开始。先用具体 inference/build 故事和简单架构图讲清 prerequisites，再让我完成一个目录图、配置或小型 C++/binding change，运行 focused build/test，并解释自己完成的工作。不让我猜未讲过的内部机制。
+从 curriculum/ROADMAP.md 的当前 Foundation lesson 和 MiniTorch M0a increment 开始。先用具体 inference/build 故事和简单架构图讲清 prerequisites，再让我完成一个目录图、配置或小型 C++/binding change，尽快获得 `import minitorch` native success。M0b packaging 和 M0c debugging 按 gate 后移，不让我猜未讲过的内部机制。
 ```
 
 ## 追踪调用链
@@ -66,6 +66,18 @@
 
 ```text
 执行 weekly audit：审计本周 MiniTorch commits/diffs、tests/debug 与 learner authorship；把一个旧知识点转化为小扩展、修复或代码解释，找出最早薄弱前置，判断下周 keep/slow/revise，并更新 REVIEW_QUEUE。不要因计划周数自动放行 phase gate。
+```
+
+## 四周范围审查
+
+```text
+使用 templates/SCOPE_REVIEW.md：统计最近四个 active weeks 或 20 次 substantive sessions 的 Core/Representative/Survey 完成、学习/编码/调试/记录耗时、schemas/kernels 数量和最早 blocker。只保留服务 CNN、decoder、PrivateUse 或新机制的实现；其余降为 Survey 或移除，并确定唯一的下一个 Core increment。
+```
+
+## 写入学习记录
+
+```text
+在我完成 unaided teach-back 和 gap correction 后，把本节证据编码到 templates/SESSION_MANIFEST.example.json 的副本。先运行 scripts/record_learning_session.py <manifest> 做 isolated dry run，复核摘要后再加 --apply；不要手工在多份状态文件中重复录入。
 ```
 
 ## 笔记与错题复习

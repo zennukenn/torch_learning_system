@@ -21,6 +21,7 @@
 - 第三方硬件路线同时要求：MiniTorch 自有的 PrivateUse 可插拔 backend，以及原生 PyTorch `PrivateUse1` out-of-tree adapter/prototype。
 - 假定真实硬件侧最终由学习者在私有环境提供 C/C++ adapter shared library；公开仓库只保存 versioned C ABI、CPU mock、capability manifest 和 conformance tests，不保存专有接口或日志。
 - MiniTorch 采用“机制完整、API 小”的规模控制：通常约 20–30 schemas、10–15 个 backend-native kernels，以 CNN、decoder Transformer 和硬件接入所需 vertical slices 为准。
+- 时间预期改为约 580–930 focused hours；按每周约 20 小时通常需要 9–18 个自然月。M0a 先获得 native import，M2.5 在 CUDA 前提供第一个 CPU model inference。
 
 ## 2026-09-02 重新校准的起点（不是掌握分数）
 

@@ -1,7 +1,7 @@
 # Current learning state
 
 - Status: Foundation 0.2 completed; MiniTorch project-assessment transition accepted on 2026-09-13
-- Current phase: Phase 0 / MiniTorch M0 — architecture, repository and build/import bootstrap
+- Current phase: Phase 0 / MiniTorch M0a — fast native-import bootstrap
 - Current week: 1 (mastery-paced; may extend without skipping the gate)
 - Target stable tag: `v2.13.0`, verified against the official remote on 2026-09-01
 - Source root: `sources/pytorch` (independent Git repository; ignored by the learning-system repository)
@@ -17,7 +17,7 @@
 - Inference scope: CNN plus decoder-style Transformer/KV cache and representative quantized Linear; CUDA kernels/libraries/caching memory/streams/events; mixed precision; compiler/dynamic shapes; two-process inference DP and row/column TP; see `projects/INFERENCE_SCOPE.md`
 - Coverage audit: 41 mastery concepts mapped through `curriculum/COVERAGE_MATRIX.csv`; CPU/numerics/debug/custom-op/quantization/AOT gaps and dual PrivateUse routes added on 2026-09-13
 - Hardware plan: Route A MiniTorch PrivateUse C-ABI plugin plus Route B native PyTorch PrivateUse1 OOT package; public CPU mock and private learner-supplied real adapter share a conformance suite
-- Next action: start MiniTorch M0 by having the learner author the architecture/directory mapping and build plan before initializing the independent repository
+- Next action: start MiniTorch M0a by having the learner author the architecture/directory mapping and smallest CMake/pybind native-import plan before initializing the independent repository
 - Active blockers: the official wheel is not built from local checkout changes; WSL RAM is 7.6 GiB; CMake/Ninja/GDB and Python `pybind11` package are unavailable; real third-party adapter/hardware tests must run privately, so no real-hardware claim exists yet
 - Confidentiality: only public PyTorch facts and abstract `VENDOR_DEVICE` requirements may be stored
 
@@ -27,8 +27,8 @@
 2. Full global architecture map across major subsystems; only the basic Linear/Flatten paths have been demonstrated.
 3. Python import/class/function/method execution model beyond `self` and a return annotation.
 4. C++ source/header, compile/link and pointer/reference model.
-5. Environment, debugger and source-build workflow, including CMake, pybind11, `pyproject.toml`, wheel and isolated environments.
+5. M0a CMake/pybind11 import workflow first; packaging/wheel and native debugger depth follow in M0b/M0c.
 
 ## Next-session contract
 
-Use architecture-first foundation mode until the Foundation Gate passes, but make MiniTorch M0 the practical spine immediately. Start each session from the global map, teach only the prerequisites needed for the current project increment, inspect the corresponding PyTorch source anchor, then let the learner produce the decisive design or code. Do not resume deep schema/codegen/dispatcher work until prerequisites and earlier MiniTorch layers exist. Close with focused tests and an unaided explanation of the learner's own change; record evidence only from learner-produced work.
+Use architecture-first foundation mode until the Foundation Gate passes, but make MiniTorch M0a the practical spine immediately. Obtain one native import before adding M0b packaging and M0c debugging depth. Start each session from the global map, teach only the prerequisites needed for the current project increment, inspect the corresponding PyTorch source anchor, then let the learner produce the decisive design or code. Do not resume deep schema/codegen/dispatcher work until prerequisites and earlier MiniTorch layers exist. Close with focused tests and an unaided explanation of the learner's own change; record evidence only from learner-produced work.

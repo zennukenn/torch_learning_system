@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import json
 import re
 import shutil
 import subprocess
@@ -18,6 +19,8 @@ LEARNING = ROOT / "learning"
 SOURCE = ROOT / "sources" / "pytorch"
 VALIDATOR = ROOT / "scripts" / "validate_learning_state.py"
 COVERAGE_VALIDATOR = ROOT / "scripts" / "validate_curriculum_coverage.py"
+SESSION_RECORDER = ROOT / "scripts" / "record_learning_session.py"
+SESSION_MANIFEST = ROOT / "templates" / "SESSION_MANIFEST.example.json"
 
 REQUIRED_PATHS = [
     "AGENTS.md",
@@ -48,7 +51,10 @@ REQUIRED_PATHS = [
     "templates/BACKEND_COMPATIBILITY.md",
     "templates/LEARNING_NOTE.md",
     "templates/MINITORCH_MILESTONE.md",
+    "templates/SCOPE_REVIEW.md",
+    "templates/SESSION_MANIFEST.example.json",
     "scripts/checkout_pytorch_source.sh",
+    "scripts/record_learning_session.py",
     "scripts/validate_curriculum_coverage.py",
     "learning/artifacts/.gitkeep",
     "learning/notebook/INDEX.md",
@@ -205,110 +211,6 @@ def append_csv(path: Path, row: dict[str, str]) -> None:
         writer.writerow(row)
 
 
-def update_synthetic_mastery(path: Path) -> None:
-    with path.open(newline="", encoding="utf-8") as handle:
-        reader = csv.DictReader(handle)
-        fieldnames = reader.fieldnames
-        rows = list(reader)
-    if fieldnames is None:
-        raise RuntimeError("MASTERY.csv has no header")
-    for row in rows:
-        if row["concept_id"] == "BUILD-PACKAGING":
-            row["trace"] = "1"
-            row["last_evidence_id"] = "E-20990101-01"
-            row["status"] = "learning"
-            break
-    else:
-        raise RuntimeError("BUILD-PACKAGING concept is missing")
-    with path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
-
-
-def simulate_new_user_session(temp_learning: Path, revision: str, build_summary: str) -> None:
-    append_csv(
-        temp_learning / "EVIDENCE_LOG.csv",
-        {
-            "evidence_id": "E-20990101-01",
-            "date": "2099-01-01",
-            "session": "synthetic-health-check",
-            "revision": revision,
-            "concept_id": "BUILD-PACKAGING",
-            "dimension": "trace",
-            "task": "Build a temporary native extension and trace import minitorch to minitorch._C",
-            "learner_result": "Synthetic learner explained the staged project diff and the passing native_smoke import",
-            "hint_level": "H0",
-            "source_or_command": f"temporary independent Git repository; {build_summary}; native_smoke == 42",
-            "notebook_path": "learning/notebook/sessions/2099-01-01-synthetic-health-check.md",
-            "verdict": "pass",
-            "next_review": "2099-01-08",
-        },
-    )
-    append_csv(
-        temp_learning / "QUESTION_HISTORY.csv",
-        {
-            "question_id": "Q-20990101-01",
-            "date": "2099-01-01",
-            "concept_id": "BUILD-PACKAGING",
-            "question": "Defend the temporary diff and trace import minitorch through its native module",
-            "conditions": "No notes; staged diff and focused smoke output available",
-            "learner_answer": "Python loads minitorch/__init__.py, which imports the compiled minitorch._C module; native_smoke proves C++ executed",
-            "hint_level": "H0",
-            "verdict": "pass",
-            "evidence_id": "E-20990101-01",
-            "next_due": "2099-01-08",
-        },
-    )
-    update_synthetic_mastery(temp_learning / "MASTERY.csv")
-
-    note_relative = "learning/notebook/sessions/2099-01-01-synthetic-health-check.md"
-    note = temp_learning / "notebook" / "sessions" / "2099-01-01-synthetic-health-check.md"
-    note.write_text(
-        "# Synthetic M0 project learning note\n\n"
-        "- Status: `complete`\n"
-        "- Evidence IDs: E-20990101-01\n\n"
-        "## Learner teach-back before feedback\n\n"
-        "The staged diff defines the Python package boundary and one pybind11 native entry. "
-        "Importing `minitorch` loads `minitorch._C`; returning 42 proves the C++ body ran.\n\n"
-        "## Gap audit\n\n"
-        "No blocking gap appeared in this synthetic H0 code defense.\n\n"
-        "## Mentor supplement (not mastery evidence)\n\n"
-        "This direct-compiler smoke is not the full CMake, wheel, pytest, or CTest M0 gate.\n",
-        encoding="utf-8",
-    )
-    with (temp_learning / "notebook" / "INDEX.md").open("a", encoding="utf-8") as handle:
-        handle.write(
-            "\n| 2099-01-01 | complete | Phase 0 / M0 | synthetic native import | BUILD-PACKAGING | "
-            "E-20990101-01 | [note](sessions/2099-01-01-synthetic-health-check.md) |\n"
-        )
-    artifacts = temp_learning / "artifacts" / "2099-01-01-synthetic-health-check"
-    artifacts.mkdir(parents=True, exist_ok=True)
-    (artifacts / "MINITORCH_MILESTONE.md").write_text(
-        "# Synthetic M0 milestone\n\n"
-        "Staged diff: `pyproject.toml`, `binding.cpp`, `minitorch/__init__.py`.\n\n"
-        "Focused result: `import minitorch`; `native_smoke() == 42`.\n",
-        encoding="utf-8",
-    )
-    with (temp_learning / "SESSION_LOG.md").open("a", encoding="utf-8") as handle:
-        handle.write(
-            "\n## 2099-01-01 — synthetic health check\n\n"
-            "- Revision: temporary simulation\n"
-            "- Outcome: learner diff, native import, evidence, code defense, and delayed review exercised\n"
-            f"- Notebook: {note_relative}\n"
-            "- Next action: temporary data must be deleted\n"
-        )
-    with (temp_learning / "REVIEW_QUEUE.md").open("a", encoding="utf-8") as handle:
-        handle.write(
-            "\n| 2099-01-08 | BUILD-PACKAGING | trace | E-20990101-01 | H0 | "
-            "Rebuild from a clean directory and explain extension discovery | due |\n"
-        )
-    with (temp_learning / "STATE.md").open("a", encoding="utf-8") as handle:
-        handle.write(
-            "\n<!-- synthetic health check: next action is delayed H0 rebuild; temporary only -->\n"
-        )
-
-
 def main() -> int:
     errors: list[str] = []
     print("[1/8] Checking system structure")
@@ -352,7 +254,9 @@ def main() -> int:
             errors.append(f"PrivateUse1 marker {marker!r} missing from {relative}")
 
     print("[4/8] Validating curriculum coverage")
-    coverage_validation = run([sys.executable, str(COVERAGE_VALIDATOR)], capture=True)
+    coverage_validation = run(
+        [sys.executable, str(COVERAGE_VALIDATOR), "--verify-symbols"], capture=True
+    )
     if coverage_validation.returncode:
         errors.append("curriculum coverage is invalid:\n" + coverage_validation.stderr.strip())
     else:
@@ -383,6 +287,31 @@ def main() -> int:
         before = learning_digest()
         with tempfile.TemporaryDirectory(prefix="pytorch-learning-system-") as directory:
             temp_path = Path(directory)
+            invalid_matrix = temp_path / "invalid-coverage.csv"
+            coverage_text = (ROOT / "curriculum" / "COVERAGE_MATRIX.csv").read_text(
+                encoding="utf-8"
+            )
+            strong_plan = (
+                "Layered acceptance matrix and failure diagnostics,"
+                "explain;trace;debug;modify;transfer"
+            )
+            weak_plan = "Layered acceptance matrix and failure diagnostics,explain;modify"
+            if strong_plan not in coverage_text:
+                errors.append("coverage negative-test fixture could not find its target row")
+            invalid_matrix.write_text(
+                coverage_text.replace(strong_plan, weak_plan, 1), encoding="utf-8"
+            )
+            weak_coverage = run(
+                [
+                    sys.executable,
+                    str(COVERAGE_VALIDATOR),
+                    "--matrix",
+                    str(invalid_matrix),
+                ],
+                capture=True,
+            )
+            if weak_coverage.returncode == 0 or "I0 requires" not in weak_coverage.stderr:
+                errors.append("coverage validator did not reject weak I0 evidence dimensions")
             try:
                 build_summary = build_synthetic_minitorch(temp_path)
                 print(f"Native import passed: {build_summary}")
@@ -394,7 +323,116 @@ def main() -> int:
             temp_learning = temp_path / "learning"
             shutil.copytree(LEARNING, temp_learning)
             if build_summary != "native build failed":
-                simulate_new_user_session(temp_learning, revision, build_summary)
+                manifest = json.loads(SESSION_MANIFEST.read_text(encoding="utf-8"))
+                manifest["example_only"] = False
+                manifest["session"] = "synthetic-health-check"
+                manifest["outcome"] = (
+                    "Temporary staged diff, native import, evidence and code defense passed."
+                )
+                manifest["verification"] = f"{build_summary}; native_smoke() == 42"
+                manifest["mentor_supplement"] = (
+                    "Direct-compiler health smoke does not satisfy the learner's M0a CMake gate."
+                )
+                manifest_path = temp_path / "session-manifest.json"
+                manifest_path.write_text(
+                    json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+                )
+                invalid_manifest = json.loads(json.dumps(manifest))
+                invalid_manifest["evidence"][0]["concept_id"] = "NOT-A-CONCEPT"
+                invalid_manifest_path = temp_path / "invalid-session-manifest.json"
+                invalid_manifest_path.write_text(
+                    json.dumps(invalid_manifest, indent=2) + "\n", encoding="utf-8"
+                )
+                manifest_rejected = run(
+                    [
+                        sys.executable,
+                        str(SESSION_RECORDER),
+                        str(invalid_manifest_path),
+                        "--learning-dir",
+                        str(temp_learning),
+                    ],
+                    capture=True,
+                )
+                if (
+                    manifest_rejected.returncode == 0
+                    or "concept_id is unknown" not in manifest_rejected.stderr
+                ):
+                    errors.append("session recorder did not reject an unknown concept")
+                recorded = run(
+                    [
+                        sys.executable,
+                        str(SESSION_RECORDER),
+                        str(manifest_path),
+                        "--learning-dir",
+                        str(temp_learning),
+                        "--apply",
+                    ],
+                    capture=True,
+                )
+                if recorded.returncode:
+                    errors.append(
+                        "session manifest lifecycle failed:\n" + recorded.stderr.strip()
+                    )
+                else:
+                    partial_manifest = json.loads(json.dumps(manifest))
+                    partial_manifest.update(
+                        {
+                            "date": "2099-01-02",
+                            "session": "synthetic-partial-defense",
+                            "note_slug": "m0a-partial-defense",
+                            "topic": "Partial native-import defense",
+                        }
+                    )
+                    partial_manifest["evidence"][0].update(
+                        {
+                            "evidence_id": "E-20990102-01",
+                            "verdict": "partial",
+                            "next_review": "2099-01-09",
+                        }
+                    )
+                    partial_manifest["questions"][0].update(
+                        {
+                            "question_id": "Q-20990102-01",
+                            "verdict": "partial",
+                            "evidence_id": "E-20990102-01",
+                            "next_due": "2099-01-09",
+                            "correction_evidence": "Corrected extension-discovery explanation",
+                            "mistake_status": "open",
+                        }
+                    )
+                    partial_manifest["mastery_updates"][0]["evidence_id"] = (
+                        "E-20990102-01"
+                    )
+                    partial_manifest["reviews"][0].update(
+                        {
+                            "due_policy": "2099-01-09",
+                            "evidence_id": "E-20990102-01",
+                        }
+                    )
+                    partial_path = temp_path / "partial-session-manifest.json"
+                    partial_path.write_text(
+                        json.dumps(partial_manifest, indent=2) + "\n", encoding="utf-8"
+                    )
+                    partial_recorded = run(
+                        [
+                            sys.executable,
+                            str(SESSION_RECORDER),
+                            str(partial_path),
+                            "--learning-dir",
+                            str(temp_learning),
+                            "--apply",
+                        ],
+                        capture=True,
+                    )
+                    mistakes = (temp_learning / "notebook" / "MISTAKES.md").read_text(
+                        encoding="utf-8"
+                    )
+                    if (
+                        partial_recorded.returncode
+                        or "Q-20990102-01" not in mistakes
+                        or "sessions/2099-01-02-m0a-partial-defense.md" not in mistakes
+                    ):
+                        errors.append("session recorder partial/mistake lifecycle failed")
             simulated = run(
                 [sys.executable, str(VALIDATOR), "--learning-dir", str(temp_learning)],
                 capture=True,
@@ -407,8 +445,8 @@ def main() -> int:
             append_csv(
                 temp_learning / "EVIDENCE_LOG.csv",
                 {
-                    "evidence_id": "E-20990101-02",
-                    "date": "2099-01-01",
+                    "evidence_id": "E-20990103-01",
+                    "date": "2099-01-03",
                     "session": "synthetic-negative-check",
                     "revision": revision,
                     "concept_id": "NOT-A-CONCEPT",
@@ -417,24 +455,24 @@ def main() -> int:
                     "learner_result": "Synthetic invalid row",
                     "hint_level": "H0",
                     "source_or_command": "validator negative test",
-                    "notebook_path": "learning/notebook/sessions/2099-01-01-synthetic-health-check.md",
+                    "notebook_path": "learning/notebook/sessions/2099-01-01-m0a-native-import.md",
                     "verdict": "fail",
-                    "next_review": "2099-01-02",
+                    "next_review": "2099-01-10",
                 },
             )
             append_csv(
                 temp_learning / "QUESTION_HISTORY.csv",
                 {
-                    "question_id": "Q-20990101-02",
-                    "date": "2099-01-01",
+                    "question_id": "Q-20990103-01",
+                    "date": "2099-01-03",
                     "concept_id": "NOT-A-CONCEPT",
                     "question": "Ensure missing mistake-note coverage is rejected",
                     "conditions": "Synthetic negative test",
                     "learner_answer": "Synthetic invalid answer",
                     "hint_level": "H0",
                     "verdict": "fail",
-                    "evidence_id": "E-20990101-02",
-                    "next_due": "2099-01-02",
+                    "evidence_id": "E-20990103-01",
+                    "next_due": "2099-01-10",
                 },
             )
             rejected = run(
@@ -443,8 +481,8 @@ def main() -> int:
             )
             expected_rejections = [
                 "unknown concept_id",
-                "notebook note does not contain E-20990101-02",
-                "Q-20990101-02 is missing from notebook/MISTAKES.md",
+                "notebook note does not contain E-20990103-01",
+                "Q-20990103-01 is missing from notebook/MISTAKES.md",
             ]
             if rejected.returncode == 0 or any(
                 marker not in rejected.stderr for marker in expected_rejections
@@ -467,7 +505,7 @@ def main() -> int:
 
     print(
         "PASS: structure, source pin, source anchors, curriculum coverage, native import, "
-        "project evidence/code defense, validator rejection, and cleanup all passed."
+        "manifest-driven project evidence/code defense, validator rejection, and cleanup all passed."
     )
     return 0
 

@@ -1,6 +1,6 @@
 # PyTorch Source Learning Agent System
 
-这是一个以 MiniTorch 独立实现为项目主线、每周约 20 小时、按 mastery gate 推进的源码学习系统。第一目标是全面、深入、可验证地掌握 PyTorch、C++、CUDA 和相关工程知识；第二目标是为未来的保密推理硬件适配建立可迁移能力。原 20 周是节奏基线，允许延长。
+这是一个以 MiniTorch 独立实现为项目主线、每周约 20 小时、按 mastery gate 推进的源码学习系统。第一目标是全面、深入、可验证地掌握 PyTorch、C++、CUDA 和相关工程知识；第二目标是为未来的保密推理硬件适配建立可迁移能力。原 20 周只作历史参考，当前容量估计为 580–930 focused hours，通常对应 9–18 个自然月。
 
 系统不是静态教程。它通过仓库级 `AGENTS.md`、Codex skill、ChatGPT 总提示词、课程路线、项目关卡和持久化学习状态协同工作。
 
@@ -17,15 +17,16 @@
 - `projects/MINITORCH_SPEC.md`：已确认的 MiniTorch 范围、依赖、目录、最终案例和作者边界。
 - `projects/INFERENCE_SCOPE.md`：inference-first 必修矩阵，覆盖 CNN/Transformer、显存/stream、mixed precision、DP/TP、compiler 与性能证据；同时定义训练降级边界。
 - `projects/PRIVATEUSE_BACKEND_SPEC.md`：MiniTorch PrivateUse C-ABI plugin 与原生 PyTorch PrivateUse1 OOT package 的双路线、mock 和真实硬件验收门。
-- `projects/ROADMAP.md`：M0–M9 MiniTorch 实现里程碑与质量门。
+- `projects/ROADMAP.md`：M0a/M0b/M0c、M1–M9 和早期 M2.5 CPU 模型闭环，包含 C/R/S 深度、容量估计与质量门。
 - `learning/`：学习者档案、证据、掌握度、复习队列与会话记录。
 - `learning/notebook/`：每次课的闭卷复述、查漏补缺、整理笔记和长期错题本。
 - `learning/artifacts/`：每次会话的调用链、语法卡、实验或项目产物。
 - `config/PYTORCH_SOURCE_PIN`：唯一的 PyTorch baseline tag/commit 固定点；学习分支可在它之上产生新 commit。
 - `scripts/validate_learning_state.py`：检查 CSV schema、跨表引用、枚举、日期、revision 和分数。
 - `scripts/system_health_check.py`：在临时独立 Git 仓库编译并导入一个真实 pybind11 native module，再模拟 M0 项目证据、code defense、错误拒绝与清理，不污染真实学习记录。
-- `scripts/validate_curriculum_coverage.py`：检查每个 mastery concept 都有有效 priority、milestone、真实 PyTorch anchor 和 learner evidence。
-- `templates/`：基础架构图、调用链、语法卡、单次学习和周复盘模板。
+- `scripts/validate_curriculum_coverage.py`：检查每个 mastery concept 都有有效 priority、已声明 milestone、真实 PyTorch path、具名 source symbol 和足够的 evidence dimensions。
+- `scripts/record_learning_session.py`：用一个 JSON session manifest 在临时副本中生成并校验 evidence、question、mastery、review、note、index 和 session log，再选择性写回。
+- `templates/`：基础架构图、调用链、语法卡、session manifest、单次学习、四周范围审查和周复盘模板。
 - `environment/REPORT.md`：2026-09-01 的本机体检和环境关卡。
 - `sources/pytorch/`：被外层 `.gitignore` 忽略的 PyTorch 官方源码；它始终是独立 Git 仓库。
 - `mini-torch/`：被外层 `.gitignore` 忽略、由学习者逐步实现的独立 Git 仓库；Python 包名为 `minitorch`。
@@ -82,8 +83,9 @@ bash scripts/checkout_pytorch_source.sh
 1. `config/PYTORCH_SOURCE_PIN` 与本地 checkout 基线完全匹配。当前基线是 `v2.13.0`；学习 patch 必须位于它的 descendant branch，并把实际 HEAD 写入证据。是否出现新 stable 只需在阶段边界定期检查，不在学习会话中自动切换。迁移版本必须单独评估并得到你的明确同意。
 2. 完成环境关卡，尤其是 WSL 内存、GPU 可访问性、构建工具和隔离 Python 环境。
 3. 学习者完成 PyTorch→MiniTorch 目录/职责映射，并初始化 `mini-torch/` 独立 Git 仓库。
-4. 从干净 build directory 完成 `pyproject.toml → CMake → C++ library → pybind11 → minitorch._C → import minitorch` 的 editable install 和 wheel smoke loop，同时具备 pytest 与 CTest。
-5. 学习者无笔记解释自己编写的配置、compile/link、extension import path、测试证据和简化边界，从而通过 M0 gate。
+4. M0a 先从干净 build directory 完成 `CMake → C++ library → pybind11 → minitorch._C → import minitorch`，获得第一条 native success。
+5. M0b 再完成 `pyproject.toml`、editable/wheel smoke、pytest 和 CTest；M0c 的 exception/GIL/ABI/RPATH/debugging 在进入 CUDA M3 前完成。
+6. 学习者无笔记解释自己编写的配置、compile/link、extension import path、测试证据和简化边界。
 
 源码存在不代表构建环境已经就绪。构建、安装依赖或修改 WSL/Windows 设置必须经过单独的环境关卡。
 
@@ -100,3 +102,5 @@ python3 scripts/validate_curriculum_coverage.py
 ```
 
 只检查正式学习记录时运行 `python3 scripts/validate_learning_state.py`。系统自检生成的模拟 learner/evidence/question/artifact 全部位于 OS 临时目录，测试完成后自动删除。
+
+完成真实项目会话后，从 `templates/SESSION_MANIFEST.example.json` 复制一份 manifest，将 `example_only` 改为 `false`，再运行 `python3 scripts/record_learning_session.py <manifest>` 预检；确认无误后加 `--apply`。示例文件不能直接写入，脚本也不会绕过 learner teach-back、证据要求或最终状态校验。

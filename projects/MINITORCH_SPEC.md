@@ -102,6 +102,7 @@ Autograd and a tiny optimizer remain required architecture lessons. Training is 
 
 Completion requires these learner-defended demonstrations:
 
+- run an early CPU `Linear → ReLU → Linear` inference at M2.5 before beginning CUDA;
 - train a small MLP to show the Autograd/optimizer boundary;
 - run a small CNN inference on CPU and CUDA and compare against an oracle;
 - run a decoder-style Transformer block with naive attention and KV-cache prefill/decode cases;

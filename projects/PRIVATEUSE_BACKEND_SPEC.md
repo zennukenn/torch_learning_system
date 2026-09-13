@@ -142,6 +142,21 @@ The same suite runs against the CPU mock and the private real adapter:
 
 The private hardware run stores only a sanitized capability/version identifier, test names, pass/fail, timing/memory summaries and known limitations. Raw vendor logs remain outside this repository.
 
+## P0–P5 staged gates
+
+Both routes advance through the same observable stages. Route A and Route B may share capability fixtures and expected behavior while keeping their loader and registration implementations separate.
+
+| Gate | Required outcome | Evidence |
+|---|---|---|
+| P0 — load | package/plugin loads, name/module registration works, ABI/capability mismatches fail deterministically | loader/autoload positive and negative tests |
+| P1 — memory | device guard, allocation/free, tensor factory and H2D/D2H/D2D copy work | ownership, alignment, OOM and invalid-copy tests |
+| P2 — async runtime | current/default streams, events, synchronization, async error and allocator lifetime work | ordering, wait/query and premature-reuse failure/repair |
+| P3 — eager inference | selected factories/operators, decomposition/fallback, autocast, RNG, serialization and profiler work | operator matrix plus small eager model slice |
+| P4 — compiler | Fake/Meta, capability partition, lowering/execute, cache and fallback work | eager/compiled equivalence and unsupported-graph tests |
+| P5 — integration | packaging/version matrix and optional distributed/TP path are ready; private commands are reproducible | clean install, compatibility report and sanitized device/model bundle |
+
+Complete one gate on both CPU-backed routes before widening the next gate. P0–P2 provide early backend successes; P3–P5 reuse the same CNN/decoder/quantization slices rather than adding an operator zoo. Optional distributed behavior remains Representative unless the vendor capability or final target makes it Core.
+
 ## Gate
 
-M8 passes only when Route A and Route B both pass contract-ready tests against their mock/runtime proxy. Final hardware readiness additionally requires a documented command bundle the learner can run privately. “Runs on the third-party hardware” may be recorded only after the real adapter passes device-smoke and representative-model gates.
+M8 passes only when Route A and Route B both pass P0–P5 contract-ready tests against their mock/runtime proxy. A failed stage blocks later widening but does not erase evidence from an earlier stage. Final hardware readiness additionally requires a documented command bundle the learner can run privately. “Runs on the third-party hardware” may be recorded only after the real adapter passes device-smoke and representative-model gates.

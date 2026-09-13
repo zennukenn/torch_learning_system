@@ -1,0 +1,72 @@
+{
+  "example_only": true,
+  "date": "2099-01-01",
+  "session": "m0a-native-import",
+  "phase": "Phase 0 / M0a",
+  "milestone": "M0a.4",
+  "topic": "First native import",
+  "pytorch_revision": "cf30153c4c131c8164ee7798e5022d810682e2cb",
+  "minitorch_revision": "WORKTREE: staged M0a diff",
+  "note_slug": "m0a-native-import",
+  "outcome": "Learner-authored native module imported and passed its focused smoke test.",
+  "learner_teach_back": "Preserve the learner's unaided explanation of the diff, build/import path, ownership and limitations.",
+  "gap_audit": "Record correct, missing, incorrect and uncertain parts after the unaided answer.",
+  "mentor_supplement": "Add only material that must remain separate from mastery evidence.",
+  "verification": "Record concise commands, outcomes and what remains unverified.",
+  "next_action": "Start the next single Core increment.",
+  "state_updates": {
+    "Current phase": "Phase 0 / MiniTorch M0a — native import",
+    "Last session": "2099-01-01 — M0a native import",
+    "Next action": "Start the next single Core increment"
+  },
+  "evidence": [
+    {
+      "evidence_id": "E-20990101-01",
+      "concept_id": "BUILD-PACKAGING",
+      "dimension": "trace",
+      "task": "Trace import minitorch through the learner-authored native module",
+      "learner_result": "Learner explained the staged diff and focused result without notes.",
+      "hint_level": "H0",
+      "source_or_command": "mini-torch staged diff; focused native import command",
+      "verdict": "pass",
+      "next_review": "2099-01-08"
+    }
+  ],
+  "questions": [
+    {
+      "question_id": "Q-20990101-01",
+      "concept_id": "BUILD-PACKAGING",
+      "question": "Defend the build and import path through the changed files.",
+      "conditions": "M0a.4 staged diff; no notes; focused output available",
+      "learner_answer": "Preserve the original learner answer.",
+      "hint_level": "H0",
+      "verdict": "pass",
+      "evidence_id": "E-20990101-01",
+      "next_due": "2099-01-08",
+      "correction_evidence": "Not needed for a pass",
+      "mistake_status": "not-applicable"
+    }
+  ],
+  "mastery_updates": [
+    {
+      "concept_id": "BUILD-PACKAGING",
+      "dimension": "trace",
+      "score": 1,
+      "evidence_id": "E-20990101-01",
+      "status": "learning"
+    }
+  ],
+  "reviews": [
+    {
+      "due_policy": "2099-01-08",
+      "activation_milestone": "M0a",
+      "eligible_after": "native import passes",
+      "concept_id": "BUILD-PACKAGING",
+      "dimension": "trace",
+      "evidence_id": "E-20990101-01",
+      "hint_ceiling": "H0",
+      "prompt": "Rebuild cleanly and explain extension discovery.",
+      "status": "scheduled"
+    }
+  ]
+}

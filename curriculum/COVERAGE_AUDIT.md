@@ -1,6 +1,6 @@
 # PyTorch knowledge and learning-path coverage audit
 
-Audit date: 2026-09-13
+Audit date: 2026-09-14
 PyTorch reference: `cf30153c4c131c8164ee7798e5022d810682e2cb` (`v2.13.0`)
 
 ## Audit standard
@@ -65,11 +65,12 @@ The 2026-09-13 pre-audit plan already covered Tensor/Storage, dispatcher/codegen
 The optimized order is:
 
 ```text
-M0 architecture + Python/C++ build/binding/tooling
+M0a fast native import → M0b packaging/test; M0c debugging completes before CUDA
  → M1 Tensor/Storage + numerical semantics
    → M2 schema/codegen/dispatcher + CPU backend/custom ops
-     → M3 CUDA kernels + memory/streams
-       → M4 nn + CNN/Transformer inference semantics
+     → M2.5 first CPU model inference
+       → M3 CUDA kernels + memory/streams
+         → M4 nn + CNN/Transformer inference semantics
          → M5 minimal Autograd/training boundary
          → M6 runtime/profiler + distributed inference DP/TP
            → M7 graph/compiler/AOT inference
@@ -80,6 +81,8 @@ M0 architecture + Python/C++ build/binding/tooling
 Reasons for this order:
 
 - M0 prevents C++ and build mechanics from blocking every later source lesson.
+- M0a provides a native success quickly; M0b/M0c defer packaging and debugging depth until the learner has context.
+- M2.5 provides a complete CPU model reward before asynchronous CUDA complexity.
 - Tensor/numerics precede dispatcher/kernels so operators have explicit invariants.
 - CPU establishes semantics and debugging before CUDA adds asynchronous state.
 - Real model slices start only after storage, dispatch and kernels exist.
@@ -101,4 +104,4 @@ Reasons for this order:
 
 ## Gate against omissions
 
-`curriculum/COVERAGE_MATRIX.csv` maps every mastery concept to a priority, milestone, inspected PyTorch anchor and learner evidence. `scripts/validate_curriculum_coverage.py` rejects missing/extra concepts, invalid priorities/milestones and nonexistent anchors. `scripts/system_health_check.py` runs this validator before simulating a project learning session.
+`curriculum/COVERAGE_MATRIX.csv` maps every mastery concept to a priority, declared milestone, inspected PyTorch path, named source symbol/ownership point, learner deliverable and required evidence dimensions. `scripts/validate_curriculum_coverage.py` rejects missing/extra concepts, undeclared milestones, nonexistent paths, malformed symbol entries and weak I0/F0/I1/T1 evidence plans. `scripts/system_health_check.py` runs this validator before simulating a manifest-driven project learning session.

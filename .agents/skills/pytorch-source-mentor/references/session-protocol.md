@@ -4,7 +4,7 @@ Use one of two project modes for a 90–120 minute session. The learner's demons
 
 ## Mode selection
 
-- Use **foundation project mode** until the Foundation Gate in `curriculum/ROADMAP.md` is met, or whenever the learner reports overload and cannot explain the current map. It advances MiniTorch M0 through small architecture/build/binding increments.
+- Use **foundation project mode** until the Foundation Gate in `curriculum/ROADMAP.md` is met, or whenever the learner reports overload and cannot explain the current map. It advances MiniTorch M0a to one native import before M0b packaging and M0c debugging depth.
 - Use **implementation/trace mode** after the gate for Tensor, operator, runtime, compiler, debugging, and modification increments.
 - An advanced topic seen during foundation mode is a preview. Preserve any evidence, but do not make it the next review target before its prerequisites.
 
@@ -28,7 +28,7 @@ Target approximately 60% explanation, 25% practice, and 15% source observation.
 
 - Read durable state and the last session entry.
 - Run only due reviews whose prerequisites have already been taught; defer over-level reviews explicitly.
-- Ask at most three short questions only to diagnose prerequisites for the current M0 increment or retrieve an older implemented behavior. Accept “不知道” without escalating into hidden internals.
+- Ask at most three short questions only to diagnose prerequisites for the current M0a/b/c increment or retrieve an older implemented behavior. Accept “不知道” without escalating into hidden internals.
 - Point to the learner's current position on the global architecture map.
 
 ### 2. Establish one concept outcome (5 min)
@@ -45,7 +45,7 @@ State one observable learner outcome, such as: “Explain in plain language what
 
 ### 4. Guided MiniTorch work (20–30 min)
 
-Use labeling, directory mapping, a tiny Python/C++ example, build configuration or learner explanation. Move from recognition to one small learner-authored M0 artifact or code/config change. Give a reduced language/tooling example before asking for a project change.
+Use labeling, directory mapping, a tiny Python/C++ example, build configuration or learner explanation. Move from recognition to one small learner-authored M0a artifact or code/config change and a fast native import. Give a reduced language/tooling example before asking for a project change.
 
 ### 5. Source observation (10–15 min)
 
@@ -56,7 +56,7 @@ Inspect one or two readable anchors that correspond directly to the taught map. 
 Ask the learner, without notes, to explain:
 
 1. today's concept map in their own words;
-2. the M0 artifact/config/code they authored and its build or import path;
+2. the current M0a/b/c artifact/config/code they authored and its build or import path;
 3. one inspected source anchor and the relevant correspondence;
 4. one language or engineering construct used in the change;
 5. what remains unclear.

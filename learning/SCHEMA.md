@@ -9,6 +9,8 @@
 5. Update `REVIEW_QUEUE.md`, `ERROR_LOG.md`, `SESSION_LOG.md`, then `STATE.md`.
 6. Run `python3 scripts/validate_learning_state.py`.
 
+For a normal completed project session, encode these updates once in a JSON manifest based on `templates/SESSION_MANIFEST.example.json`. Run `python3 scripts/record_learning_session.py <manifest>` for an isolated dry run, review the generated summary, then use `--apply`. Manual updates remain allowed for migrations and unusual repairs.
+
 ## Session artifacts
 
 - Store durable learner work in `learning/artifacts/YYYY-MM-DD-short-session-name/`.
@@ -46,6 +48,10 @@
 `source_or_command` contains a repository-relative source anchor, official URL, command/test, or a short combination. Do not paste long logs. `learner_result` records what the learner actually produced, not the mentor's model answer.
 
 Never store confidential hardware/source/log/model identifiers in any field.
+
+## Review activation
+
+`REVIEW_QUEUE.md` separates historical review dates from executable scheduling. A new item records a due policy, activation milestone and concrete prerequisite. `waiting-prerequisite` is not overdue. Once the prerequisite exists, set an actual ISO due date or a manifest-generated delayed date and mark it `due`/`scheduled`/`complete` as appropriate.
 
 ## Post-transition question records
 

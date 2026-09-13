@@ -5,8 +5,10 @@
 - MiniTorch base revision:
 - MiniTorch result revision or working-tree diff:
 - Phase / parent milestone:
+- Delivery depth: `Core (C)` / `Representative (R)` / `Survey (S)`
 - Target concepts and dimensions:
-- Estimated learner work and build cost:
+- Timebox and stop condition:
+- Estimated learner work and build/runtime cost:
 - Artifact directory: `learning/artifacts/YYYY-MM-DD-short-session-name/`
 
 ## Contract

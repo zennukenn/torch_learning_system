@@ -49,7 +49,7 @@ Keep the active list to roughly five to seven new terms.
 
 ## MiniTorch M0 application
 
-- Current M0 increment:
+- Current M0a/M0b/M0c increment:
 - Learner-authored directory/config/code artifact:
 - PyTorch → MiniTorch correspondence:
 - Focused build/test result:

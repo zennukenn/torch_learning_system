@@ -17,6 +17,8 @@ Assess one session-sized MiniTorch increment, not an entire subsystem at once. D
 - one or two current PyTorch source anchors to inspect;
 - concepts deliberately postponed.
 
+Assign the increment's `Core (C)`, `Representative (R)` or `Survey (S)` depth and a timebox from `projects/ROADMAP.md`. A Survey task cannot silently grow into framework implementation; a Core task is narrowed before more surface is added when it exceeds its timebox.
+
 Use `templates/MINITORCH_MILESTONE.md`. The learner submits the decisive design and implementation. Mentor-authored scaffolding and tests must be distinguished from learner-authored logic.
 
 ## Evidence ladder
@@ -113,6 +115,8 @@ Once per week:
 - choose exactly one next milestone increment.
 
 Do not add an unrelated old-style quiz merely to fill a review slot. Convert a due historical prompt into a current code explanation, test, source comparison or extension when prerequisites now exist; otherwise keep it deferred.
+
+Every four active learning weeks or 20 substantive sessions, run the larger `templates/SCOPE_REVIEW.md` audit. This review enforces the schema/kernel budget, removes breadth without model/mechanism value and resets exactly one next Core increment.
 
 ## Final assessment
 

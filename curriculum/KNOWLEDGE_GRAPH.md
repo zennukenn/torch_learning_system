@@ -8,8 +8,9 @@ The course revisits the same architecture through learner implementation:
 M0 build/package/binding
   → M1 c10 foundations + Storage/Tensor
     → M2 schema/codegen/Dispatcher/CPU kernels
-      → M3 CUDA memory/streams + kernels/libraries + precision
-      → M4 Python frontend + CNN/Transformer/KV cache + quantized inference state
+      → M2.5 first CPU model vertical slice
+        → M3 CUDA memory/streams + kernels/libraries + precision
+          → M4 Python frontend + CNN/Transformer/KV cache + quantized inference state
         → M5 minimal Autograd/training boundary
         → M6 runtime/profiler + inference DP/TP
           → M7 graph IR/capture/compiler/dynamic shapes

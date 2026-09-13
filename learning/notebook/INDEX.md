@@ -11,6 +11,7 @@
 | 2026-09-02 | complete | Phase 0 | Foundation 0.2 — Tensor minimal data model | TENSOR-MODEL, PY-DATAMODEL | E-20260902-09..12 | [session note](sessions/2026-09-02-foundation-02-tensor-minimal-model.md) |
 | 2026-09-02 | complete | Phase 0 | Foundation 0.1 — PyTorch and inference basics | PYTORCH-BASICS, ARCH-MAP, PY-DATAMODEL | E-20260902-05..08 | [session note](sessions/2026-09-02-foundation-01-pytorch-inference-basics.md) |
 | 2026-09-02 | complete | Phase 0 | First `torch.add` source trace | BIND-CODEGEN, DISPATCH, ATEN-KERNEL, CPP-CORE | E-20260902-01..04 | [session note](sessions/2026-09-02-first-add-source-trace.md) |
+<!-- SESSION_INDEX_ROWS -->
 
 ## 主题导航
 

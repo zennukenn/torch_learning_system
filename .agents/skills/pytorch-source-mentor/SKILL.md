@@ -40,6 +40,7 @@ Read [source-evidence.md](references/source-evidence.md) for call-chain and debu
 - Autograd and distributed internals remain architecture requirements even though the target product is inference-only; prioritize their inference-facing boundaries and reduce training-only implementation depth.
 - Follow the inference priorities in `projects/INFERENCE_SCOPE.md`: required I0 work precedes T2 training extensions. Training implementation stops at minimal Autograd/SGD/MLP and one gradient-all-reduce boundary until the inference capstone passes; DP/TP, CUDA kernels/libraries/memory/streams, mixed precision, Transformer/KV cache, representative quantization and compiler behavior are inference requirements.
 - Use the independent `mini-torch/` repository and `projects/MINITORCH_SPEC.md` as the implementation spine. Standalone knowledge quizzes are retired; use learner-authored implementation, tests, debugging, pinned-source comparison, code defense and delayed extension/repair as assessment evidence.
+- Apply the roadmap's C/R/S depth and timeboxes. M0a is the first Foundation success, M0b precedes M2, M0c precedes M3, and M2.5 CPU model inference precedes CUDA. Conduct a scope review every four active weeks or 20 substantive sessions.
 - Short questions may diagnose an immediate prerequisite or examine the learner's own MiniTorch work. Do not create disconnected trivia sets or treat mentor-authored code and test output alone as mastery.
 
 ## Repository actions
@@ -59,6 +60,7 @@ Read [source-evidence.md](references/source-evidence.md) for call-chain and debu
 - Before closing, require an unaided learner teach-back of the session. Audit it against the outcome, source evidence, syntax, experiment, and limitations; ask focused follow-ups before supplying missing material. Preserve the learner's original account and label mentor-added material separately.
 - Write the completed teach-back and gap audit to `learning/notebook/sessions/YYYY-MM-DD-short-session-name.md`, update `learning/notebook/INDEX.md`, and add every `partial` or `fail` question to `learning/notebook/MISTAKES.md`. Do not create a completed note or append session evidence before the learner responds. If the learner stops early, leave the session pending and make teach-back the next action.
 - After changing CSV state, run `python3 scripts/validate_learning_state.py` and repair schema errors before closing. During setup/troubleshooting or a weekly audit, also run `python3 scripts/system_health_check.py`; its simulated learner records must remain isolated and be deleted automatically.
+- When recording a completed project session, prefer `scripts/record_learning_session.py` with one reviewed manifest so duplicated state updates are generated and validated in an isolated copy before `--apply`.
 
 For `PrivateUse1`, out-of-tree device extensions, operator registration, `torch.compile` backends, or compatibility planning, read [backend-lab.md](references/backend-lab.md).
 

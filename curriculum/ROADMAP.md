@@ -1,6 +1,6 @@
 # Mastery-paced PyTorch and MiniTorch roadmap
 
-原 20 周/约 400 小时只保留为节奏基线。2026-09-13 起，学习者接受延长周期，以全面性和深度优先；阶段是否通过只看证据和 MiniTorch 项目关卡。基础阶段可以重复或延长，未通过 gate 时不得用日历进度强行进入深层源码。
+原 20 周/约 400 小时只保留为历史节奏参考，不再作为执行预算。当前按 `projects/ROADMAP.md` 的约 580–930 focused hours 和 C/R/S depth 规划；学习者接受延长周期，以全面性和深度优先。阶段是否通过只看证据和 MiniTorch 项目关卡，未通过 gate 时不得用日历进度强行进入深层源码。
 
 MiniTorch 是课程的连续实现主线，稳定范围见 `projects/MINITORCH_SPEC.md`，inference-first feature matrix 见 `projects/INFERENCE_SCOPE.md`，双 PrivateUse 路线见 `projects/PRIVATEUSE_BACKEND_SPEC.md`，全面覆盖审计见 `curriculum/COVERAGE_AUDIT.md`，增量和 gate 见 `projects/ROADMAP.md`。真实 PyTorch 源码仍是每个设计的权威对照。课程不再把阶段项目放在知识讲授之后：每个主题都以 `讲清 prerequisite → 查看 PyTorch anchor → 学习者实现 MiniTorch increment → tests/debug → code defense → delayed extension` 完成闭环。
 
@@ -75,7 +75,7 @@ Foundation Gate 之前每周至少留下：一份学习者画的架构/目录图
 - 推荐路径：可读的 Python frontend 调用，例如 `nn.Linear.forward` 到其直接 Python-level callee；不继续钻入 dispatcher/codegen。
 - 环境并行项：固定 revision，审计 Python/torch/CMake/Ninja/GDB；安装或构建仍需单独确认成本和授权。
 - 产物：基础架构图、词汇表、仓库地图、最小 Python/C++ 程序图和一次浅层定位记录。
-- MiniTorch 产物：独立仓库、PyTorch→MiniTorch 目录映射、`pyproject.toml`/CMake/pybind11 最小 build-install-import loop、pytest 与 CTest smoke tests。
+- MiniTorch 产物：先完成 M0a 的独立仓库、目录映射、最小 CMake/pybind11 build-import loop；M0b 再补 editable/wheel、pytest 与 CTest，M0c 的 GIL/ABI/debugging 可与 M1/M2 交错完成。
 
 Foundation Gate：
 
@@ -83,7 +83,7 @@ Foundation Gate：
 - `ARCH-MAP.explain >= 2` 且 `ARCH-MAP.locate >= 1`，能重画全局层次并把主要顶层目录放到合理区域；
 - `PY-DATAMODEL.explain >= 1`、`CPP-CORE.explain >= 1`、`ENV-BUILD.explain >= 1`；
 - 能完成一次仅跨已学层次的查找—解释—小验证循环。
-- 通过 `projects/ROADMAP.md` 的 M0 gate，并能无笔记解释自己编写的配置和 native import path。
+- 通过 `projects/ROADMAP.md` 的 M0a gate，并能无笔记解释自己编写的配置和 native import path。M0b 必须在 M2 前完成，M0c 必须在 M3 前完成。
 
 未通过此 gate 时，advanced source trace 只能作为 preview，不安排 schema/codegen/dispatcher 的实现或独立复习。通过后才进入以 MiniTorch implementation 和 vertical call chain 为主的教学模式。
 
@@ -116,7 +116,7 @@ Gate 1：通过 M1 gate；`TENSOR-MODEL` 和 `PY-FRONTEND` 的 `explain/locate/t
 
 ## Phase 2 — schema、codegen、Dispatcher 与 kernel（Week 6–9）
 
-项目主线：完成 `MiniTorch M2`，然后完成 `M3` 的真实 CUDA backend。M3 必须覆盖 caching allocator、fragmentation/OOM、pinned transfer、stream/event、跨 stream lifetime 和 mixed precision；CPU-first，CUDA 环境未通过时不得用静态代码代替 runtime mastery。
+项目主线：完成 `MiniTorch M2` 后先通过 `M2.5` 的 CPU `Linear → ReLU → Linear` inference vertical slice，再完成 `M3` 的真实 CUDA backend。M3 必须覆盖 caching allocator、fragmentation/OOM、pinned transfer、stream/event、跨 stream lifetime 和 mixed precision；CPU-first，CUDA 环境未通过时不得用静态代码代替 runtime mastery。
 
 ### Week 6：operator schema 与生成链
 
@@ -146,7 +146,7 @@ Gate 1：通过 M1 gate；`TENSOR-MODEL` 和 `PY-FRONTEND` 的 `explain/locate/t
 - 实验：比较 eager CPU、Meta/Fake 或 CUDA（环境可用时）的选择差异；构造错误 dtype/layout/device 用例；完成 representative quantized Linear 的 scale/zero-point、packing、error/tolerance tests。
 - 产物：两条可复现 full traces、Phase 2 operator/registration 项目。
 
-Gate 2：通过 M2 gate，并在可用环境下通过 M3 gate；`BIND-CODEGEN`、`DISPATCH`、`ATEN-KERNEL`、`CUDA` 的 `trace` 至少 3，`modify` 至少 2；能解释一次 redispatch 并用 runtime evidence 证明 CPU/CUDA kernel 选择。
+Gate 2：先通过 M2 与 M2.5，证明一个可运行 CPU 模型闭环；随后在可用环境下通过 M3。`BIND-CODEGEN`、`DISPATCH`、`ATEN-KERNEL`、`CUDA` 的 `trace` 至少 3，`modify` 至少 2；能解释一次 redispatch 并用 runtime evidence 证明 CPU/CUDA kernel 选择。
 
 ## Phase 3 — Autograd、runtime 与 distributed 架构（Week 10–12）
 
@@ -246,3 +246,5 @@ Final gate：关键概念 `explain/locate/trace` 至少 3；`DISPATCH`、`RUNTIM
 ## 范围控制
 
 “全方位”表示理解所有主要子系统的职责、边界、关键数据结构，并在 MiniTorch 中拥有可运行最小实现和至少一条可执行调用链；不表示逐行读完数百万行代码或达到生产性能。主线实现一个 quantized Linear；额外 quantization modes、mobile/edge、sparse/nested、MPS/XPU/ROCm、distributed algorithms、TorchScript、ONNX 等专题进入 extension track，由模型需求和目标 backend 决定深度。
+
+每四个 active learning weeks 或 20 次 substantive sessions 使用 `templates/SCOPE_REVIEW.md` 做一次范围审查。检查 C/R/S 深度、20–30 schemas 与 10–15 native kernels 上限、记录成本和当前模型/PrivateUse 需求；没有目标模型需要且没有新机制价值的工作应降为 Survey 或删除。

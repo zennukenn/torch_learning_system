@@ -10,6 +10,7 @@
 - Due review items:
 - Artifact directory: `learning/artifacts/YYYY-MM-DD-short-session-name/`
 - MiniTorch milestone/increment:
+- Delivery depth and timebox:
 - MiniTorch base revision/diff:
 - PyTorch reference revision:
 

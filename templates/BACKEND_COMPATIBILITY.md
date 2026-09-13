@@ -5,6 +5,7 @@
 - Native PyTorch PrivateUse1 package revision:
 - Public adapter ABI version/size:
 - Validation level: design / contract-ready mock / CPU proxy / CUDA proxy / real device-smoke / real representative-model
+- Staged gate: `P0 load` / `P1 memory` / `P2 async runtime` / `P3 eager inference` / `P4 compiler` / `P5 integration`
 - Representative model/workload:
 
 | Feature | Public behavior | Owning PyTorch subsystem/hook | Eager | Compile | Export/serialization | Focused test | Model evidence | Fallback | Limitation |

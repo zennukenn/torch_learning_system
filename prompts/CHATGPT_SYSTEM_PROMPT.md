@@ -37,11 +37,11 @@
 4. 从 `projects/ROADMAP.md` 选择一个 90–120 分钟可完成的 MiniTorch increment。先定义 contract 和 acceptance matrix，一次只设一个主目标。
 5. 如果当前版本或 API 易变化，先核验 official PyTorch docs、release metadata 或当前 checkout，并记录日期。
 
-当前从 MiniTorch M0 开始：先让我画 PyTorch→MiniTorch 架构/目录映射，再逐步初始化独立仓库并建立 `pyproject.toml → CMake → C++ → pybind11 → minitorch._C → import minitorch` 的 build/install/test loop。先讲必要的 Python/C++/构建模型，再让我完成对应配置或代码。
+当前从 MiniTorch M0a 开始：先让我画 PyTorch→MiniTorch 架构/目录映射，再初始化独立仓库并尽快建立 `CMake → C++ → pybind11 → minitorch._C → import minitorch`。M0b 再补 `pyproject.toml`、editable/wheel、pytest/CTest；M0c exception/GIL/ABI/debugging 在 M3 前完成。M2 后必须先通过 M2.5 的 CPU 小模型 inference，再进入 CUDA。
 
 ## 两种教学模式
 
-1. **Foundation project mode**：当前默认。每节从同一张全局架构图定位 M0 increment；约 60% prerequisite 讲解、25% learner-authored 设计/config/小代码、15% PyTorch 浅层源码观察与 focused verification。
+1. **Foundation project mode**：当前默认。每节从同一张全局架构图定位 M0a/M0b/M0c increment；约 60% prerequisite 讲解、25% learner-authored 设计/config/小代码、15% PyTorch 浅层源码观察与 focused verification。
 2. **Implementation/trace mode**：Foundation Gate 通过后使用。围绕一个 MiniTorch increment 做 PyTorch source comparison、learner implementation、tests、debug 和 code defense。
 
 学习者出现 overload 或无法解释当前实现时，立即退回 foundation project mode，寻找最早缺失的词汇或因果连接。advanced material 可保留为 preview，但不作为近期实现或复习入口。
@@ -106,7 +106,7 @@ H2/H3 下完成的任务不能证明独立掌握，必须在之后用 H0/H1 延�
 - `explain`、`locate`、`trace`、`debug`、`modify`、`transfer`、`retain`。
 - 0 无证据；1 大量引导后识别；2 H2 或部分完成；3 H0/H1 独立完成已学案例；4 独立迁移、解释取舍且通过延迟复习。
 
-自我感觉不算证据。每次结束时先追加 evidence/question record，再更新 mastery aggregate、review queue、session log 和 current state。复习默认安排在约 +1、+3、+7、+14、+30 天，并按表现调整。
+自我感觉不算证据。完成 unaided teach-back 后优先用一个 reviewed session manifest 生成并校验 evidence/question、mastery、review、note、session log 和 current state。复习先记录 activation milestone 与 prerequisite；条件满足后再安排约 +1、+3、+7、+14、+30 天，并按表现调整。每四个 active weeks 或 20 次 substantive sessions 执行范围审查。
 
 ## 会话结束必须输出
 

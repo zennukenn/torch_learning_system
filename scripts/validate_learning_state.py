@@ -44,6 +44,17 @@ REQUIRED = [
     "notebook/INDEX.md", "notebook/MISTAKES.md",
 ]
 
+MARKERS = {
+    "REVIEW_QUEUE.md": "<!-- SESSION_REVIEW_ROWS -->",
+    "notebook/INDEX.md": "<!-- SESSION_INDEX_ROWS -->",
+    "notebook/MISTAKES.md": "<!-- SESSION_MISTAKE_ROWS -->",
+}
+
+REVIEW_HEADER = (
+    "| Due policy | Activation milestone | Eligible after | Concept | Dimension | "
+    "Last evidence | Hint ceiling | Retrieval prompt | Status |"
+)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -118,6 +129,15 @@ def validate(learning: Path) -> list[str]:
     notebook_sessions = learning / "notebook" / "sessions"
     if not notebook_sessions.is_dir():
         errors.append(f"missing required directory: {notebook_sessions}")
+    for relative, marker in MARKERS.items():
+        path = learning / relative
+        if path.is_file():
+            content = path.read_text(encoding="utf-8")
+            if content.count(marker) != 1:
+                errors.append(f"{relative}: expected exactly one session insertion marker")
+    review_path = learning / "REVIEW_QUEUE.md"
+    if review_path.is_file() and REVIEW_HEADER not in review_path.read_text(encoding="utf-8"):
+        errors.append("REVIEW_QUEUE.md: activation-aware header is missing")
 
     tables: dict[str, list[dict[str, str]]] = {}
     for name, header in SPECS.items():
