@@ -1,6 +1,6 @@
 # PyTorch knowledge and learning-path coverage audit
 
-Audit date: 2026-09-14
+Audit date: 2026-09-15
 PyTorch reference: `cf30153c4c131c8164ee7798e5022d810682e2cb` (`v2.13.0`)
 
 ## Audit standard
@@ -28,6 +28,30 @@ The 2026-09-13 pre-audit plan already covered Tensor/Storage, dispatcher/codegen
 - quantized inference: quantization parameters, packing, error/tolerance behavior and representative compiler lowering;
 - dual PrivateUse integration: MiniTorch plugin ABI plus native PyTorch `PrivateUse1` out-of-tree package;
 - backend hardware conformance: capability negotiation, allocator/copy/stream/event/kernel/compiler contracts and sanitized private execution evidence.
+
+The 2026-09-15 pedagogical audit found a separate execution defect: although
+the documents called the curriculum project-driven, the session protocol and
+manifest could still reward a long chain of oral diagnostics and required at
+least one question row. This allowed teaching to drift away from the MiniTorch
+worktree. The remediation is now explicit and machine-checked:
+
+- one opening diagnostic set of at most three questions;
+- 10–20 minute prerequisite blocks followed immediately by learner-authored
+  MiniTorch edits, diff inspection and focused verification;
+- no repeated oral repair loop; unresolved gaps become code/test/source tasks;
+- structured `practice_cycles` and `authorship` in completed session manifests;
+- question rows are optional and never a quota;
+- `COURSE_PRACTICE_MAP.csv` assigns all 41 concepts to a first accountable
+  project course with an immediate learner action and runnable evidence.
+
+The product/engineering audit then found excessive hot-context loading,
+duplicated policy text and a 135–220 hour delay before the first model. The
+scope remains intact, but delivery now uses three independently useful releases:
+Release A reaches a restricted real CPU model in 30–50 hours; Release B replaces
+the walking-skeleton shortcuts with durable Tensor/Dispatcher/CUDA/model
+contracts; Release C completes Autograd, distributed, compiler, dual PrivateUse
+and deployment depth. Course order, hours and ownership now come from one
+machine-readable course map and the learner-facing tables are generated.
 
 ## Coverage by architecture area
 
@@ -62,14 +86,15 @@ The 2026-09-13 pre-audit plan already covered Tensor/Storage, dispatcher/codegen
 
 ## Learning-path dependency audit
 
-The optimized order is:
+The optimized spiral order is:
 
 ```text
-M0a fast native import → M0b packaging/test; M0c debugging completes before CUDA
- → M1 Tensor/Storage + numerical semantics
-   → M2 schema/codegen/dispatcher + CPU backend/custom ops
-     → M2.5 first CPU model inference
-       → M3 CUDA kernels + memory/streams
+M0a fast native import → M0b local development/test loop
+ → M2.5 Release-A contiguous-FP32 CPU model walking skeleton
+   → M1 Tensor/Storage + numerical depth
+     → M2 schema/codegen/dispatcher + CPU hardening of the same model
+       → M0c advanced native debugging/package inspection
+         → M3 CUDA kernels + memory/streams
          → M4 nn + CNN/Transformer inference semantics
          → M5 minimal Autograd/training boundary
          → M6 runtime/profiler + distributed inference DP/TP
@@ -81,8 +106,9 @@ M0a fast native import → M0b packaging/test; M0c debugging completes before CU
 Reasons for this order:
 
 - M0 prevents C++ and build mechanics from blocking every later source lesson.
-- M0a provides a native success quickly; M0b/M0c defer packaging and debugging depth until the learner has context.
-- M2.5 provides a complete CPU model reward before asynchronous CUDA complexity.
+- M0a provides a native success quickly; M0b proves only the local development loop, while release-wheel work remains in M9.
+- M2.5 first provides a deliberately restricted CPU model within 30–50 cumulative hours, then M1/M2 replace its recorded shortcuts before CUDA.
+- Basic pybind module/ownership concepts appear at first use; M0c owns advanced GIL, exception, ABI, RPATH, debugger and sanitizer depth.
 - Tensor/numerics precede dispatcher/kernels so operators have explicit invariants.
 - CPU establishes semantics and debugging before CUDA adds asynchronous state.
 - Real model slices start only after storage, dispatch and kernels exist.
@@ -104,4 +130,9 @@ Reasons for this order:
 
 ## Gate against omissions
 
-`curriculum/COVERAGE_MATRIX.csv` maps every mastery concept to a priority, declared milestone, inspected PyTorch path, named source symbol/ownership point, learner deliverable and required evidence dimensions. `scripts/validate_curriculum_coverage.py` rejects missing/extra concepts, undeclared milestones, nonexistent paths, malformed symbol entries and weak I0/F0/I1/T1 evidence plans. `scripts/system_health_check.py` runs this validator before simulating a manifest-driven project learning session.
+`curriculum/COVERAGE_MATRIX.csv` maps every mastery concept to a priority, declared milestone, inspected PyTorch path, named source symbol/ownership point, learner deliverable and required evidence dimensions. `curriculum/COURSE_PRACTICE_MAP.csv` additionally maps each concept to an ordered course, immediate learner-owned MiniTorch action and runnable evidence. `scripts/validate_curriculum_coverage.py` rejects missing/extra concepts, invalid or reordered courses, absent immediate practice, undeclared milestones, nonexistent paths, malformed symbol entries and weak I0/F0/I1/T1 evidence plans. `scripts/system_health_check.py` runs positive and negative checks before simulating a manifest-driven project learning session with explicit practice and authorship provenance.
+
+`curriculum/COURSE_PRACTICE_MAP.csv` is also the sole authority for course
+titles, release, hours and dependency order. `scripts/sync_course_plan.py`
+renders the public tables and the validator rejects stale generated output or a
+Release A that no longer reaches CPU-model evidence within 50 hours.

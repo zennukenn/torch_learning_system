@@ -9,6 +9,19 @@
   "minitorch_revision": "WORKTREE: staged M0a diff",
   "note_slug": "m0a-native-import",
   "outcome": "Learner-authored native module imported and passed its focused smoke test.",
+  "practice_cycles": [
+    {
+      "prerequisite_taught": "Compile object link and pybind11 module initialization",
+      "learner_action": "Authored minitorch/csrc/module.cpp and the target that builds minitorch._C",
+      "verification": "Clean build then import minitorch and call the native function",
+      "actual_result": "Build and import succeeded; native function returned 42"
+    }
+  ],
+  "authorship": {
+    "learner_decisive_work": "Native module source binding and focused import test",
+    "mentor_scaffolding": "Public contract acceptance command and source anchors only",
+    "worktree_evidence": "git -C mini-torch diff -- minitorch/csrc/module.cpp CMakeLists.txt test/test_import.py"
+  },
   "learner_teach_back": "Preserve the learner's unaided explanation of the diff, build/import path, ownership and limitations.",
   "gap_audit": "Record correct, missing, incorrect and uncertain parts after the unaided answer.",
   "mentor_supplement": "Add only material that must remain separate from mastery evidence.",
@@ -32,21 +45,7 @@
       "next_review": "2099-01-08"
     }
   ],
-  "questions": [
-    {
-      "question_id": "Q-20990101-01",
-      "concept_id": "BUILD-PACKAGING",
-      "question": "Defend the build and import path through the changed files.",
-      "conditions": "M0a.4 staged diff; no notes; focused output available",
-      "learner_answer": "Preserve the original learner answer.",
-      "hint_level": "H0",
-      "verdict": "pass",
-      "evidence_id": "E-20990101-01",
-      "next_due": "2099-01-08",
-      "correction_evidence": "Not needed for a pass",
-      "mistake_status": "not-applicable"
-    }
-  ],
+  "questions": [],
   "mastery_updates": [
     {
       "concept_id": "BUILD-PACKAGING",

@@ -17,16 +17,22 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 LEARNING = ROOT / "learning"
 SOURCE = ROOT / "sources" / "pytorch"
+MINITORCH = ROOT / "mini-torch"
 VALIDATOR = ROOT / "scripts" / "validate_learning_state.py"
 COVERAGE_VALIDATOR = ROOT / "scripts" / "validate_curriculum_coverage.py"
 SESSION_RECORDER = ROOT / "scripts" / "record_learning_session.py"
+NEXT_SESSION_BUILDER = ROOT / "scripts" / "build_next_session.py"
+COURSE_PLAN_SYNC = ROOT / "scripts" / "sync_course_plan.py"
+PREFLIGHT = ROOT / "scripts" / "preflight.py"
 SESSION_MANIFEST = ROOT / "templates" / "SESSION_MANIFEST.example.json"
 
 REQUIRED_PATHS = [
     "AGENTS.md",
+    "audits/2026-09-16-product-optimization-acceptance.md",
     ".agents/skills/pytorch-source-mentor/SKILL.md",
     ".agents/skills/pytorch-source-mentor/agents/openai.yaml",
     ".agents/skills/pytorch-source-mentor/references/session-protocol.md",
+    ".agents/skills/pytorch-source-mentor/references/project-teaching-loop.md",
     ".agents/skills/pytorch-source-mentor/references/foundation-teaching.md",
     ".agents/skills/pytorch-source-mentor/references/source-evidence.md",
     ".agents/skills/pytorch-source-mentor/references/assessment.md",
@@ -37,6 +43,9 @@ REQUIRED_PATHS = [
     "curriculum/ASSESSMENT_BLUEPRINT.md",
     "curriculum/COVERAGE_AUDIT.md",
     "curriculum/COVERAGE_MATRIX.csv",
+    "curriculum/COURSE_PRACTICE_PLAN.md",
+    "curriculum/COURSE_PRACTICE_MAP.csv",
+    "learning/NEXT_SESSION.md",
     "projects/MINITORCH_SPEC.md",
     "projects/INFERENCE_SCOPE.md",
     "projects/PRIVATEUSE_BACKEND_SPEC.md",
@@ -54,6 +63,10 @@ REQUIRED_PATHS = [
     "templates/SCOPE_REVIEW.md",
     "templates/SESSION_MANIFEST.example.json",
     "scripts/checkout_pytorch_source.sh",
+    "scripts/build_next_session.py",
+    "scripts/sync_course_plan.py",
+    "scripts/preflight.py",
+    "tests/test_learning_system.py",
     "scripts/record_learning_session.py",
     "scripts/validate_curriculum_coverage.py",
     "learning/artifacts/.gitkeep",
@@ -224,6 +237,16 @@ def main() -> int:
         if not text.startswith("---\nname: pytorch-source-mentor\n"):
             errors.append("skill frontmatter name is missing or malformed")
 
+    for command in [
+        [sys.executable, str(COURSE_PLAN_SYNC), "--check"],
+        [sys.executable, str(NEXT_SESSION_BUILDER), "--check"],
+        [sys.executable, str(PREFLIGHT), "--json"],
+        [sys.executable, "-m", "unittest", "tests/test_learning_system.py"],
+    ]:
+        checked = run(command, capture=True)
+        if checked.returncode:
+            errors.append(f"startup/product check failed: {' '.join(command)}")
+
     print("[2/8] Checking pinned independent PyTorch checkout")
     source_check = run(["bash", "scripts/check_source_checkout.sh"], capture=True)
     if source_check.returncode:
@@ -237,6 +260,26 @@ def main() -> int:
     tracked = run(["git", "ls-files", "--error-unmatch", "sources/pytorch"], capture=True)
     if tracked.returncode == 0:
         errors.append("sources/pytorch is incorrectly tracked by the learning-system repository")
+
+    mini_ignored = run(["git", "check-ignore", "-q", "mini-torch"])
+    if mini_ignored.returncode != 0:
+        errors.append("mini-torch is not ignored by the learning-system repository")
+    mini_tracked = run(
+        ["git", "ls-files", "--error-unmatch", "mini-torch"], capture=True
+    )
+    if mini_tracked.returncode == 0:
+        errors.append("mini-torch is incorrectly tracked by the learning-system repository")
+    if MINITORCH.exists():
+        mini_root = run(
+            ["git", "-C", str(MINITORCH), "rev-parse", "--show-toplevel"],
+            capture=True,
+        )
+        if mini_root.returncode or Path(mini_root.stdout.strip()).resolve() != MINITORCH:
+            errors.append("mini-torch exists but is not an independent Git repository")
+        else:
+            print(f"MiniTorch independent repository: {mini_root.stdout.strip()}")
+    else:
+        print("MiniTorch independent repository: not initialized yet (allowed before M0a)")
 
     print("[3/8] Checking representative current-revision source anchors")
     for relative, marker in TRACE_ANCHORS.items():
@@ -253,7 +296,7 @@ def main() -> int:
         elif marker not in path.read_text(encoding="utf-8", errors="replace"):
             errors.append(f"PrivateUse1 marker {marker!r} missing from {relative}")
 
-    print("[4/8] Validating curriculum coverage")
+    print("[4/8] Validating curriculum coverage and immediate-practice alignment")
     coverage_validation = run(
         [sys.executable, str(COVERAGE_VALIDATOR), "--verify-symbols"], capture=True
     )
@@ -269,7 +312,7 @@ def main() -> int:
     else:
         print(real_validation.stdout.rstrip())
 
-    print("[6/8] Building and importing an isolated MiniTorch native extension")
+    print("[6/8] Building an isolated native fixture (not the learner M0a gate)")
     pin_path = ROOT / "config/PYTORCH_SOURCE_PIN"
     pin_parts = pin_path.read_text(encoding="utf-8").split() if pin_path.is_file() else []
     revision = pin_parts[1] if len(pin_parts) == 2 else ""
@@ -312,9 +355,40 @@ def main() -> int:
             )
             if weak_coverage.returncode == 0 or "I0 requires" not in weak_coverage.stderr:
                 errors.append("coverage validator did not reject weak I0 evidence dimensions")
+            practice_path = temp_path / "invalid-course-practice.csv"
+            with (ROOT / "curriculum" / "COURSE_PRACTICE_MAP.csv").open(
+                newline="", encoding="utf-8"
+            ) as handle:
+                practice_reader = csv.DictReader(handle)
+                practice_fields = practice_reader.fieldnames
+                practice_rows = list(practice_reader)
+            if practice_fields is None or not practice_rows:
+                errors.append("course-practice negative-test fixture is unavailable")
+            else:
+                practice_rows[0]["immediate_learner_action"] = ""
+                with practice_path.open("w", newline="", encoding="utf-8") as handle:
+                    practice_writer = csv.DictWriter(handle, fieldnames=practice_fields)
+                    practice_writer.writeheader()
+                    practice_writer.writerows(practice_rows)
+                weak_practice = run(
+                    [
+                        sys.executable,
+                        str(COVERAGE_VALIDATOR),
+                        "--practice-map",
+                        str(practice_path),
+                    ],
+                    capture=True,
+                )
+                if (
+                    weak_practice.returncode == 0
+                    or "empty immediate_learner_action" not in weak_practice.stderr
+                ):
+                    errors.append(
+                        "coverage validator did not reject a course without immediate learner action"
+                    )
             try:
                 build_summary = build_synthetic_minitorch(temp_path)
-                print(f"Native import passed: {build_summary}")
+                print(f"Fixture native import passed: {build_summary}")
             except RuntimeError as exc:
                 errors.append(str(exc))
                 build_summary = "native build failed"
@@ -358,6 +432,55 @@ def main() -> int:
                     or "concept_id is unknown" not in manifest_rejected.stderr
                 ):
                     errors.append("session recorder did not reject an unknown concept")
+                no_practice_manifest = json.loads(json.dumps(manifest))
+                no_practice_manifest["practice_cycles"] = []
+                no_practice_path = temp_path / "no-practice-session-manifest.json"
+                no_practice_path.write_text(
+                    json.dumps(no_practice_manifest, indent=2) + "\n", encoding="utf-8"
+                )
+                practice_rejected = run(
+                    [
+                        sys.executable,
+                        str(SESSION_RECORDER),
+                        str(no_practice_path),
+                        "--learning-dir",
+                        str(temp_learning),
+                    ],
+                    capture=True,
+                )
+                if (
+                    practice_rejected.returncode == 0
+                    or "practice_cycles must be a nonempty list"
+                    not in practice_rejected.stderr
+                ):
+                    errors.append(
+                        "session recorder did not reject evidence without immediate practice"
+                    )
+                no_authorship_manifest = json.loads(json.dumps(manifest))
+                no_authorship_manifest["authorship"]["learner_decisive_work"] = ""
+                no_authorship_path = temp_path / "no-authorship-session-manifest.json"
+                no_authorship_path.write_text(
+                    json.dumps(no_authorship_manifest, indent=2) + "\n",
+                    encoding="utf-8",
+                )
+                authorship_rejected = run(
+                    [
+                        sys.executable,
+                        str(SESSION_RECORDER),
+                        str(no_authorship_path),
+                        "--learning-dir",
+                        str(temp_learning),
+                    ],
+                    capture=True,
+                )
+                if (
+                    authorship_rejected.returncode == 0
+                    or "authorship.learner_decisive_work must be a nonempty string"
+                    not in authorship_rejected.stderr
+                ):
+                    errors.append(
+                        "session recorder did not reject evidence without learner authorship"
+                    )
                 recorded = run(
                     [
                         sys.executable,
@@ -390,16 +513,21 @@ def main() -> int:
                             "next_review": "2099-01-09",
                         }
                     )
-                    partial_manifest["questions"][0].update(
+                    partial_manifest["questions"] = [
                         {
                             "question_id": "Q-20990102-01",
+                            "concept_id": "BUILD-PACKAGING",
+                            "question": "Defend the build and import path through the changed files.",
+                            "conditions": "M0a.4 staged diff; compact project defense",
+                            "learner_answer": "Learner omitted extension discovery.",
+                            "hint_level": "H1",
                             "verdict": "partial",
                             "evidence_id": "E-20990102-01",
                             "next_due": "2099-01-09",
                             "correction_evidence": "Corrected extension-discovery explanation",
                             "mistake_status": "open",
                         }
-                    )
+                    ]
                     partial_manifest["mastery_updates"][0]["evidence_id"] = (
                         "E-20990102-01"
                     )
@@ -504,8 +632,9 @@ def main() -> int:
         return 1
 
     print(
-        "PASS: structure, source pin, source anchors, curriculum coverage, native import, "
-        "manifest-driven project evidence/code defense, validator rejection, and cleanup all passed."
+        "PASS: structure, generated hot context/course tables, preflight, source pin, source anchors, "
+        "curriculum/practice coverage, isolated fixture import, manifest-driven learner work/code "
+        "defense, validator rejection, and cleanup all passed."
     )
     return 0
 

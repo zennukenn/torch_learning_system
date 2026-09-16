@@ -13,6 +13,9 @@
 - Survey items completed:
 - Current blocked prerequisite:
 - Time spent learning/coding/debugging/recording:
+- Recording/administration share (target <= 10%):
+- Median session startup context/tokens (target <= 8k before task evidence):
+- Time to latest independently useful runnable outcome:
 - Oldest eligible review item:
 
 ## Size budget
@@ -31,5 +34,6 @@
 - Exactly one next Core increment:
 - Explicitly postponed work:
 - Capacity estimate until next review:
+- Context files to move from hot to cold or deduplicate:
 
 This review changes scope or ordering only. It does not create mastery evidence without learner implementation, verification and defense.

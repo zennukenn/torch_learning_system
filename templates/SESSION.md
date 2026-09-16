@@ -13,6 +13,8 @@
 - Delivery depth and timebox:
 - MiniTorch base revision/diff:
 - PyTorch reference revision:
+- Opening diagnostic count (0–3; one set only):
+- Time to first learner repository action:
 
 ## Diagnostic answers
 
@@ -40,6 +42,15 @@ Record the learner's original answers before feedback.
 - Mentor scaffolding/hints:
 - MiniTorch files changed:
 - PyTorch comparison anchors:
+
+## Teaching-to-practice cycles
+
+| Taught prerequisite | Immediate learner action in `mini-torch/` | Actual diff/artifact | Verification/result | Hint/provenance |
+|---|---|---|---|---|
+| | | | | |
+
+If the same oral gap survives two attempts, record it and replace further
+questioning with a concrete edit, test, source lookup or delayed repair.
 
 ## Focused verification
 

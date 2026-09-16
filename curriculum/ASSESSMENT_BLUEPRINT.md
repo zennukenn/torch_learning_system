@@ -4,6 +4,8 @@ From 2026-09-13, MiniTorch implementation is the default assessment medium. Earl
 
 Questions still have a narrow role: diagnose a prerequisite before implementation, ask the learner to defend code they wrote, or retrieve a mechanism through a delayed extension/repair. Every new row in `QUESTION_HISTORY.csv` must name the associated MiniTorch milestone, diff, failure or source-comparison task in its conditions.
 
+Questions are optional records, not a required quota. Use one opening diagnostic set of at most three short questions; its answers choose teaching depth and do not create mastery evidence. Do not respond to partial answers with an oral correction loop. Teach the missing prerequisite and move immediately to a MiniTorch edit, command, test or source observation. A completed project session can legitimately append no question row.
+
 ## Assessment unit
 
 Assess one session-sized MiniTorch increment, not an entire subsystem at once. Define its contract before coding:
@@ -21,6 +23,8 @@ Assign the increment's `Core (C)`, `Representative (R)` or `Survey (S)` depth an
 
 Use `templates/MINITORCH_MILESTONE.md`. The learner submits the decisive design and implementation. Mentor-authored scaffolding and tests must be distinguished from learner-authored logic.
 
+Every increment must also record at least one teaching-to-practice microcycle: the prerequisite taught, the learner's immediate repository action, the focused verification and the actual result. Even a design-only increment leaves a learner-authored tracked artifact rather than only a chat answer.
+
 ## Evidence ladder
 
 An increment moves through the following evidence. Earlier rungs can guide learning but do not substitute for later ones.
@@ -34,6 +38,8 @@ An increment moves through the following evidence. Earlier rungs can guide learn
 7. **Transfer/retain:** after a delay, the learner adds a small variant or repairs a related defect without replaying the original solution.
 
 Passing an existing test suite alone does not demonstrate authorship, understanding, debugging or retention.
+
+The order is intentionally practical: inspect the learner's real diff and execution first, then use a short defense to clarify reasoning. Oral fluency cannot compensate for absent project work, and repeated recitation of a mentor answer cannot raise a score.
 
 ## Test matrix
 
@@ -65,7 +71,7 @@ At the end of a substantive increment, stop teaching and ask the learner to expl
 5. Where is the corresponding responsibility in the pinned PyTorch source?
 6. What simplification did MiniTorch make, and what consequence follows?
 
-Ask at most three focused follow-ups. Preserve the initial answer and hint level. A critical correction requires a short corrected restatement before closing.
+Ask at most three focused follow-ups across the whole gap audit. Preserve the initial answer and hint level. If the same critical gap survives two oral attempts, stop the questioning and schedule or perform a focused code/test/source repair; the session may remain partial without blocking safe project progress.
 
 ## Mastery dimensions
 
@@ -92,6 +98,7 @@ Mentor-written code, copied solutions, self-confidence and test output without l
 A milestone passes only when:
 
 - all required increments in `projects/ROADMAP.md` have learner-authored evidence;
+- each completed increment records a real `teach -> learner change -> verification` cycle and authorship provenance from the MiniTorch worktree;
 - `scripts/validate_curriculum_coverage.py` confirms every mastery concept is mapped to a real source anchor and milestone;
 - all I0 items assigned to the milestone by `projects/INFERENCE_SCOPE.md` are complete before any T2 training extension is credited;
 - the milestone's positive, boundary, negative and relevant parity/integration tests pass;

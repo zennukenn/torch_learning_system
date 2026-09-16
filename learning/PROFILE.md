@@ -1,6 +1,6 @@
 # Learner profile
 
-更新日期：2026-09-13
+更新日期：2026-09-15
 
 ## 目标与约束
 
@@ -21,7 +21,7 @@
 - 第三方硬件路线同时要求：MiniTorch 自有的 PrivateUse 可插拔 backend，以及原生 PyTorch `PrivateUse1` out-of-tree adapter/prototype。
 - 假定真实硬件侧最终由学习者在私有环境提供 C/C++ adapter shared library；公开仓库只保存 versioned C ABI、CPU mock、capability manifest 和 conformance tests，不保存专有接口或日志。
 - MiniTorch 采用“机制完整、API 小”的规模控制：通常约 20–30 schemas、10–15 个 backend-native kernels，以 CNN、decoder Transformer 和硬件接入所需 vertical slices 为准。
-- 时间预期改为约 580–930 focused hours；按每周约 20 小时通常需要 9–18 个自然月。M0a 先获得 native import，M2.5 在 CUDA 前提供第一个 CPU model inference。
+- 完整路线约 547–875 focused hours，仍按证据和 9–18 个自然月的长期尺度规划；Release A 先在累计 30–50 小时内交付受限但真实的 CPU model inference，再由 Releases B/C 补齐全部已接受深度。
 
 ## 2026-09-02 重新校准的起点（不是掌握分数）
 
@@ -43,6 +43,10 @@
 - Python/C++ 语法在源码上下文中系统讲解，并配小练习。
 - AI 先诊断再授课，使用间隔复习；主要考核改为逐步实现 MiniTorch，而不是脱离项目的知识题。
 - AI 讲解并提供源码锚点、接口、必要脚手架和验收测试；学习者编写决定性实现，接受 code review、debug challenge 和无笔记 code defense。
+- 教学必须紧密嵌入 MiniTorch：每讲完一个短 prerequisite block，立即由学习者创建或修改对应的 repository document、config、source 或 test，再根据真实 diff/build/failure 继续教学。即使是 Git 初始化、`.gitignore`、README 和 ADR，也希望先讲其工程意义再亲手完成。
+- 不希望用连续问答或反复复述导师答案代替项目实践。开场问题只用于快速调整讲解深度；掌握度主要从 learner-authored diff、commands、tests、debug hypothesis、PyTorch source comparison 和对自己实现的简短 defense 推断。
+- 希望普通会话使用紧凑 hot context，不重复加载完整 specs/roadmaps/history；完整性由结构化课程映射、按需冷加载和自动 validator 保证，而不是用每轮大量 prompt 换取安全感。
+- 接受 Release A/B/C 分阶段交付：先获得可运行 CPU inference，再逐层替换 shortcut，最终仍完成全部已确认的 PyTorch/source/backend 覆盖。
 - 中文讲解，English terminology、symbol、API 和代码标识保留英文。
 - 工具：ChatGPT 与 Codex；Codex 可搜索、构建、调试、修改、测试并维护学习状态。
 

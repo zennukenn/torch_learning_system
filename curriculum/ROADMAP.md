@@ -1,23 +1,25 @@
 # Mastery-paced PyTorch and MiniTorch roadmap
 
-原 20 周/约 400 小时只保留为历史节奏参考，不再作为执行预算。当前按 `projects/ROADMAP.md` 的约 580–930 focused hours 和 C/R/S depth 规划；学习者接受延长周期，以全面性和深度优先。阶段是否通过只看证据和 MiniTorch 项目关卡，未通过 gate 时不得用日历进度强行进入深层源码。
+原 20 周/约 400 小时只保留为历史节奏参考，不再作为执行预算。当前按 `curriculum/COURSE_PRACTICE_MAP.csv` 的约 547–875 focused hours 和 C/R/S depth 规划；学习者接受延长周期，以全面性和深度优先。课程用 Release A/B/C 提供阶段性完成感，但完整范围不减少。阶段是否通过只看证据和 MiniTorch 项目关卡，未通过 gate 时不得用日历进度强行进入深层源码。
 
 MiniTorch 是课程的连续实现主线，稳定范围见 `projects/MINITORCH_SPEC.md`，inference-first feature matrix 见 `projects/INFERENCE_SCOPE.md`，双 PrivateUse 路线见 `projects/PRIVATEUSE_BACKEND_SPEC.md`，全面覆盖审计见 `curriculum/COVERAGE_AUDIT.md`，增量和 gate 见 `projects/ROADMAP.md`。真实 PyTorch 源码仍是每个设计的权威对照。课程不再把阶段项目放在知识讲授之后：每个主题都以 `讲清 prerequisite → 查看 PyTorch anchor → 学习者实现 MiniTorch increment → tests/debug → code defense → delayed extension` 完成闭环。
 
+面向学习者的完整课程索引和 inference 上层到底层职责图见 `curriculum/COURSE_PRACTICE_PLAN.md`；机器可校验的知识—实践映射见 `curriculum/COURSE_PRACTICE_MAP.csv`。执行时把上述闭环拆成短 microcycles：每讲 10–20 分钟，就立刻让学习者修改一个真实 MiniTorch 文件/config/test 并验证，不先讲完整堂课再把实践留到最后。
+
 ## 每周节奏
 
-- 3–5 × 90–120 分钟：围绕当前 MiniTorch increment 讲 prerequisites、读对应源码、设计、实现与 review。
+- 3–5 × 90–120 分钟：围绕当前 MiniTorch increment 交替进行 prerequisite teaching、learner edit、diff review、focused verification、debug 与 source comparison。
 - 2 × 2–3 小时：完成 learner-authored code、focused tests 和 debugging。
 - 1 × 1–2 小时：对较早 increment 做小扩展/修复并更新架构图与知识图。
 - 构建等待时间不计入有效学习时数；每周只承诺一个主要 increment，避免同时铺开多个半成品子系统。
 
-Foundation Gate 之前每周至少留下：一份学习者画的架构/目录图、一个 M0 工程增量、一处浅层源码观察、focused build/test evidence 和一次对已实现内容的无提示解释。Gate 之后每周至少留下 MiniTorch diff/commit、PyTorch source comparison、tests/debug evidence 和 delayed extension/review。
+Foundation Gate 之前每周至少留下：一份学习者亲自写入仓库的架构/目录图、一个 M0 工程增量、一处浅层源码观察、focused build/test evidence 和一次对已实现内容的简短无提示解释。Gate 之后每周至少留下 MiniTorch diff/commit、PyTorch source comparison、tests/debug evidence 和 delayed extension/review。导师草稿和纯聊天答案不能替代 tracked learner artifact。
 
 源码锚点均为“候选入口”，Agent 必须在当前 checkout 中确认实际路径和 symbol，不能照表臆测。
 
 ## Phase 0 — 架构、词汇、语言与源码阅读基础（Week 1–2，可按 gate 延长）
 
-本阶段默认使用 architecture-first foundation mode：约 `60%` 详细讲解、`25%` 练习、`15%` 浅层源码观察。每节课从同一张全局图开始，只放大一个区域。下面是顺序而不是必须一天一节的日历。
+本阶段默认使用 architecture-first foundation mode：约 `60%` 详细讲解、`25%` 练习、`15%` 浅层源码观察。该比例分散在多个短 microcycles 中，每个讲解块后立刻进入 MiniTorch 修改或命令验证。每节课从同一张全局图开始，只放大一个区域。下面是顺序而不是必须一天一节的日历。
 
 项目主线：`MiniTorch M0`。不要求学习者在未知 C++/构建概念上猜实现；先讲最小模型，再让学习者完成相应架构图、配置或代码。M0 的 build/import loop 取代原来的 Foundation 纸面考试。
 
@@ -64,10 +66,10 @@ Foundation Gate 之前每周至少留下：一份学习者画的架构/目录图
 - 方法：先画出一个两文件小程序如何变为 executable/library，再看 PyTorch 为什么需要 Python/C++ 边界。
 - 暂不进入：template metaprogramming、宏生成、RAII/intrusive pointer 细节和 native stack 调试。
 
-### Foundation 0.7b：native extension 与工程调试闭环
+### Foundation 0.7b：native extension 最小闭环
 
-- 目标：理解 CPython extension/pybind11、Python↔C++ conversion、ownership、exception translation、GIL、shared-library ABI/RPATH、debug symbol 和 stack trace。
-- 方法：先建立一个 native function import/error/GIL-release 小闭环，再加入 debugger、sanitizer、linter 和 `compile_commands.json`；复杂 Tensor binding 留到 M1。
+- 目标：理解 CPython extension/pybind11 module、最小 Python↔C++ conversion 和 shared-library import；ownership 只讲当前 smoke function 所需边界。
+- 方法：先建立一个 native function import 闭环。复杂 Tensor ownership 在 M1 首次使用时教；exception/GIL/ABI/RPATH/debugger/sanitizer 集中到已有 CPU 模型后的 M0c clinic。
 
 ### Foundation 0.8：第一次浅层源码定位闭环
 
@@ -75,7 +77,7 @@ Foundation Gate 之前每周至少留下：一份学习者画的架构/目录图
 - 推荐路径：可读的 Python frontend 调用，例如 `nn.Linear.forward` 到其直接 Python-level callee；不继续钻入 dispatcher/codegen。
 - 环境并行项：固定 revision，审计 Python/torch/CMake/Ninja/GDB；安装或构建仍需单独确认成本和授权。
 - 产物：基础架构图、词汇表、仓库地图、最小 Python/C++ 程序图和一次浅层定位记录。
-- MiniTorch 产物：先完成 M0a 的独立仓库、目录映射、最小 CMake/pybind11 build-import loop；M0b 再补 editable/wheel、pytest 与 CTest，M0c 的 GIL/ABI/debugging 可与 M1/M2 交错完成。
+- MiniTorch 产物：先完成 M0a 的独立仓库、目录映射、最小 CMake/pybind11 build-import loop；M0b 只补 local editable development、pytest 与 CTest；随后用显式受限的 contiguous-FP32/manual-op walking skeleton 在累计 30–50 小时内运行第一个 CPU model。release wheel 留到 M9，M0c 高级调试在 M1/M2 hardening 后完成。
 
 Foundation Gate：
 
@@ -83,13 +85,13 @@ Foundation Gate：
 - `ARCH-MAP.explain >= 2` 且 `ARCH-MAP.locate >= 1`，能重画全局层次并把主要顶层目录放到合理区域；
 - `PY-DATAMODEL.explain >= 1`、`CPP-CORE.explain >= 1`、`ENV-BUILD.explain >= 1`；
 - 能完成一次仅跨已学层次的查找—解释—小验证循环。
-- 通过 `projects/ROADMAP.md` 的 M0a gate，并能无笔记解释自己编写的配置和 native import path。M0b 必须在 M2 前完成，M0c 必须在 M3 前完成。
+- 通过 `projects/ROADMAP.md` 的 M0a gate，并能无笔记解释自己编写的配置和 native import path。M0b 后立即进入 Release-A CPU walking skeleton；M0c 在 M1/M2 hardening 后、M3 前完成。
 
 未通过此 gate 时，advanced source trace 只能作为 preview，不安排 schema/codegen/dispatcher 的实现或独立复习。通过后才进入以 MiniTorch implementation 和 vertical call chain 为主的教学模式。
 
 ## Phase 1 — Tensor 与 Python frontend（Week 3–5）
 
-项目主线：先完成 `MiniTorch M1`，再完成 `M4` 中只依赖当前算子集合的 frontend increments；复杂算子由 M2 补齐。
+项目主线：Release A 已完成受限的 `M2.5` CPU walking skeleton；本阶段回到 `MiniTorch M1`，把它的简化 Tensor/ownership/numerics 替换成持久实现。复杂 operator lifecycle 由 M2 补齐。
 
 ### Week 3：Tensor 对象模型
 
@@ -116,7 +118,7 @@ Gate 1：通过 M1 gate；`TENSOR-MODEL` 和 `PY-FRONTEND` 的 `explain/locate/t
 
 ## Phase 2 — schema、codegen、Dispatcher 与 kernel（Week 6–9）
 
-项目主线：完成 `MiniTorch M2` 后先通过 `M2.5` 的 CPU `Linear → ReLU → Linear` inference vertical slice，再完成 `M3` 的真实 CUDA backend。M3 必须覆盖 caching allocator、fragmentation/OOM、pinned transfer、stream/event、跨 stream lifetime 和 mixed precision；CPU-first，CUDA 环境未通过时不得用静态代码代替 runtime mastery。
+项目主线：把 Release-A `M2.5` 模型的 manual operator boundary 替换为 `MiniTorch M2` schema/codegen/Dispatcher/CPU kernel，然后通过 M2.5 Release-B hardening gate 和 M0c debugging clinic，再完成 `M3` 的真实 CUDA backend。M3 必须覆盖 caching allocator、fragmentation/OOM、pinned transfer、stream/event、跨 stream lifetime 和 mixed precision；CPU-first，CUDA 环境未通过时不得用静态代码代替 runtime mastery。
 
 ### Week 6：operator schema 与生成链
 

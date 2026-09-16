@@ -19,6 +19,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LEARNING = ROOT / "learning"
 VALIDATOR = ROOT / "scripts" / "validate_learning_state.py"
+NEXT_SESSION_BUILDER = ROOT / "scripts" / "build_next_session.py"
 SCORE_FIELDS = {"explain", "locate", "trace", "debug", "modify", "transfer", "retain"}
 HINT_LEVELS = {"H0", "H1", "H2", "H3"}
 VERDICTS = {"pass", "partial", "fail", "invalid"}
@@ -35,6 +36,7 @@ STATE_FILES = [
     "REVIEW_QUEUE.md",
     "SESSION_LOG.md",
     "STATE.md",
+    "NEXT_SESSION.md",
     "notebook/INDEX.md",
     "notebook/MISTAKES.md",
 ]
@@ -79,6 +81,20 @@ def list_field(value: Any, location: str, errors: list[str]) -> list[dict[str, A
     return value
 
 
+def optional_object_list(
+    value: Any, location: str, errors: list[str]
+) -> list[dict[str, Any]]:
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        errors.append(f"{location} must be a list")
+        return []
+    if any(not isinstance(item, dict) for item in value):
+        errors.append(f"every {location} item must be an object")
+        return []
+    return value
+
+
 def valid_date(value: str, location: str, errors: list[str]) -> None:
     try:
         date.fromisoformat(value)
@@ -109,9 +125,27 @@ def validate_manifest(manifest: dict[str, Any], learning: Path) -> list[str]:
         errors.append(f"session artifact directory already exists: {artifact}")
 
     evidence = list_field(manifest.get("evidence"), "evidence", errors)
-    questions = list_field(manifest.get("questions"), "questions", errors)
+    questions = optional_object_list(manifest.get("questions"), "questions", errors)
     updates = list_field(manifest.get("mastery_updates"), "mastery_updates", errors)
     reviews = list_field(manifest.get("reviews"), "reviews", errors)
+    practice_cycles = list_field(
+        manifest.get("practice_cycles"), "practice_cycles", errors
+    )
+    for index, row in enumerate(practice_cycles):
+        prefix = f"practice_cycles[{index}]"
+        for field in [
+            "prerequisite_taught", "learner_action", "verification", "actual_result"
+        ]:
+            text_field(row.get(field), f"{prefix}.{field}", errors)
+
+    authorship = manifest.get("authorship")
+    if not isinstance(authorship, dict):
+        errors.append("authorship must be an object")
+    else:
+        for field in [
+            "learner_decisive_work", "mentor_scaffolding", "worktree_evidence"
+        ]:
+            text_field(authorship.get(field), f"authorship.{field}", errors)
 
     with (learning / "MASTERY.csv").open(newline="", encoding="utf-8") as handle:
         concepts = {row["concept_id"] for row in csv.DictReader(handle)}
@@ -275,6 +309,18 @@ def render_session(stage: Path, manifest: dict[str, Any]) -> tuple[Path, Path]:
     note_relative = f"learning/notebook/sessions/{day}-{slug}.md"
     note = stage / "notebook" / "sessions" / f"{day}-{slug}.md"
     evidence_ids = ", ".join(item["evidence_id"] for item in manifest["evidence"])
+    cycles = "\n".join(
+        "| "
+        + " | ".join(
+            mdcell(item[key])
+            for key in [
+                "prerequisite_taught", "learner_action", "verification", "actual_result"
+            ]
+        )
+        + " |"
+        for item in manifest["practice_cycles"]
+    )
+    authorship = manifest["authorship"]
     note.write_text(
         f"# {day} — {manifest['topic']}\n\n"
         "- Status: `complete`\n"
@@ -284,6 +330,14 @@ def render_session(stage: Path, manifest: dict[str, Any]) -> tuple[Path, Path]:
         f"- Evidence IDs: {evidence_ids}\n\n"
         "## Learner teach-back before feedback\n\n"
         f"{manifest['learner_teach_back']}\n\n"
+        "## Learner project work and provenance\n\n"
+        f"- Decisive learner work: {authorship['learner_decisive_work']}\n"
+        f"- Mentor scaffolding: {authorship['mentor_scaffolding']}\n"
+        f"- Worktree evidence: {authorship['worktree_evidence']}\n\n"
+        "## Teaching-to-practice cycles\n\n"
+        "| Prerequisite taught | Immediate learner action | Verification | Actual result |\n"
+        "|---|---|---|---|\n"
+        f"{cycles}\n\n"
         "## Gap audit\n\n"
         f"{manifest['gap_audit']}\n\n"
         "## Focused verification\n\n"
@@ -313,6 +367,8 @@ def render_session(stage: Path, manifest: dict[str, Any]) -> tuple[Path, Path]:
             f"- MiniTorch revision/diff: {manifest['minitorch_revision']}\n"
             f"- Milestone/increment: {manifest['milestone']}\n"
             f"- Outcome: {manifest['outcome']}\n"
+            f"- Learner decisive work: {authorship['learner_decisive_work']}\n"
+            f"- Practice verification: {manifest['practice_cycles'][-1]['actual_result']}\n"
             f"- Learner artifact: `learning/artifacts/{day}-{slug}/SESSION_MANIFEST.json`\n"
             f"- Notebook: {note_relative}\n"
             f"- Next action: {manifest['next_action']}\n"
@@ -412,6 +468,22 @@ def main() -> int:
         stage = Path(directory) / "learning"
         shutil.copytree(learning, stage)
         note, artifact = apply_to_stage(stage, manifest)
+        hot_context = subprocess.run(
+            [
+                sys.executable,
+                str(NEXT_SESSION_BUILDER),
+                "--learning-dir",
+                str(stage),
+                "--write",
+            ],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if hot_context.returncode:
+            print("Cannot refresh next-session hot context:", file=sys.stderr)
+            print(hot_context.stderr.rstrip(), file=sys.stderr)
+            return 1
         checked = subprocess.run(
             [sys.executable, str(VALIDATOR), "--learning-dir", str(stage)],
             text=True,

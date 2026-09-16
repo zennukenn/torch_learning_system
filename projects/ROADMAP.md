@@ -4,6 +4,23 @@ MiniTorch is the assessment spine for every phase. The stable scope and dependen
 
 Each milestone is split into session-sized increments. Before an increment, the learner writes the design or patch plan and expected tests. The mentor may create only the minimum scaffolding needed to expose the learning task. After implementation, assessment uses the diff, focused tests, debugging evidence, PyTorch comparison and an unassisted code defense.
 
+The execution contract and actual delivery order are defined by the canonical
+`curriculum/COURSE_PRACTICE_MAP.csv`, rendered for learners in
+`curriculum/COURSE_PRACTICE_PLAN.md`. Delivery is intentionally spiral:
+
+```text
+M0a native import → M0b local development loop
+  → M2.5 walking-skeleton CPU model
+    → M1 Tensor depth → M2 Dispatcher/CPU hardening
+      → M0c advanced native debugging → M3 CUDA → M4–M9
+```
+
+The first M2.5 pass uses explicit contiguous-FP32 and manual-boundary
+restrictions; M1/M2 later replace them before CUDA. Teaching is delivered in
+short blocks and immediately applied to the current MiniTorch worktree. Each
+increment normally leaves a learner-authored tracked artifact in the same
+session.
+
 ## Depth and capacity policy
 
 Every numbered increment is assigned one delivery depth:
@@ -16,10 +33,10 @@ The depth line under each milestone assigns every increment. Do not silently tur
 
 | Milestone | Planning range | First useful outcome |
 |---|---:|---|
-| M0 | 35–55 h | M0a imports one native function |
-| M1 | 45–70 h | CPU Tensor owns real storage |
-| M2 | 55–90 h | schema-dispatched CPU operator |
-| M2.5 | 15–25 h | first CPU model inference |
+| M0 | 27–40 h | M0a imports one native function |
+| M1 | 27–40 h | walking-skeleton Tensor gains durable ownership and semantics |
+| M2 | 45–75 h | manual paths become schema-dispatched CPU operators |
+| M2.5 | 18–30 h | first CPU model inference within Release A |
 | M3 | 65–105 h | real CUDA execution/runtime slice |
 | M4 | 65–100 h | CNN and decoder inference frontend |
 | M5 | 35–55 h | minimal Autograd/MLP boundary |
@@ -28,7 +45,12 @@ The depth line under each milestone assigns every increment. Do not silently tur
 | M8 | 90–150 h | dual PrivateUse contract-ready routes |
 | M9 | 40–65 h | clean package and capstone |
 
-The total planning range is approximately 580–930 focused hours. At 20 hours per week this is 29–47 active study weeks; with work interruptions and delayed reviews, 9–18 calendar months is realistic. Gates and evidence determine progress, not the estimate.
+The total planning range is approximately 547–875 focused hours. Release A
+delivers a real but narrow CPU model in 30–50 hours; Releases B and C retain all
+accepted Tensor, runtime, model, compiler, distributed and backend depth. At 20
+hours per week the full path is 27–44 active study weeks; with work
+interruptions and delayed reviews, 9–18 calendar months remains realistic.
+Gates and evidence determine progress, not the estimate.
 
 ## M0 — Repository, architecture and staged build/import loop
 
@@ -36,20 +58,20 @@ Goal: create an independent `mini-torch/` Git repository and understand how sour
 
 ### M0a — Fast native-import success
 
-1. learner-authored map from PyTorch directories to the reduced MiniTorch layout;
-2. repository initialization, ignore policy, README and one architecture decision record;
-3. minimal root/subdirectory CMake target producing one C++ library;
-4. pybind11 module exposed as `minitorch._C`, imported by `minitorch`, with one native smoke test.
+1. after the inference/repository panorama, the learner saves a tracked map from PyTorch directories to the reduced MiniTorch layout;
+2. after Git/source-artifact teaching, the learner initializes the repository and authors the ignore policy, README and one architecture decision record;
+3. after source/header/compile/object/link/CMake teaching, the learner authors a minimal root/subdirectory target producing one C++ library;
+4. after CPython-extension/pybind11 teaching, the learner authors a module exposed as `minitorch._C`, imports it through `minitorch`, and adds one native smoke test.
 
-Depth: C = 1–4. Gate: a clean local build can run `import minitorch` and call one native function. The learner explains the repository boundary, source→object/library→extension path and staged diff. M0a is the Foundation Gate and unlocks M1.
+Depth: C = 1–4. Gate: a clean local build can run `import minitorch` and call one native function. The learner explains the repository boundary, source→object/library→extension path and staged diff. M0a is the Foundation Gate and unlocks M0b, followed by the Release-A walking skeleton.
 
 ### M0b — Package and test loop
 
-5. `pyproject.toml`, setuptools bridge and isolated development environment;
-6. pytest, CTest and explicit build/install/import commands;
-7. editable install plus clean wheel build/install smoke.
+5. `pyproject.toml`, the minimum setuptools/build bridge and isolated development environment;
+6. pytest, CTest and explicit configure/build/editable-install/import commands;
+7. clean recreation of the local development loop. Release wheel, ABI matrix and publish-style isolation remain M9 work.
 
-Depth: C = 5–7. Gate: editable and wheel installs work in isolated environments; pytest and CTest each exercise the native boundary. M0b must pass before M2 code generation expands the build graph.
+Depth: C = 5–7. Gate: the editable development install works after recreating its environment; pytest and CTest each exercise the native boundary. This is not the M9 release-wheel gate.
 
 ### M0c — Native boundary and debugging clinic
 
@@ -57,11 +79,11 @@ Depth: C = 5–7. Gate: editable and wheel installs work in isolated environment
 9. one GIL-release concurrency case;
 10. ABI/RPATH inspection, debug symbols, native stack trace, logging, `compile_commands.json`, sanitizer and linter entry points.
 
-Depth: R = 8–10. Gate: a translated exception and GIL case pass, and one symbolized native failure is located. M0c may interleave with M1 and M2, but must pass before M3 introduces asynchronous CUDA failures.
+Depth: R = 8–10. Basic module definition and Tensor-handle ownership are taught at their first use in M0a/M2.5/M1. M0c is the later advanced clinic: a translated exception and GIL case pass, and one symbolized native failure is located. It runs after the CPU walking skeleton has been hardened through M1/M2 and must pass before M3 introduces asynchronous CUDA failures.
 
 ## M1 — C10 foundations, Storage and CPU Tensor
 
-Goal: build the minimum ownership and metadata model needed by later operators.
+Goal: replace the walking skeleton's contiguous-FP32 Tensor assumptions with the durable ownership metadata and numerical model needed by later operators.
 
 Increments:
 
@@ -80,7 +102,7 @@ Gate: positive, alias/mutation, lifetime, shape/stride, promotion/broadcasting, 
 
 ## M2 — Schema, code generation, dispatcher and CPU kernels
 
-Goal: implement one full eager operator lifecycle rather than calling C++ methods directly.
+Goal: replace the walking skeleton's manual/direct operator boundaries with one full eager schema/codegen/Dispatcher lifecycle.
 
 Increments:
 
@@ -101,21 +123,33 @@ Required representative slices: an elementwise op, a view-like op, a reduction a
 
 Gate: generated files are reproducible; manual and generated paths have tests; registration lifetime and duplicate/missing kernel errors are covered; runtime evidence identifies the chosen scalar/parallel/vector/library CPU path. Thread-count and benchmark evidence are reproducible. The learner transfers the pattern to one small unpracticed operator and can distinguish built-in from out-of-tree custom registration.
 
-## M2.5 — First CPU inference vertical slice
+## M2.5 — Early CPU inference walking skeleton and hardening
 
-Goal: produce an early, motivating end-to-end model before CUDA and the full `nn` surface.
+Goal: produce a motivating end-to-end model in Release A, then preserve the
+same model as an acceptance test while M1/M2 replace its temporary shortcuts.
 
-Increments:
+Release-A increments:
 
-1. minimal Python `Tensor`, `Module`, Parameter and `Linear` wrappers over the existing native core;
-2. deterministic `Linear → ReLU → Linear` inference using the M2 dispatcher and CPU kernels;
-3. import-to-kernel trace, shape/error tests and official-PyTorch or NumPy oracle parity;
-4. minimal state save/load round trip for this model;
-5. pinned-source comparison with `Module._call_impl`, `Linear.forward` and the corresponding native operator path.
+1. a minimal owned contiguous FP32 Tensor handle with explicit unsupported dtype/layout/view cases;
+2. direct scalar CPU `add`, `relu` and `matmul` native functions behind a documented temporary manual boundary;
+3. minimal Python `Tensor`, `Module`, Parameter and `Linear` wrappers;
+4. deterministic `Linear → ReLU → Linear` inference;
+5. import-to-native trace, shape/error tests and official-PyTorch or NumPy oracle parity.
 
-Depth: C = 1–3; R = 4; S = 5.
+Release-B hardening:
 
-Gate: a clean CPU environment runs the tiny model and reproduces oracle outputs. The learner traces Python module call → binding → dispatcher → CPU kernel, diagnoses one seeded shape or registration failure and explains which M4 behaviors remain intentionally absent. M2.5 passes before M3 starts.
+6. reroute the same model through the completed M1 Tensor invariants and M2 schema/Dispatcher/CPU kernels;
+7. add minimal state save/load with validation;
+8. compare `Module._call_impl`, `Linear.forward` and corresponding native ownership in the pinned source.
+
+Depth: C = 1–7; S = 8. The manual boundary is acceptable only for the
+Release-A checkpoint and is recorded as debt, not learned Dispatcher design.
+
+Release-A gate: a clean CPU environment runs the tiny model and reproduces
+oracle outputs within a cumulative 30–50 focused hours. Release-B gate: the
+unchanged model tests run through M1/M2 ownership and dispatch, state round-trip
+passes, and one seeded shape or registration failure is diagnosed. The
+Release-B gate plus M0c passes before M3 starts.
 
 ## M3 — CUDA backend and runtime boundary
 

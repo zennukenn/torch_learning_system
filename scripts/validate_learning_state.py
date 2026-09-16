@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import re
+import subprocess
 import sys
 from datetime import date
 from pathlib import Path
@@ -13,6 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LEARNING = ROOT / "learning"
+NEXT_SESSION_BUILDER = ROOT / "scripts" / "build_next_session.py"
 
 SCORE_FIELDS = ["explain", "locate", "trace", "debug", "modify", "transfer", "retain"]
 HINT_LEVELS = {"H0", "H1", "H2", "H3"}
@@ -41,7 +43,7 @@ SPECS = {
 REQUIRED = [
     "PROFILE.md", "STATE.md", "MASTERY.csv", "EVIDENCE_LOG.csv",
     "QUESTION_HISTORY.csv", "REVIEW_QUEUE.md", "SESSION_LOG.md", "ERROR_LOG.md",
-    "notebook/INDEX.md", "notebook/MISTAKES.md",
+    "NEXT_SESSION.md", "notebook/INDEX.md", "notebook/MISTAKES.md",
 ]
 
 MARKERS = {
@@ -358,6 +360,21 @@ def validate(learning: Path) -> list[str]:
 def main() -> int:
     learning = parse_args().learning_dir.resolve()
     errors = validate(learning)
+    if not errors and NEXT_SESSION_BUILDER.is_file():
+        hot_context = subprocess.run(
+            [
+                sys.executable,
+                str(NEXT_SESSION_BUILDER),
+                "--learning-dir",
+                str(learning),
+                "--check",
+            ],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if hot_context.returncode:
+            errors.append("NEXT_SESSION.md is missing or stale")
     if errors:
         print("Learning-state validation failed:", file=sys.stderr)
         for error in errors:

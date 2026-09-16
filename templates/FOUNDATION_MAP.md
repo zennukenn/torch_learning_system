@@ -55,6 +55,12 @@ Keep the active list to roughly five to seven new terms.
 - Focused build/test result:
 - Deliberately postponed implementation:
 
+## Immediate practice cycles
+
+| Prerequisite just taught | Learner-authored repository action | Diff or command result | Next teaching decision |
+|---|---|---|---|
+| | | | |
+
 ## Learner's no-notes map
 
 Preserve the learner's own wording or drawing before mentor correction.

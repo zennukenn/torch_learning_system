@@ -1,15 +1,20 @@
 # Knowledge graph and architecture map
 
+The learner-facing top-to-bottom inference course and its immediate MiniTorch
+applications are indexed in `curriculum/COURSE_PRACTICE_PLAN.md`; the
+machine-validated first accountable course for every mastery concept is stored
+in `curriculum/COURSE_PRACTICE_MAP.csv`.
+
 ## MiniTorch project map
 
 The course revisits the same architecture through learner implementation:
 
 ```text
-M0 build/package/binding
-  → M1 c10 foundations + Storage/Tensor
-    → M2 schema/codegen/Dispatcher/CPU kernels
-      → M2.5 first CPU model vertical slice
-        → M3 CUDA memory/streams + kernels/libraries + precision
+M0a native import → M0b local development/test loop
+  → M2.5 restricted first CPU model walking skeleton
+    → M1 durable c10 foundations + Storage/Tensor/numerics
+      → M2 schema/codegen/Dispatcher/CPU hardening of the same model
+        → M0c advanced native debugging → M3 CUDA memory/streams + kernels/libraries + precision
           → M4 Python frontend + CNN/Transformer/KV cache + quantized inference state
         → M5 minimal Autograd/training boundary
         → M6 runtime/profiler + inference DP/TP
@@ -77,7 +82,7 @@ distributed/process group ──────────────────
 | Compiler | frame/graph/guards/decomposition/lowering/codegen 如何连接？ | graph/log/generated code/equivalence test |
 | Accelerator | eager device backend 与 graph compiler backend 各负责什么？ | ownership diagram、prototype、negative tests |
 | Compatibility | “模型可用”如何被正确性、动态 shape、fallback、内存、并发、性能、升级共同证明？ | versioned matrix、model tests、benchmark protocol |
-| Build/package | `pyproject.toml`、setuptools、CMake targets、compile/link、extension module 与 wheel 如何连接？ | clean configure/build、editable/wheel install、target graph |
+| Build/package | `pyproject.toml`、setuptools、CMake targets、compile/link、extension module 与 wheel 如何连接？ | early clean local editable loop; M9 release wheel/ABI/CI evidence |
 | pybind11 | Python object 如何跨到 C++ type，谁持有 lifetime，异常和 conversion 如何传播？ | native import path、lifetime/error tests、binding source |
 | Test engineering | unit/integration/parity/negative/performance/package test 各证明什么、不能证明什么？ | acceptance matrix、seeded failure、isolated install |
 | CUDA | host/device、kernel launch、allocation、stream/event 和 synchronization 如何影响正确性与测量？ | CUDA tests、dispatch trace、synchronized benchmark |

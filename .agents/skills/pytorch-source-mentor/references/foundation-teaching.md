@@ -24,15 +24,16 @@ For the current learner, target approximately:
 - 25% learner practice such as sorting, labeling, explaining, or modifying a tiny example;
 - 15% source observation limited to the concepts already taught.
 
-Adjust timing without changing the order. Introduce roughly five to seven new terms in one session, define each in plain Chinese, and maintain a short vocabulary recap. Do not combine a new architecture layer, unfamiliar schema notation, code generation, dispatcher internals, and C++ syntax in the same beginner session.
+Apply the ratio across the full session, not as a lecture-first block. Break explanation into 10–20 minute pieces and follow each piece immediately with a learner-authored MiniTorch repository action, diff inspection, or focused command. Introduce roughly five to seven new terms in one session, define each in plain Chinese, and maintain a short vocabulary recap. Do not combine a new architecture layer, unfamiliar schema notation, code generation, dispatcher internals, and C++ syntax in the same beginner session.
 
 ## Questions and evidence
 
 - A diagnostic may ask what the learner already knows, but “不知道” is a valid baseline rather than a cue to reveal a deep solution path.
+- Use only one opening diagnostic set. Do not make the learner repeat a supplied sentence until it matches; after teaching, let the repository change or focused experiment expose the model.
 - Teach the prerequisite model before asking a prediction about it. Predictions test a model the learner has just received; they do not require guessing undisclosed internals.
 - Prefer classification and causal questions before source-location questions: “Which layer owns this?” before “Which file implements this?”
 - In foundation mode, one inspected source anchor and a small verification are enough. Do not require an end-to-end call chain.
-- Use M0 architecture, packaging, CMake, pybind11 and import work as the assessment medium. Short oral checks must explain learner-produced design/config/code rather than form a separate quiz.
+- Use M0 architecture, Git, README/ADR/ignore policy, packaging, CMake, pybind11 and import work as the assessment medium. Teach each artifact's purpose immediately before the learner creates or materially edits it. Short oral checks must explain learner-produced design/config/code rather than form a separate quiz.
 - Teach-back asks for the concept map, one concrete example, one source observation, and current uncertainty. Do not require two native anchors or generated/runtime evidence unless those were the declared outcome.
 - Architecture diagrams and mentor explanations do not by themselves prove mastery. Award `explain` evidence only from the learner's own restatement or application.
 
@@ -43,5 +44,6 @@ When the learner cannot reconstruct the lesson after explanation:
 1. stop adding layers;
 2. identify the earliest missing term or causal link;
 3. return to a smaller example and ask for a corrected restatement;
-4. reschedule advanced reviews until their prerequisites have been taught;
-5. record the advanced material as a preview, not as the learner's active next step.
+4. after at most one additional oral repair, turn the gap into a concrete MiniTorch edit/test/source observation;
+5. reschedule advanced reviews until their prerequisites have been taught;
+6. record the advanced material as a preview, not as the learner's active next step.

@@ -1,10 +1,10 @@
 # Session protocol
 
-Use one of two project modes for a 90–120 minute session. The learner's demonstrated prerequisites, not elapsed weeks, select the mode. In both modes, the current MiniTorch increment is the assessment unit; isolated knowledge exams are not used.
+Use one of two project modes for a 90–120 minute session. The learner's demonstrated prerequisites, not elapsed weeks, select the mode. In both modes, the current MiniTorch increment is the assessment unit; isolated knowledge exams are not used. Also read and follow [project-teaching-loop.md](project-teaching-loop.md): teaching and repository work are interleaved rather than placed in separate lecture and practice halves.
 
 ## Mode selection
 
-- Use **foundation project mode** until the Foundation Gate in `curriculum/ROADMAP.md` is met, or whenever the learner reports overload and cannot explain the current map. It advances MiniTorch M0a to one native import before M0b packaging and M0c debugging depth.
+- Use **foundation project mode** until the Foundation Gate in `curriculum/ROADMAP.md` is met, or whenever the learner reports overload and cannot explain the current map. Release A advances from M0a native import through a local M0b development loop to a restricted first CPU model; advanced M0c debugging comes only after M1/M2 hardening.
 - Use **implementation/trace mode** after the gate for Tensor, operator, runtime, compiler, debugging, and modification increments.
 - An advanced topic seen during foundation mode is a preview. Preserve any evidence, but do not make it the next review target before its prerequisites.
 
@@ -12,58 +12,55 @@ Read [foundation-teaching.md](foundation-teaching.md) whenever foundation mode a
 
 ## Rules shared by both modes
 
-1. Select exactly one session-sized increment from `projects/ROADMAP.md` and create its contract with `templates/MINITORCH_MILESTONE.md`.
-2. Teach the prerequisite before asking for design or code. Inspect at least one corresponding location in the pinned PyTorch checkout.
-3. Require the learner's design, hypothesis or patch plan before decisive implementation.
-4. The learner writes decisive logic. Mentor scaffolding must be minimal and labeled.
-5. Verify with the relevant build, native, Python, boundary/error, parity, integration or packaging tests.
-6. Use a real failure when one occurs; otherwise use a small seeded defect only after the base behavior works.
-7. Close with an unassisted defense of the learner's diff/configuration and schedule a delayed extension or repair.
+1. Select exactly one session-sized increment from the current canonical course row and `projects/ROADMAP.md`, then create its contract with `templates/MINITORCH_MILESTONE.md`.
+2. Use one opening diagnostic set with at most three short questions. It only selects the explanation and scaffolding level; it is not the session's assessment product.
+3. Teach the prerequisite before asking for design or code, then require an immediate learner-authored repository action before the next substantial teaching block.
+4. Inspect at least one corresponding location in the pinned PyTorch checkout after the learner has enough vocabulary to understand its responsibility.
+5. Require the learner's design, hypothesis or patch plan before decisive implementation. The learner writes decisive logic and the artifact currently being taught. Mentor scaffolding must be minimal, labeled and visible in the diff.
+6. Verify each meaningful learner change with the narrowest relevant build, native, Python, boundary/error, parity, integration or packaging test.
+7. Use a real failure when one occurs; otherwise use a small seeded defect only after the base behavior works.
+8. Close with one compact unassisted defense of the learner's diff/configuration and schedule a delayed extension or repair. Across its gap audit ask at most three focused follow-ups; after two failed oral repairs of one gap switch to a code/test task.
 
 ## Foundation mode
 
 Target approximately 60% explanation, 25% practice, and 15% source observation.
 
-### 1. Resume and orient (5–10 min)
+### 1. Resume, orient and start the worktree (5–10 min)
 
 - Read durable state and the last session entry.
 - Run only due reviews whose prerequisites have already been taught; defer over-level reviews explicitly.
-- Ask at most three short questions only to diagnose prerequisites for the current M0a/b/c increment or retrieve an older implemented behavior. Accept “不知道” without escalating into hidden internals.
+- Ask one set of at most three short questions only to diagnose prerequisites for the current Release-A increment or retrieve an older implemented behavior. Accept “不知道” and do not start a correction quiz.
 - Point to the learner's current position on the global architecture map.
+- Inspect the current `mini-torch/` status and identify which existing hunks are learner work, mentor scaffolding or unrelated work.
 
 ### 2. Establish one concept outcome (5 min)
 
 State one observable learner outcome, such as: “Explain in plain language what a tensor, operator, model, and device each represent, then place them in one inference example.”
 
-### 3. Explain from panorama to detail (40–60 min)
+### 3. Run teaching-to-project microcycles (65–85 min total)
 
-- Start with a concrete inference story and a simple diagram or analogy.
-- Introduce roughly five to seven defined terms.
-- For each term, cover what it is, why it exists, what enters/leaves it, and where it sits in the map.
-- Explicitly list details postponed to later phases.
-- Pause for short comprehension checks about material already explained; do not ask the learner to guess codegen, dispatch, or native internals.
+- Start with a concrete inference/build story and a simple diagram or analogy.
+- Introduce roughly five to seven defined terms over the full session. For each term, cover what it is, why it exists, what enters/leaves it, and where it sits in the map.
+- After each 10–20 minute explanation, give one immediate learner action: create or edit a repository map, README, ADR, ignore rule, tiny Python/C++ source, CMake target or focused test. Inspect the actual diff before continuing.
+- For nontrivial syntax, give the reduced example immediately before the learner applies the same construct in MiniTorch.
+- Before running a command, have the learner state one expected observation. Run it, compare expected/actual, and use a real error as the next teaching object.
+- During one cycle inspect one or two readable pinned-PyTorch anchors corresponding directly to the artifact. The goal is “this responsibility has a real home,” not an end-to-end trace.
+- Record the cycles and limitations in `templates/MINITORCH_MILESTONE.md`; use `FOUNDATION_MAP.md` as a supporting learner diagram where useful.
+- Explicitly list details postponed to later phases. Do not ask the learner to guess codegen, dispatch or native internals.
 
-### 4. Guided MiniTorch work (20–30 min)
+### 4. Learner project defense and gap audit (10–15 min)
 
-Use labeling, directory mapping, a tiny Python/C++ example, build configuration or learner explanation. Move from recognition to one small learner-authored M0a artifact or code/config change and a fast native import. Give a reduced language/tooling example before asking for a project change.
-
-### 5. Source observation (10–15 min)
-
-Inspect one or two readable anchors that correspond directly to the taught map. The goal is “this concept has a real home,” not an end-to-end trace. Record one focused build/test verification and its limitation in an artifact based on `templates/MINITORCH_MILESTONE.md`; use `FOUNDATION_MAP.md` as a supporting learner diagram where useful.
-
-### 6. Learner teach-back and gap audit (10–15 min)
-
-Ask the learner, without notes, to explain:
+After project work exists, ask the learner without notes to explain compactly:
 
 1. today's concept map in their own words;
-2. the current M0a/b/c artifact/config/code they authored and its build or import path;
+2. the current Release-A artifact/config/code they authored and its build or import path;
 3. one inspected source anchor and the relevant correspondence;
 4. one language or engineering construct used in the change;
 5. what remains unclear.
 
-Audit `correct`, `missing`, `incorrect`, and `uncertain`. Ask at most three focused follow-ups. After a material correction, require a short corrected restatement. Mentor-supplied material is not mastery evidence.
+Audit `correct`, `missing`, `incorrect`, and `uncertain`. Ask at most three focused follow-ups across the entire audit. Prefer a file edit, command, test or delayed repair over repeated restatement. Mentor-supplied material is not mastery evidence.
 
-### 7. Notebook and close (5–10 min)
+### 5. Notebook and close (5–10 min)
 
 Write the completed note and evidence only after teach-back. Update notebook index, mistakes, evidence/questions, mastery, review queue, error log, session log, and state; run the validator. Schedule reviews around +1, +3, +7, +14, and +30 days, but defer prompts that depend on untaught layers.
 
@@ -75,21 +72,21 @@ Write the completed note and evidence only after teach-back. Update notebook ind
 - Ask only the conceptual/source/call-order questions required for the selected increment.
 - Record the learner's initial answer before feedback.
 
-### 2. Establish the implementation contract (5 min)
+### 2. Establish the implementation contract and first edit (5–10 min)
 
-State one observable MiniTorch behavior. Define the supported subset, invariants, errors, likely files and acceptance matrix before coding.
+State one observable MiniTorch behavior. Define the supported subset, invariants, errors, likely files and acceptance matrix, then have the learner make the smallest contract-bearing edit or test before more source teaching.
 
-### 3. Guided source comparison and implementation (35–45 min)
+### 3. Interleaved source comparison and implementation (35–45 min)
 
-Have the learner design the next MiniTorch layer using the architecture model already learned, then inspect the current PyTorch checkout together:
+Have the learner design the next MiniTorch layer using the architecture model already learned. Alternate small learner changes, focused verification and the corresponding current PyTorch source inspection:
 
 `user API → Python wrapper/binding → operator schema/codegen → dispatcher → backend/fallback → kernel → result`
 
-Add Autograd, modes/subclasses, compiler, runtime, or distributed branches only when relevant. The learner writes the decisive implementation. Maintain `templates/MINITORCH_MILESTONE.md` and use `CALL_CHAIN.md` when a vertical trace is part of the increment.
+Add Autograd, modes/subclasses, compiler, runtime, or distributed branches only when relevant. The learner writes the decisive implementation. Do not pre-create the file or configuration whose design is the learning outcome. Maintain `templates/MINITORCH_MILESTONE.md` and use `CALL_CHAIN.md` when a vertical trace is part of the increment.
 
 ### 4. Syntax clinic (15–20 min)
 
-Select at most two blocking constructs from the inspected source. For each, parse the minimum snippet, explain semantics and PyTorch purpose, reduce it to a standalone example, and ask the learner to predict or modify it.
+Select at most two blocking constructs from the inspected source or current MiniTorch diff. For each, parse the minimum snippet, explain semantics and PyTorch purpose, reduce it to a standalone example, then have the learner apply or modify it directly in MiniTorch.
 
 ### 5. Evidence lab (20–30 min)
 
@@ -97,7 +94,7 @@ Run the predefined acceptance matrix, beginning with the narrowest relevant test
 
 ### 6. Learner teach-back and gap audit (15–20 min)
 
-Ask for the implemented contract, important build/runtime path, MiniTorch diff, inspected PyTorch anchors, one syntax/engineering construct, verification result, simplification and remaining uncertainty. Preserve the original wording, audit gaps, ask at most three follow-ups, and require corrected restatement for material errors.
+Ask for the implemented contract, important build/runtime path, MiniTorch diff, inspected PyTorch anchors, one syntax/engineering construct, verification result, simplification and remaining uncertainty. Preserve the original wording and audit gaps. Across the audit ask at most three follow-ups; after two unsuccessful oral repairs of the same gap schedule a concrete code/test repair instead of continuing the quiz.
 
 ### 7. Notebook and close (5–10 min)
 

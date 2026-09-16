@@ -30,6 +30,16 @@
 - PyTorch source anchors to inspect:
 - Expected build/runtime path:
 
+## Teaching-to-project microcycles
+
+| Prerequisite taught | Immediate learner-authored file/config/test action | Diff inspected | Focused command and expected result | Actual result / next debug step |
+|---|---|---|---|---|
+| | | | | |
+
+Do not begin another substantial explanation block before the current learner
+action is visible in the MiniTorch worktree. A design-only increment still
+leaves a learner-authored tracked artifact.
+
 ## Acceptance matrix
 
 | Layer | Case | Expected | Command | Actual | Status |
@@ -45,6 +55,8 @@
 ## Review and debugging
 
 - Learner-authored decisive code:
+- Worktree evidence for learner authorship:
+- Mentor-authored files/hunks (not mastery evidence without material learner revision):
 - Review findings:
 - Failure/reproduction:
 - Initial learner hypothesis:

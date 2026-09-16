@@ -4,12 +4,19 @@
 
 1. Collect the learner's MiniTorch diff/test/debug evidence and unaided code defense before closing the session.
 2. Create `learning/notebook/sessions/YYYY-MM-DD-short-session-name.md` from `templates/LEARNING_NOTE.md`; update notebook index and mistakes.
-3. Append new immutable rows to `EVIDENCE_LOG.csv` and `QUESTION_HISTORY.csv`, linking each evidence row to the completed notebook note.
+3. Append new immutable rows to `EVIDENCE_LOG.csv` and append only project-grounded questions actually used, if any, to `QUESTION_HISTORY.csv`; link each evidence row to the completed notebook note.
 4. Update aggregate scores in `MASTERY.csv` only from referenced evidence.
 5. Update `REVIEW_QUEUE.md`, `ERROR_LOG.md`, `SESSION_LOG.md`, then `STATE.md`.
-6. Run `python3 scripts/validate_learning_state.py`.
+6. Regenerate `learning/NEXT_SESSION.md` from the updated canonical state.
+7. Run `python3 scripts/validate_learning_state.py` and the hot-context check.
 
-For a normal completed project session, encode these updates once in a JSON manifest based on `templates/SESSION_MANIFEST.example.json`. Run `python3 scripts/record_learning_session.py <manifest>` for an isolated dry run, review the generated summary, then use `--apply`. Manual updates remain allowed for migrations and unusual repairs.
+For a normal completed project session, encode these updates once in a JSON manifest based on `templates/SESSION_MANIFEST.example.json`. Run `python3 scripts/record_learning_session.py <manifest>` for an isolated dry run, review the generated summary, then use `--apply`. The recorder regenerates the hot-context brief inside the validated stage before copying state. Manual updates remain allowed for migrations and unusual repairs.
+
+`learning/NEXT_SESSION.md` is generated output, not a second source of truth.
+Its sources are `PROFILE.md`, `STATE.md`, `MASTERY.csv`, `REVIEW_QUEUE.md`,
+`notebook/INDEX.md` and `curriculum/COURSE_PRACTICE_MAP.csv`. Never hand-edit it.
+
+The manifest records `practice_cycles` and `authorship`. Each practice cycle names the prerequisite taught, the learner's immediate repository action and the focused verification/result. `authorship` separates decisive learner work from mentor scaffolding using the actual MiniTorch diff or artifact. Successful sessions need not create a `QUESTION_HISTORY.csv` row; do not manufacture a question when project evidence and the compact defense are sufficient.
 
 ## Session artifacts
 
@@ -19,6 +26,7 @@ For a normal completed project session, encode these updates once in a JSON mani
 - A source-only artifact must label runtime/build claims as unverified. It may support `explain` or `locate`, but not a runtime dispatch, debugging, or complete end-to-end `trace` score by itself.
 - For MiniTorch work, start from `templates/MINITORCH_MILESTONE.md` and record both the MiniTorch base/result revision or working-tree diff and the separate pinned PyTorch reference revision.
 - A passing test records behavior, not learner authorship or understanding. Identify decisive learner-authored code, mentor scaffolding and hint level before awarding `modify`, `debug` or `transfer` evidence.
+- A mentor-created artifact is permanently recorded as mentor provenance until the learner materially revises or replaces it. Approval, copying or recitation alone does not make it learner-authored.
 
 ## Notebook rules
 

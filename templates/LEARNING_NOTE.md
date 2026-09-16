@@ -52,10 +52,17 @@
 | Layer/case | Command | Expected | Actual | What it proves / does not prove |
 |---|---|---|---|---|
 
+## 教学到实践的短循环
+
+| 刚讲授的 prerequisite | 我立即完成的 MiniTorch 修改 | Diff/文件证据 | Focused verification 与结果 |
+|---|---|---|---|
+| | | | |
+
 ## Debugging and authorship
 
 - Decisive code authored by learner:
-- Mentor scaffolding/hints:
+- Worktree evidence for learner authorship:
+- Mentor scaffolding/hints or pre-existing mentor drafts:
 - Failure and initial hypothesis:
 - Evidence, root cause and repair:
 - PyTorch correspondence and MiniTorch simplification:
