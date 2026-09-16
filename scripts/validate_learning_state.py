@@ -23,6 +23,7 @@ STATUSES = {"unassessed", "learning", "review", "mastered"}
 EVIDENCE_ID = re.compile(r"^E-\d{8}-\d{2,}$")
 QUESTION_ID = re.compile(r"^Q-\d{8}-\d{2,}$")
 COMMIT = re.compile(r"^[0-9a-f]{40}$")
+MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]*\]\(([^)]+)\)")
 
 SPECS = {
     "MASTERY.csv": [
@@ -123,6 +124,23 @@ def valid_iso_date(value: str, location: str, errors: list[str], *, optional: bo
         errors.append(f"{location}: expected ISO date YYYY-MM-DD, got {value!r}")
 
 
+def markdown_local_targets(markdown_path: Path, text: str) -> set[Path]:
+    """Resolve local Markdown links relative to the document that contains them."""
+    targets: set[Path] = set()
+    for raw_target in MARKDOWN_LINK.findall(text):
+        target = raw_target.strip()
+        if target.startswith("<") and target.endswith(">"):
+            target = target[1:-1]
+        if not target or target.startswith(("#", "http://", "https://", "mailto:", "app://")):
+            continue
+        local = target.split("#", 1)[0]
+        candidate = Path(local)
+        if not candidate.is_absolute():
+            candidate = markdown_path.parent / candidate
+        targets.add(candidate.resolve())
+    return targets
+
+
 def validate(learning: Path) -> list[str]:
     errors: list[str] = []
     for name in REQUIRED:
@@ -213,6 +231,7 @@ def validate(learning: Path) -> list[str]:
         notebook_index_path.read_text(encoding="utf-8") if notebook_index_path.is_file() else ""
     )
     session_log = session_log_path.read_text(encoding="utf-8") if session_log_path.is_file() else ""
+    session_log_targets = markdown_local_targets(session_log_path, session_log)
     for number, row in enumerate(evidence, start=2):
         evidence_id = row.get("evidence_id", "").strip()
         evidence_rows[evidence_id] = row
@@ -297,7 +316,7 @@ def validate(learning: Path) -> list[str]:
                 errors.append(
                     f"EVIDENCE_LOG.csv:{number}: notebook index does not link {index_reference}"
                 )
-            if notebook_value not in session_log:
+            if candidate not in session_log_targets:
                 errors.append(
                     f"EVIDENCE_LOG.csv:{number}: SESSION_LOG.md does not link {notebook_value}"
                 )

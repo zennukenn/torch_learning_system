@@ -89,7 +89,8 @@ source excerpts and actual lesson content are excluded from both comparisons.
   using the configured Conda Python by default.
 - `tests/test_learning_system.py` tests course sequencing, time to first model,
   dependency chaining, generated-table drift, >50-hour rejection, hot-context
-  freshness/rebuild, Skill size/routing and machine-readable preflight.
+  freshness/rebuild, Skill size/routing, machine-readable preflight, all tracked
+  Markdown links and document-relative learning-state links.
 - `scripts/validate_learning_state.py` rejects a missing or stale hot brief.
 - `scripts/validate_curriculum_coverage.py` derives course order from the
   canonical map instead of duplicating a hard-coded course/milestone table.
@@ -104,7 +105,8 @@ The following completed successfully from the learning-system root:
 ```text
 python3 -m py_compile scripts/*.py tests/test_learning_system.py
 python3 -m unittest -v tests/test_learning_system.py
-  -> 9 focused product tests pass, including negative drift/time-budget cases
+  -> 11 focused product tests pass, including negative drift/time-budget cases
+     and repository-wide local Markdown link validation
 
 python3 .../skill-creator/scripts/quick_validate.py \
   .agents/skills/pytorch-source-mentor

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -128,6 +129,31 @@ class HotContextTests(unittest.TestCase):
 
 
 class ProductBoundaryTests(unittest.TestCase):
+    def test_learning_state_accepts_document_relative_session_links(self) -> None:
+        result = run("scripts/validate_learning_state.py")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_all_tracked_markdown_local_links_resolve(self) -> None:
+        listed = subprocess.check_output(
+            ["git", "ls-files", "*.md"], cwd=ROOT, text=True
+        ).splitlines()
+        pattern = re.compile(r"(?<!!)\[[^\]]*\]\(([^)]+)\)")
+        missing: list[str] = []
+        for relative in listed:
+            path = ROOT / relative
+            for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                for target in pattern.findall(line):
+                    target = target.strip()
+                    if target.startswith("<") and target.endswith(">"):
+                        target = target[1:-1]
+                    if not target or target.startswith(("#", "http://", "https://", "mailto:", "app://")):
+                        continue
+                    local = target.split("#", 1)[0]
+                    resolved = Path(local) if Path(local).is_absolute() else path.parent / local
+                    if not resolved.exists():
+                        missing.append(f"{relative}:{line_number}: {target}")
+        self.assertEqual(missing, [])
+
     def test_skill_entrypoint_remains_progressively_disclosed(self) -> None:
         skill = (ROOT / ".agents" / "skills" / "pytorch-source-mentor" / "SKILL.md").read_text(
             encoding="utf-8"

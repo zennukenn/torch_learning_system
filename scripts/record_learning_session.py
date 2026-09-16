@@ -306,7 +306,7 @@ def update_state(path: Path, updates: dict[str, str]) -> None:
 def render_session(stage: Path, manifest: dict[str, Any]) -> tuple[Path, Path]:
     day = manifest["date"]
     slug = manifest["note_slug"]
-    note_relative = f"learning/notebook/sessions/{day}-{slug}.md"
+    note_relative = f"notebook/sessions/{day}-{slug}.md"
     note = stage / "notebook" / "sessions" / f"{day}-{slug}.md"
     evidence_ids = ", ".join(item["evidence_id"] for item in manifest["evidence"])
     cycles = "\n".join(
@@ -369,8 +369,8 @@ def render_session(stage: Path, manifest: dict[str, Any]) -> tuple[Path, Path]:
             f"- Outcome: {manifest['outcome']}\n"
             f"- Learner decisive work: {authorship['learner_decisive_work']}\n"
             f"- Practice verification: {manifest['practice_cycles'][-1]['actual_result']}\n"
-            f"- Learner artifact: `learning/artifacts/{day}-{slug}/SESSION_MANIFEST.json`\n"
-            f"- Notebook: {note_relative}\n"
+            f"- Learner artifact: [manifest](artifacts/{day}-{slug}/SESSION_MANIFEST.json)\n"
+            f"- Notebook: [note]({note_relative})\n"
             f"- Next action: {manifest['next_action']}\n"
         )
     return note, artifact
